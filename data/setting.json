@@ -1,0 +1,14 @@
+{
+    "screen" : {
+        "width" : 700,
+        "height": 700
+    },
+    "grid" : {
+        "size_x" : 10,
+        "size_y" : 8,
+        "thickness" : 5,
+        "color_0" : [243, 224,  95],
+        "color_1" : [180, 205, 230]
+    },
+    "theme" : "theme_2"
+}
