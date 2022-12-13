@@ -24,20 +24,26 @@ if __name__ == "__main__":
             pygame.display.set_caption("menu scene")
             menu_ret = menu_scene.loop_on(screen)
 
+            # nếu menu trả về 0 thì thoát chương trình
+            if menu_ret == 0:
+                running = False
+
             # nếu menu trả về chế độ 2 người (chơi mới)
-            if menu_ret == 1:
+            elif menu_ret == 1:
                 playing = True
                 game_scene.new_game(screen)
             
             # nếu menu trả về chế độ 1 người (chơi tiếp)
-            if menu_ret == 2:
+            elif menu_ret == 2:
                 playing = True
                 game_scene.continue_game(screen)
 
         # nếu đang chơi
         else:
+            
             # vòng lặp cho game
             pygame.display.set_caption("game scene")
-            game_scene.loop_on(screen)
+            if game_scene.loop_on(screen) == 0:
+                running = False
     
         # print(pygame.mouse.get_pos())

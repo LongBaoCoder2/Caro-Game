@@ -32,7 +32,9 @@ class Menu:
         for event in pygame.event.get():
             # nếu người dùng bấm thoát thì thoát
             if event.type == pygame.QUIT:
+                # thoát game
                 pygame.quit()
+                return 0
         
         # cập nhật display
         pygame.display.update()

@@ -132,6 +132,10 @@ class Game:
                 self.save_manager.save(self.game_data)
                 # thoát game
                 pygame.quit()
+                return 0
 
             # cập nhật display
             pygame.display.update()
+        
+        # nếu không có sự kiện gì thì trả về -1
+        return -1
