@@ -121,13 +121,16 @@ class Game:
                     # vẽ cờ lên màn hình
                     screen.blit(cur_piece, display_pos)
 
+                    # lưu lại giá trị trong bảng
+                    self.game_data['Board'][board_x][board_y] = self.game_data['Turn']
+                    
                     # kiểm tra đã thắng chưa
                     if self.win_checker.check_win(self.game_data['Board'], self.game_data['Turn'], board_x, board_y):
                         print('THANG!')
-                    
-                    # lưu lại giá trị trong bảng và thay đổi turn
-                    self.game_data['Board'][board_x][board_y] = self.game_data['Turn']
+                        
+                    # Thay đổi Turn ở cuối mỗi lượt
                     self.game_data['Turn'] = 1 - self.game_data['Turn']
+                    
             
             # nếu người dùng bấm thoát
             if event.type == pygame.QUIT:
