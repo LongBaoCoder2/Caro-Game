@@ -16,7 +16,8 @@ class SaveManager:
                 "Player2" : "Anonymous"
             },
             "Board" : self.default_board,
-            "Turn" : True
+            # phải để 1, đừng để True False
+            "Turn" : 1
         }
         self.filename = filename
         self.path_folder = path_folder
