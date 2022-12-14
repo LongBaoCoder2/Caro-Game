@@ -12,14 +12,19 @@ class WinChecker:
     def check_cell(self, board: list, user: int, posX: int, posY: int) -> int:
         # nếu ô đó có đúng ký tự của user đó thì return 1
         if self.in_board(posX, posY) and (board[posX][posY] == user):
+            #print(user)
+            #print(board[posX][posY])
             return 1
         # gặp ký tự của đối thủ thì ăn penalty
         elif self.in_board(posX, posY) and (board[posX][posY] == 1 - user):
+            # print(board[posX][posY])
+            # print(user)
             return -100
         return 0
 
     def hv_check(self, board: list, user: int, posX: int, posY: int):
         # print()
+        # print(board)
         for i in range(-4, 1):
             startX = posX + i
             startY = posY + i
@@ -54,9 +59,10 @@ class WinChecker:
             t = self.check_cell(board, opponent, posX, topY) == 1
             bottomY = startY + 5
             b = self.check_cell(board, opponent, posX, bottomY) == 1
-            # print("LeftX = %d, LeftY = %d" % (leftX, rightX))
-            # print("User %d has %d max horizontal continous steps. This was check at (%d, %d)" % (user, countH, startX, posY))
-            # print("User %d has %d max vertical continous steps. This was check at (%d, %d)" % (user, countV, posX, startY))
+            print("LeftX = %d, LeftY = %d" % (leftX, rightX))
+            print("User %d has %d max horizontal continous steps. This was check at (%d, %d)" % (user, countH, startX, posY))
+            print("User %d has %d max vertical continous steps. This was check at (%d, %d)" % (user, countV, posX, startY))
+            # Chỉ dùng check 4 cho AI
             if countH == 4 and not (l or r):
                 # print("l is %s and r is %s" % (l, r))
                 return True
