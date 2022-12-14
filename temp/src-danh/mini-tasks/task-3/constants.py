@@ -1,0 +1,13 @@
+# khai báo hằng
+STEP = 50
+MAX_X = STEP * 32
+MAX_Y = MAX_X * 9 // 16
+BACKGROUND_COLORS = [(44, 202, 96), (20, 140, 80)]
+LINE_COLOR = (255, 255, 255)
+LINE_WIDTH = 4
+COLS = MAX_X // STEP
+ROWS = MAX_Y // STEP
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+SYMBOL_WIDTH = 6
+USER = (-1, 1)
