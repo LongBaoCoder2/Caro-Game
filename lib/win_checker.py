@@ -1,3 +1,5 @@
+# Notes:
+# Check 4 o chi dung trong truong hop danh voi may (AI)
 import json
 
 setting = json.load(open('data/setting.json'))
@@ -5,7 +7,7 @@ SIZE_X = setting['grid']['size_x']
 SIZE_Y = setting['grid']['size_y']
 
 class WinChecker:
-
+    
     def in_board(self, posX : int, posY : int) -> bool:
         return posX >= 0 and posX < SIZE_X and posY >= 0 and posY < SIZE_Y
 
@@ -63,13 +65,13 @@ class WinChecker:
             #print("User %d has %d max horizontal continous steps. This was check at (%d, %d)" % (user, countH, startX, posY))
             #print("User %d has %d max vertical continous steps. This was check at (%d, %d)" % (user, countV, posX, startY))
             # Chỉ dùng check 4 cho AI
-            if countH == 4 and not (l or r):
-                # print("l is %s and r is %s" % (l, r))
-                return True
+            # if countH == 4 and not (l or r):
+            #     # print("l is %s and r is %s" % (l, r))
+            #     return True
             if countH == 5 and not (l and r):
                 return True
-            if countV == 4 and not (t or b):
-                return True
+            # if countV == 4 and not (t or b):
+            #     return True
             if countV == 5 and not (t and b):
                 return True
         return False
@@ -96,8 +98,8 @@ class WinChecker:
             tl = self.check_cell(board, opponent, topleftX, topleftY) == 1
             bottomrightX, bottomrightY = startX + 5, startY + 5
             br = self.check_cell(board, opponent, bottomrightX, bottomrightY) == 1
-            if countM == 4 and not (tl or br):
-                return True
+            # if countM == 4 and not (tl or br):
+            #     return True
             if countM == 5 and not (tl and br):
                 return True
         return False
@@ -127,10 +129,10 @@ class WinChecker:
             # print("LeftX = %d, LeftY = %d" % (leftX, rightX))
             # print("User %d has %d max continous steps. This was check at (%d, %d)" % (user, countA, startX, startY))
             # print("User %d has %d max vertical continous steps. This was check at (%d, %d)" % (user, countV, posX, startY))
-            if countA == 4 and not (tr or bl):
-                # print(self.check_cell(opponent, toprightX, toprightY))
-                # print(tr, toprightX, toprightY)
-                return True
+            # if countA == 4 and not (tr or bl):
+            #     # print(self.check_cell(opponent, toprightX, toprightY))
+            #     # print(tr, toprightX, toprightY)
+            #     return True
             if countA == 5 and not (tr and bl):
                 return True
         return False
