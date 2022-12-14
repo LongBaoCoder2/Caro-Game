@@ -13,6 +13,7 @@ class Menu:
         self.img_two_player = [pygame.image.load('res/images/menu/two_player_' + str(i) + '.png') for i in range(2)]
         self.btn_one_player = button.Button(self.img_one_player[0], 60, 500, 50, 50, 100, 100)
         self.btn_two_player = button.Button(self.img_two_player[0], SCREEN_WIDTH - self.img_one_player[0].get_width() - 60, 500, 50, 50, 100, 100)
+        self.clock = pygame.time.Clock()
 
     # vòng lặp
     def loop_on(self, screen):
@@ -30,14 +31,15 @@ class Menu:
 
         # duyệt qua các event
         for event in pygame.event.get():
-            # nếu người dùng bấm thoát thì thoát
+            # nếu người dùng bấm thoát
             if event.type == pygame.QUIT:
-                # thoát game
-                pygame.quit()
                 return 0
         
         # cập nhật display
         pygame.display.update()
+
+        # delay 120ms
+        self.clock.tick(120)
 
         # nếu người chơi bấm chế độ 1 người
         if self.btn_one_player.is_clicked():

@@ -39,6 +39,9 @@ class Game:
         # ----- win -----
         self.win_checker = win_checker.WinChecker()
 
+        # ----- clock -----
+        self.clock = pygame.time.Clock()
+
     # khởi tạo game mới
     def new_game(self, screen):
         self.draw_grid_on(screen)
@@ -130,12 +133,13 @@ class Game:
             if event.type == pygame.QUIT:
                 # save game trước khi thoát
                 self.save_manager.save(self.game_data)
-                # thoát game
-                pygame.quit()
                 return 0
 
-            # cập nhật display
-            pygame.display.update()
+        # cập nhật display
+        pygame.display.update()
+        
+        # delay 120ms
+        self.clock.tick(120)
         
         # nếu không có sự kiện gì thì trả về -1
         return -1

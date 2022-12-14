@@ -5,6 +5,8 @@ setting = json.load(open('data/setting.json'))
 SCREEN_WIDTH  = setting['screen']['width']
 SCREEN_HEIGHT = setting['screen']['height']
 
+clock = pygame.time.Clock()
+
 if __name__ == "__main__":
     
     # khởi tạo pygame
@@ -15,9 +17,10 @@ if __name__ == "__main__":
     menu_scene = menu.Menu()
     game_scene = game.Game()
 
+    playing = False
+
     # vòng lặp chính của chương trình
-    (running, playing) = (True, False)
-    while (running):        
+    while (True):
 
         # nếu không đang chơi thì hiện game menu và lấy sự kiện trả về
         if playing == False:
@@ -26,7 +29,7 @@ if __name__ == "__main__":
 
             # nếu menu trả về 0 thì thoát chương trình
             if menu_ret == 0:
-                running = False
+                break
 
             # nếu menu trả về chế độ 2 người (chơi mới)
             elif menu_ret == 1:
@@ -44,6 +47,7 @@ if __name__ == "__main__":
             # vòng lặp cho game
             pygame.display.set_caption("game scene")
             if game_scene.loop_on(screen) == 0:
-                running = False
+                break
     
-        # print(pygame.mouse.get_pos())
+    # thoát game
+    pygame.quit()
