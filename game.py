@@ -141,6 +141,8 @@ class Game:
                     # Thay đổi Turn ở cuối mỗi lượt
                     self.game_data['Turn'] = 1 - self.game_data['Turn']
 
+                    # Comment these lines to enable PvP mode
+                    """
                     # Mah Cute Bot
                     best_move = self.bot.find_best_move(self.game_data['Board'])
                     self.draw_piece_on(screen, best_move[0], best_move[1], self.img_piece[1])
@@ -148,6 +150,7 @@ class Game:
                     if self.win_checker.check_win(self.game_data['Board'], self.game_data['Turn'], board_x, board_y):
                         print('BOT THANG!')
                     self.game_data['Turn'] = 1 - self.game_data['Turn']
+                    """
                     
             
             # nếu người dùng bấm thoát

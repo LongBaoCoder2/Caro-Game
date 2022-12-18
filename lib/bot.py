@@ -44,7 +44,7 @@ class Bot(win_checker.WinChecker):
 
         # nếu bot đã từng giải quyết trạng thái này thì đưa ra đáp án từ bộ nhớ
         if (str(board), turn) in self.memory:
-            print('Aha!')
+            #print('Aha!')
             return self.memory[(str(board), turn)]
 
         # nếu tìm vượt quá độ sâu thì dừng lại (xem như hoà)
