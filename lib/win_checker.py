@@ -24,15 +24,14 @@ class WinChecker:
             return -100
         return 0
 
-    def hv_check(self, board: list, user: int, posX: int, posY: int):
+    def horizontal_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int = 5):
         # print()
         # print(board)
-        for i in range(-4, 1):
+        for i in range(-pieces_to_win + 1, 1):
             startX = posX + i
-            startY = posY + i
             # count lưu giá trị max liên tiếp
-            countH, countV, curCountH, curCountV = 0, 0, 0, 0
-            for j in range(0, 5):
+            countH, curCountH = 0, 0
+            for j in range(0, pieces_to_win):
                 curX, curY = startX + j, posY
                 point = self.check_cell(board, user, curX, curY)
                 if point == 0:
@@ -41,7 +40,31 @@ class WinChecker:
                         curCountH = 0
                 else:
                     curCountH += point
-
+            countH = max(curCountH, countH)
+            opponent = 1 - user
+            leftX = startX - 1
+            l = self.check_cell(board, opponent, leftX, posY) == 1
+            rightX = startX + pieces_to_win
+            r = self.check_cell(board, opponent, rightX, posY) == 1
+            #print("LeftX = %d, LeftY = %d" % (leftX, rightX))
+            #print("User %d has %d max horizontal continous steps. This was check at (%d, %d)" % (user, countH, startX, posY))
+            #print("User %d has %d max vertical continous steps. This was check at (%d, %d)" % (user, countV, posX, startY))
+            # Chỉ dùng check 4 cho AI
+            # if countH == 4 and not (l or r):
+            #     # print("l is %s and r is %s" % (l, r))
+            #     return True
+            if countH == pieces_to_win and not (l and r):
+                return True
+        return False
+    
+    def vertical_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int = 5):
+        # print()
+        # print(board)
+        for i in range(-pieces_to_win + 1, 1):
+            startY = posY + i
+            # count lưu giá trị max liên tiếp
+            countV, curCountV = 0, 0
+            for j in range(0, pieces_to_win):
                 curX, curY = posX, startY + j
                 point = self.check_cell(board, user, curX, curY)
                 if point == 0:
@@ -50,40 +73,30 @@ class WinChecker:
                         curCountV = 0
                 else:
                     curCountV += point
-            countH = max(curCountH, countH)
             countV = max(curCountV, countV)
             opponent = 1 - user
-            leftX = startX - 1
-            l = self.check_cell(board, opponent, leftX, posY) == 1
-            rightX = startX + 5
-            r = self.check_cell(board, opponent, rightX, posY) == 1
             topY = startY - 1
             t = self.check_cell(board, opponent, posX, topY) == 1
-            bottomY = startY + 5
+            bottomY = startY + pieces_to_win
             b = self.check_cell(board, opponent, posX, bottomY) == 1
             #print("LeftX = %d, LeftY = %d" % (leftX, rightX))
             #print("User %d has %d max horizontal continous steps. This was check at (%d, %d)" % (user, countH, startX, posY))
             #print("User %d has %d max vertical continous steps. This was check at (%d, %d)" % (user, countV, posX, startY))
             # Chỉ dùng check 4 cho AI
-            # if countH == 4 and not (l or r):
-            #     # print("l is %s and r is %s" % (l, r))
-            #     return True
-            if countH == 5 and not (l and r):
-                return True
             # if countV == 4 and not (t or b):
             #     return True
-            if countV == 5 and not (t and b):
+            if countV == pieces_to_win and not (t and b):
                 return True
         return False
 
-    def main_diag_check(self, board: list, user: int, posX: int, posY: int):
+    def main_diag_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int = 5):
         # print()
-        for i in range(-4, 1):
+        for i in range(-pieces_to_win + 1, 1):
             startX = posX + i
             startY = posY + i
             # count lưu giá trị max liên tiếp
             countM, curCountM = 0, 0
-            for j in range(0, 5):
+            for j in range(0, pieces_to_win):
                 curX, curY = startX + j, startY + j
                 point = self.check_cell(board, user, curX, curY)
                 if point == 0:
@@ -96,22 +109,22 @@ class WinChecker:
             opponent = 1 - user
             topleftX, topleftY = startX - 1, startY - 1
             tl = self.check_cell(board, opponent, topleftX, topleftY) == 1
-            bottomrightX, bottomrightY = startX + 5, startY + 5
+            bottomrightX, bottomrightY = startX + pieces_to_win, startY + pieces_to_win
             br = self.check_cell(board, opponent, bottomrightX, bottomrightY) == 1
             # if countM == 4 and not (tl or br):
             #     return True
-            if countM == 5 and not (tl and br):
+            if countM == pieces_to_win and not (tl and br):
                 return True
         return False
 
-    def anti_diag_check(self, board: list, user: int, posX: int, posY: int):
+    def anti_diag_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int = 5):
         # print()
-        for i in range(-4, 1):
+        for i in range(-pieces_to_win + 1, 1):
             startX = posX + i
             startY = posY - i
             # count lưu giá trị max liên tiếp
             countA, curCountA = 0, 0
-            for j in range(0, 5):
+            for j in range(0, pieces_to_win):
                 curX, curY = startX + j, startY - j
                 point = self.check_cell(board, user, curX, curY)
                 if point == 0:
@@ -122,7 +135,7 @@ class WinChecker:
                     curCountA += point
             countA = max(curCountA, countA)
             opponent = 1 - user
-            toprightX, toprightY = startX + 5, startY - 5
+            toprightX, toprightY = startX + pieces_to_win, startY - pieces_to_win
             tr = self.check_cell(board, opponent, toprightX, toprightY) == 1
             bottomleftX, bottomleftY = startX - 1, startY + 1
             bl = self.check_cell(board, opponent, bottomleftX, bottomleftY) == 1
@@ -133,7 +146,7 @@ class WinChecker:
             #     # print(self.check_cell(opponent, toprightX, toprightY))
             #     # print(tr, toprightX, toprightY)
             #     return True
-            if countA == 5 and not (tr and bl):
+            if countA == pieces_to_win and not (tr and bl):
                 return True
         return False
 
@@ -145,7 +158,8 @@ class WinChecker:
         # if self.anti_diag_check(board, user, posX, posY):
         #     print("User %d wins anti diag" % (user))
         return (
-            self.hv_check(board, user, posX, posY)
+            self.horizontal_check(board, user, posX, posY)
+            or self.vertical_check(board, user, posX, posY)
             or self.main_diag_check(board, user, posX, posY)
             or self.anti_diag_check(board, user, posX, posY)
         )
