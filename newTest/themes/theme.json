@@ -1,0 +1,194 @@
+{
+    "defaults":
+    {
+        "colours":
+        {
+            "dark_bg": "#58bff2",
+            "hovered_bg": "#5D5FEF",
+            "disabled_bg": "#5E2FE3",
+            "selected_bg": "#5E2FE3",
+            "normal_bg": "#5D5FEF,#843CE0,90",
+            "disabled_dark_bg": "#5E2FE3",
+            "normal_text": "#FFFFFF",
+            "hovered_text": "#303030",
+            "selected_text": "#404040",
+            "disabled_text": "#000000",
+            "link_text": "#0000EE",
+            "link_hover": "#2020FF",
+            "link_selected": "#551A8B",
+            "text_shadow": "#777777",
+            "hovered_border": "#263159",
+            "disabled_border": "#263159",
+            "selected_border": "#263159",
+            "filled_bar": "#f4251b",
+            "unfilled_bar": "#CCCCCC"
+        }
+    },
+    "#text_entry":
+    {
+        "colours":
+        {
+            "dark_bg": "#4a84d4",
+            "normal_border": "#263159",
+            "normal_bg": "#4a84d4"
+        },
+        "font":
+        {
+            "name": "montserrat",
+            "size": "20",
+            "bold": "1",
+            "italic": "0",
+            "regular_resource": { "package": "themes.fonts", "resource": "Montserrat-Regular.ttf"},
+            "bold_resource": { "package": "themes.fonts", "resource": "Montserrat-Bold.ttf"},
+            "italic_resource": { "package": "themes.fonts", "resource": "Montserrat-Italic.ttf"},
+            "bold_italic_resource": { "package": "themes.fonts", "resource": "Montserrat-BoldItalic.ttf"}
+        },
+        "misc":
+        {
+            "shape" : "rounded_rectangle",
+            "shape_corner_radius": "30",
+            "border_width": "0.3"
+        }
+    },
+    "#test_prototype_colours":
+    {
+        "colours":
+        {
+            "dark_bg": "#5D5FEF,#843CE0,90",
+            "normal_border": "#263159",
+            "normal_bg": "#5D5FEF,#843CE0,90"
+        }
+    },
+
+    "#test_prototype_font":
+    {
+        "font":
+        {
+            "name": "montserrat",
+            "size": "20",
+            "bold": "1",
+            "italic": "0",
+            "regular_resource": { "package": "themes.fonts", "resource": "Montserrat-Regular.ttf"},
+            "bold_resource": { "package": "themes.fonts", "resource": "Montserrat-Bold.ttf"},
+            "italic_resource": { "package": "themes.fonts", "resource": "Montserrat-Italic.ttf"},
+            "bold_italic_resource": { "package": "themes.fonts", "resource": "Montserrat-BoldItalic.ttf"}
+        }
+    },
+
+    "#all_button":
+    {
+        "prototype": "#test_prototype_colours",
+        "prototype":"#test_prototype_font",
+        "colours":
+        {
+            "normal_border": "#ffB2A5",
+            "normal_text": "#FFFFFF",
+            "selected_bg": "#5E2FE3",
+            "active_bg" : "#5E2FE3"
+        },
+
+        "misc":
+        {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": "18",
+            "shadow_width": "2",
+            "border_width": "1",
+            "state_transitions":
+            {
+                "normal_hovered": "0.2",
+                "hovered_normal": "0.5"
+            }
+        }
+    },
+    "#label":
+    {
+        "colours": 
+        {
+            "normal_text": "#FFFFFF"
+        },
+        "font": 
+        {
+            "name": "montserrat",
+            "size": "50",
+            "bold": "1",
+            "italic": "0",
+            "regular_resource": { "package": "data.fonts", "resource": "Montserrat-Regular.ttf"},
+            "bold_resource": { "package": "data.fonts", "resource": "Montserrat-Bold.ttf"},
+            "italic_resource": { "package": "data.fonts", "resource": "Montserrat-Italic.ttf"},
+            "bold_italic_resource": { "package": "data.fonts", "resource": "Montserrat-BoldItalic.ttf"}
+        },
+        "misc": 
+        {
+            "text_shadow_size" : "1"
+        }
+    },
+    "#drop_down_text_prototype":
+    {
+        "font":
+        {
+                "name": "montserrat",
+                "size": "15",
+                "bold": "0",
+                "italic": "1",
+                "regular_resource": { "package": "themes.fonts", "resource": "Montserrat-Regular.ttf"},
+                "bold_resource": { "package": "themes.fonts", "resource": "Montserrat-Bold.ttf"},
+                "italic_resource": { "package": "themes.fonts", "resource": "Montserrat-Italic.ttf"},
+                "bold_italic_resource": { "package": "themes.fonts", "resource": "Montserrat-BoldItalic.ttf"}
+
+        }
+    },
+    "#drop_down_shape_prototype": {
+        "misc": {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": "4"
+        }
+    },
+    "drop_down_menu":
+    {
+        "prototype": "#drop_down_shape_prototype",
+
+        "colours":
+        {
+            "dark_bg": "#fb9e91",
+            "normal_border": "#FFB0B0,#FFB0FF,0"
+        },
+        "misc":
+        {
+            "shadow_width": "2",
+            "border_width": "1",
+            "expand_direction": "up",
+            "open_button_width": "0"
+        }
+    },
+
+    "drop_down_menu.#drop_down_options_list":
+    {
+        "prototype": "#drop_down_shape_prototype",
+
+        "misc":
+        {
+            "shadow_width": "2",
+            "border_width": "1"
+        }
+    },
+
+
+
+    "drop_down_menu.#drop_down_options_list.button":
+    {
+        "prototype": "#drop_down_shape_prototype",
+        "prototype": "#drop_down_text_prototype",
+
+        "misc":
+        {
+            "shadow_width": "0",
+            "border_width": "0",
+
+            "state_transitions":
+            {
+                "normal_hovered": "0.2",
+                "hovered_normal": "0.5"
+            }
+        }
+    }
+}
