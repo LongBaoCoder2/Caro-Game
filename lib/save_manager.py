@@ -17,7 +17,7 @@ class SaveManager:
             },
             "Board" : self.default_board,
             # phải để 1, đừng để True False
-            "Turn" : 1
+            "Turn" : 0
         }
         self.filename = filename
         self.path_folder = path_folder

@@ -1,5 +1,5 @@
 import pygame, json
-from lib import color, save_manager, win_checker
+from lib import color, save_manager, win_checker, bot
 
 setting = json.load(open('data/setting.json'))
 # screen
@@ -41,6 +41,9 @@ class Game:
 
         # ----- clock -----
         self.clock = pygame.time.Clock()
+
+        # ----- bot -----
+        self.bot = bot.Bot()
 
     # khởi tạo game mới
     def new_game(self, screen):
@@ -86,6 +89,16 @@ class Game:
         # for i in range(self.grid_height, SCREEN_HEIGHT - self.grid_height, self.grid_height):
         #     pygame.draw.line(screen, color.BLACK, (40, i + THICKNESS // 2), (SCREEN_WIDTH - 40, i + THICKNESS // 2), THICKNESS)
 
+    def draw_piece_on(self, screen, board_x, board_y, cur_piece):
+        # đưa về dạng tâm của bàn cờ
+        (center_x, center_y) = (board_x * self.grid_width + (self.grid_width + THICKNESS) // 2, board_y * self.grid_width + (self.grid_width + THICKNESS) // 2)
+
+        # đưa về dạng góc trái trên của cờ trong bàn cờ
+        display_pos = (center_x + self.grid_start_x - cur_piece.get_width() / 2, center_y + self.grid_start_y - cur_piece.get_height() / 2)
+        
+        # vẽ cờ lên màn hình
+        screen.blit(cur_piece, display_pos)
+
     # vòng lặp
     def loop_on(self, screen):
 
@@ -112,23 +125,28 @@ class Game:
                     if self.game_data['Board'][board_x][board_y] != -1:
                         continue
 
-                    # đưa về dạng tâm của bàn cờ
-                    (center_x, center_y) = (board_x * self.grid_width + (self.grid_width + THICKNESS) // 2, board_y * self.grid_width + (self.grid_width + THICKNESS) // 2)
-
-                    # đưa về dạng góc trái trên của cờ trong bàn cờ
-                    display_pos = (center_x + self.grid_start_x - cur_piece.get_width() / 2, center_y + self.grid_start_y - cur_piece.get_height() / 2)
-                    
                     # vẽ cờ lên màn hình
-                    screen.blit(cur_piece, display_pos)
+                    self.draw_piece_on(screen, board_x, board_y, cur_piece)
+
+                    # cập nhật display
+                    pygame.display.update()
 
                     # lưu lại giá trị trong bảng
                     self.game_data['Board'][board_x][board_y] = self.game_data['Turn']
                     
                     # kiểm tra đã thắng chưa
                     if self.win_checker.check_win(self.game_data['Board'], self.game_data['Turn'], board_x, board_y):
-                        print('THANG!')
+                        print('NGUOI THANG!')
                         
                     # Thay đổi Turn ở cuối mỗi lượt
+                    self.game_data['Turn'] = 1 - self.game_data['Turn']
+
+                    # Mah Cute Bot
+                    best_move = self.bot.find_best_move(self.game_data['Board'])
+                    self.draw_piece_on(screen, best_move[0], best_move[1], self.img_piece[1])
+                    self.game_data['Board'][best_move[0]][best_move[1]] = 1
+                    if self.win_checker.check_win(self.game_data['Board'], self.game_data['Turn'], board_x, board_y):
+                        print('BOT THANG!')
                     self.game_data['Turn'] = 1 - self.game_data['Turn']
                     
             

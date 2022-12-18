@@ -138,12 +138,12 @@ class WinChecker:
         return False
 
     def check_win(self, board: list, user: int, posX: int, posY: int):
-        if self.hv_check(board, user, posX, posY):
-            print("User %d wins horizontal or vertical" % (user))
-        if self.main_diag_check(board, user, posX, posY):
-            print("User %d wins main diag" % (user))
-        if self.anti_diag_check(board, user, posX, posY):
-            print("User %d wins anti diag" % (user))
+        # if self.hv_check(board, user, posX, posY):
+        #     print("User %d wins horizontal or vertical" % (user))
+        # if self.main_diag_check(board, user, posX, posY):
+        #     print("User %d wins main diag" % (user))
+        # if self.anti_diag_check(board, user, posX, posY):
+        #     print("User %d wins anti diag" % (user))
         return (
             self.hv_check(board, user, posX, posY)
             or self.main_diag_check(board, user, posX, posY)
