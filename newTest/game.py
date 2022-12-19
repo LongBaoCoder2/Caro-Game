@@ -1,4 +1,4 @@
-import pygame, json, sys
+import pygame, json, sys, winlose
 from lib import color, save_manager, win_checker
 
 setting = json.load(open('data/setting.json'))
@@ -17,7 +17,7 @@ THEME = setting['theme']
 class Game:
 
     # khởi tạo
-    def __init__(self):
+    def __init__(self, screen):
         # ----- img -----
         self.img_grid  =  pygame.image.load('res/images/' + THEME + '/grid.png')
         self.img_piece = [pygame.image.load('res/images/' + THEME + '/piece_' + str(i) + '.png') for i in range(2)]
@@ -42,14 +42,22 @@ class Game:
         # ----- clock -----
         self.clock = pygame.time.Clock()
 
+        # Khởi tạo Screen
+        self.screen = screen
+
+        # Screen Win Lose
+        self.win_lose_screen = winlose.WinLose(SCREEN_WIDTH, SCREEN_HEIGHT ,self.screen)
+
+
+
     # khởi tạo game mới
-    def new_game(self, screen):
-        self.draw_grid_on(screen)
+    def new_game(self):
+        self.draw_grid_on()
         self.game_data = self.save_manager.refresh()
 
     # tiếp tục game từ save
-    def continue_game(self, screen):
-        self.draw_grid_on(screen)
+    def continue_game(self):
+        self.draw_grid_on()
         for row in range(SIZE_X):
             for column in range(SIZE_Y):
                 piece_data = self.game_data['Board'][row][column]
@@ -61,17 +69,17 @@ class Game:
                 # tính vị trí của cờ để vẽ
                 pos_piece = (self.grid_start_x + self.grid_width * row, self.grid_start_y + self.grid_height * column)
                 # vẽ cờ lên màn hình
-                screen.blit(cur_piece, pos_piece)
+                self.screen.blit(cur_piece, pos_piece)
 
     # vẽ lưỡi lên một surface
-    def draw_grid_on(self, screen):
+    def draw_grid_on(self):
 
         # tô screen bằng màu background
-        screen.fill(color.BACKGROUND)
+        self.screen.fill(color.BACKGROUND)
 
         for i in range(self.grid_start_x, SCREEN_WIDTH - self.grid_width * 2, self.grid_width * 2):
             for j in range(self.grid_start_y, SCREEN_HEIGHT - self.grid_height * 2, self.grid_height * 2):
-                screen.blit(self.img_grid, (i, j))
+                self.screen.blit(self.img_grid, (i, j))
 
         # # vẽ các ô màu xen kẽ
         # for i in range(0, SCREEN_WIDTH, self.grid_width):
@@ -87,7 +95,7 @@ class Game:
         #     pygame.draw.line(screen, color.BLACK, (40, i + THICKNESS // 2), (SCREEN_WIDTH - 40, i + THICKNESS // 2), THICKNESS)
 
     # vòng lặp
-    def loop_on(self, screen):
+    def loop_on(self):
 
         # duyệt qua các event
         for event in pygame.event.get():
@@ -119,14 +127,14 @@ class Game:
                     display_pos = (center_x + self.grid_start_x - cur_piece.get_width() / 2, center_y + self.grid_start_y - cur_piece.get_height() / 2)
                     
                     # vẽ cờ lên màn hình
-                    screen.blit(cur_piece, display_pos)
+                    self.screen.blit(cur_piece, display_pos)
 
                     # lưu lại giá trị trong bảng
                     self.game_data['Board'][board_x][board_y] = self.game_data['Turn']
                     
                     # kiểm tra đã thắng chưa
                     if self.win_checker.check_win(self.game_data['Board'], self.game_data['Turn'], board_x, board_y):
-                        print('THANG!')
+                        self.win_lose_screen.run()
                         
                     # Thay đổi Turn ở cuối mỗi lượt
                     self.game_data['Turn'] = 1 - self.game_data['Turn']

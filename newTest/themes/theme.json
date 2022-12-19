@@ -3,7 +3,7 @@
     {
         "colours":
         {
-            "dark_bg": "#58bff2",
+            "dark_bg": "#501be8",
             "hovered_bg": "#5D5FEF",
             "disabled_bg": "#5E2FE3",
             "selected_bg": "#5E2FE3",
@@ -13,9 +13,6 @@
             "hovered_text": "#303030",
             "selected_text": "#404040",
             "disabled_text": "#000000",
-            "link_text": "#0000EE",
-            "link_hover": "#2020FF",
-            "link_selected": "#551A8B",
             "text_shadow": "#777777",
             "hovered_border": "#263159",
             "disabled_border": "#263159",
@@ -46,7 +43,7 @@
         "misc":
         {
             "shape" : "rounded_rectangle",
-            "shape_corner_radius": "30",
+            "shape_corner_radius": "20",
             "border_width": "0.3"
         }
     },
@@ -65,7 +62,7 @@
         "font":
         {
             "name": "montserrat",
-            "size": "20",
+            "size": "24",
             "bold": "1",
             "italic": "0",
             "regular_resource": { "package": "themes.fonts", "resource": "Montserrat-Regular.ttf"},
@@ -90,7 +87,7 @@
         "misc":
         {
             "shape": "rounded_rectangle",
-            "shape_corner_radius": "18",
+            "shape_corner_radius": "20",
             "shadow_width": "2",
             "border_width": "1",
             "state_transitions":
@@ -116,12 +113,15 @@
             "bold_resource": { "package": "data.fonts", "resource": "Montserrat-Bold.ttf"},
             "italic_resource": { "package": "data.fonts", "resource": "Montserrat-Italic.ttf"},
             "bold_italic_resource": { "package": "data.fonts", "resource": "Montserrat-BoldItalic.ttf"}
-        },
-        "misc": 
-        {
-            "text_shadow_size" : "1"
         }
     },
+
+    "#name_message":
+    {
+        "prototype": "#test_prototype_colours",
+        "prototype":"#test_prototype_font"
+    },
+    
     "#drop_down_text_prototype":
     {
         "font":
@@ -140,10 +140,10 @@
     "#drop_down_shape_prototype": {
         "misc": {
             "shape": "rounded_rectangle",
-            "shape_corner_radius": "4"
+            "shape_corner_radius": "20"
         }
     },
-    "drop_down_menu":
+    "#drop_down_menu":
     {
         "prototype": "#drop_down_shape_prototype",
 
