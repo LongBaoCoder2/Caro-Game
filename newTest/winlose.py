@@ -1,7 +1,7 @@
 import pygame, pygame_gui, sys, menu
 
-from paint import PAINT
-import menu, game
+from lib.paint import Paint
+import menu
 
 
 class WinLose:
@@ -9,7 +9,7 @@ class WinLose:
         self.screen = screen
         self.SCREEN_WIDTH, self.SCREEN_HEIGHT = SCREEN_WIDTH, SCREEN_HEIGHT
         
-        self.paint = PAINT(self.screen)   
+        self.paint = Paint(self.screen)
         self.clock = pygame.time.Clock()
 
         self.options = menu.Options(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)    
@@ -104,7 +104,7 @@ class WinLose:
             self.manager_win_lose.process_events(event)
    
     def run(self):
-         while self.running:
+        while self.running:
             time_delta = self.clock.tick() / 1000.0
             self.screen.blit(self.background_surface, (0,0))
             self.paint.render_surface(self.win_image, self.win_image_rect)

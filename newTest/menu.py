@@ -2,7 +2,7 @@ import pygame, json, pygame_gui, sys
 from lib import button, color, save_manager
 import game
 
-from paint import PAINT
+from lib.paint import Paint
 # from winlose import WinLose
 
 
@@ -94,8 +94,8 @@ class Name:
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, screen):
 
         self.screen = screen
-        self.game_screen = game.Game(self.screen)
-        self.paint = PAINT(self.screen)
+        
+        self.paint = Paint(self.screen)
 
 
         # Load từ data / Nếu không có hoặc new game thì load từ Input
@@ -213,6 +213,13 @@ class Name:
 
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if self.play_one != '' and self.play_two != '':
+                    game_data = save_manager.SaveManager('game_data.json', 'data').refresh()
+                    game_data['PlayerName']['Player1'] = self.play_one
+                    game_data['PlayerName']['Player2'] = self.play_two
+                    save_manager.SaveManager('game_data.json', 'data').save(game_data)
+                    print("> ", self.play_one)
+                    print("> ", self.play_two)
+                    self.game_screen = game.Game(self.screen)
                     self.game_screen.new_game()
                     while True:
                         self.game_screen.loop_on()
@@ -243,9 +250,8 @@ class Menu:
 
         self.screen = pygame.display.set_mode(self.options.resolution)
 
-        self.game_screen = game.Game(self.screen)
         # Dùng để vẽ các image và render text
-        self.paint = PAINT(self.screen)
+        self.paint = Paint(self.screen)
 
 
 
@@ -406,6 +412,7 @@ class Menu:
                 if event.ui_element == self.btn_settings:
                     self.setting_screen = SettingWindow(pygame.Rect((10, 10), (640, 480)), self.manager, self.options.resolution[0], self.options.resolution[1])
                 if event.ui_element == self.btn_continue:
+                    self.game_screen = game.Game(self.screen)
                     self.game_screen.continue_game()
                     while True:
                         self.game_screen.loop_on()

@@ -1,5 +1,5 @@
 import pygame, json, sys, winlose
-from lib import color, save_manager, win_checker
+from lib import color, save_manager, win_checker, text_switcher
 
 theme_color = json.load(open('themes/theme.json'))
 setting = json.load(open('data/setting.json'))
@@ -22,11 +22,15 @@ class Game:
 
     # khởi tạo
     def __init__(self, screen):
-        # ----- img -----
+
+        # pygame clock
+        self.clock = pygame.time.Clock()
+
+        # ảnh lưới và cờ
         self.img_grid  =  pygame.image.load('res/images/' + THEME + '/grid.png')
         self.img_piece = [pygame.image.load('res/images/' + THEME + '/piece_' + str(i) + '.png') for i in range(2)]
 
-        # ----- grid -----
+        # một số thông tin về lưới
         # self.grid_width  = 32
         # self.grid_height = 32
         # self.grid_width  = (SCREEN_WIDTH  - THICKNESS * NUM_OF_LINES) // (NUM_OF_LINES - 1) + THICKNESS
@@ -38,21 +42,19 @@ class Game:
         self.grid_end_x   = self.grid_start_x + self.grid_width  * SIZE_X
         self.grid_end_y   = self.grid_start_y + self.grid_height * SIZE_Y
 
-        # ----- img -----
-        self.save_manager = save_manager.SaveManager('game_data.json', 'data')
-        self.game_data    = self.save_manager.load()
-
-        # ----- win -----
-        self.win_checker = win_checker.WinChecker()
-
-        # ----- clock -----
-        self.clock = pygame.time.Clock()
-
         # Khởi tạo Screen
         self.screen = screen
 
         # Screen Win Lose
         self.win_lose_screen = winlose.WinLose(SCREEN_WIDTH, SCREEN_HEIGHT ,self.screen)
+
+        # các thành phần điều khiển của game
+        self.save_manager  = save_manager.SaveManager('game_data.json', 'data')
+        self.game_data     = self.save_manager.load()
+        self.win_checker   = win_checker.WinChecker()
+        self.player_1      = self.game_data['PlayerName']['Player1']
+        self.player_2      = self.game_data['PlayerName']['Player2']
+        self.text_switcher = text_switcher.TextSwitcher(self.screen, BACKGROUND_COLOR, [self.player_1, self.player_2])
 
     # khởi tạo game mới
     def new_game(self):
@@ -93,7 +95,6 @@ class Game:
             cur_y += self.grid_width * 2
 
         delta = 10
-
         pygame.draw.rect(self.screen, LINE_COLOR, (self.grid_start_x - delta, self.grid_start_y - delta, self.grid_end_x - self.grid_start_x + delta * 2, self.grid_end_y - self.grid_start_y + delta * 2), 5, 10)
 
         # # vẽ các ô màu xen kẽ
@@ -127,7 +128,7 @@ class Game:
                     # nếu vị trí click nằm ngoài bàn cờ thì bỏ qua
                     if mouse_x < self.grid_start_x or mouse_x > self.grid_end_x or mouse_y < self.grid_start_y or mouse_y > self.grid_end_y:
                         continue
-
+                    
                     # đưa về vị trí trong bảng
                     (board_x, board_y) = ((mouse_x - self.grid_start_x) // self.grid_width, (mouse_y - self.grid_start_y) // self.grid_width)
 
@@ -135,6 +136,9 @@ class Game:
                     if self.game_data['Board'][board_x][board_y] != -1:
                         continue
 
+                    # switch tên đang hiển thị
+                    self.text_switcher.switch()
+                    
                     # đưa về dạng tâm của bàn cờ
                     (center_x, center_y) = (board_x * self.grid_width + (self.grid_width + THICKNESS) // 2, board_y * self.grid_width + (self.grid_width + THICKNESS) // 2)
 
@@ -161,6 +165,8 @@ class Game:
                 self.save_manager.save(self.game_data)
                 pygame.quit()
                 sys.exit()
+        
+        self.text_switcher.draw_on(600, 40)
 
         # cập nhật display
         pygame.display.update()
