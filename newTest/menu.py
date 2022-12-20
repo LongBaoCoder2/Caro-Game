@@ -23,7 +23,73 @@ class Options:
         self.resolution = (SCREEN_WIDTH, SCREEN_HEIGHT)   # Kích thước
         # self.fullscreen = False                         # Toàn màn hình
 
+class SettingWindow(pygame_gui.elements.UIWindow):
+    def __init__(self, rect, ui_manager,SCREEN_WIDTH, SCREEN_HEIGHT):
+        super().__init__(rect, ui_manager,
+                         window_display_title='Setting',
+                         object_id='#setting_window',
+                         resizable=True)
 
+        self.options = Options(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.btn_size = ( int(self.rect.width *0.6), 30 )
+
+
+
+        # Setting Volumn
+            # Dòng chữ "Volumn"
+        self.volumn_label = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
+                                                            int(self.rect.height / 2 - 50)),
+                                                            self.btn_size),
+                                                            "Volumn: ",
+                                                            self.ui_manager,
+                                                            container=self)
+            # Thanh trượt qua lại
+        self.volumn_settings = pygame_gui.elements.UIHorizontalSlider(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
+                                                            int(self.rect.height / 2)),
+                                                            self.btn_size),
+                                                            50.0,
+                                                            (0.0, 100.0),
+                                                            self.ui_manager,
+                                                            container=self,
+                                                            click_increment=5)
+            # Âm thanh
+        self.current_volumn = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 + self.btn_size[0] /2),
+                                                int(self.rect.height / 2 - 10)),
+                                                (50, 50)),
+                                    str(int(self.volumn_settings.get_current_value())),
+                                    self.ui_manager,
+                                    container=self)
+
+
+        self.resolution_label = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
+                                                            int(self.rect.height / 2 - 150)),
+                                                            self.btn_size),
+                                                            "Resolution: ",
+                                                            self.ui_manager,
+                                                            container=self)
+        self.current_resolution_string = (str(self.options.resolution[0]) +
+                                     'x' +
+                                     str(self.options.resolution[1]))
+        self.resolution_drop_down = pygame_gui.elements.UIDropDownMenu(['640x480', '800x600', '1024x768'],
+                                                  self.current_resolution_string,
+                                                  pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
+                                                            int(self.rect.height / 2 - 100)),
+                                                            self.btn_size),
+                                                  self.ui_manager,
+                                                  container=self)
+
+        # self.health_bar = UIScreenSpaceHealthBar(pygame.Rect((int(self.rect.width / 9),
+        #                                                       int(self.rect.height * 0.7)),
+        #                                                      (200, 30)),
+        #                                          self.ui_manager,
+        #                                          container=self)
+
+    def update(self, time_delta):
+        super().update(time_delta)
+
+        if self.alive() and self.volumn_settings.has_moved_recently:
+            self.current_volumn.set_text(str(int(self.volumn_settings.get_current_value())))
+    
 class Name:
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, screen):
 
@@ -182,6 +248,7 @@ class Menu:
         self.paint = PAINT(self.screen)
 
 
+
         
         # Khởi tạo toàn màn hình
         # if self.options.fullscreen:
@@ -210,8 +277,9 @@ class Menu:
         # Màn hình Nhập Tên người chơi
         self.name_screen = None
 
-        # Màn hình Win Lose
-        self.win_lose_screen = None
+        # Màn hình setting
+        self.setting_screen = None
+
 
         self.running = True
         
@@ -229,7 +297,7 @@ class Menu:
 
         # Thiết kế giao diện
         self.image_list = []
-        self.image_position = [(80, 380), (100, 80), (600, 400), (600, 50)]
+        self.image_position = []
 
         # Import picture
         for index in range(1,5):
@@ -253,7 +321,6 @@ class Menu:
         self.manager.clear_and_reset()
 
         self.name_screen = Name(self.options.resolution[0], self.options.resolution[1], self.screen)
-        # self.win_lose_screen = WinLose(self.options.resolution[0], self.options.resolution[1], self.screen)
 
 
         self.btn_size = (int(self.options.resolution[0] * 0.4), int(self.options.resolution[1] * 0.1))
@@ -287,6 +354,11 @@ class Menu:
                                                         manager=self.manager,
                                                         object_id="#label")
         
+
+        self.image_position = [(int(self.options.resolution[0] * 0.1), int(self.options.resolution[1] * 0.65)), 
+                                (int(self.options.resolution[0] * 0.125), int(self.options.resolution[1] * 0.125)), 
+                                (int(self.options.resolution[0] * 0.75), int(self.options.resolution[1] * 0.7)), 
+                                (int(self.options.resolution[0] * 0.75), int(self.options.resolution[1] * 0.1))]
 
 
         self.title_game_caro.set_active_effect(pygame_gui.TEXT_EFFECT_TYPING_APPEAR)
@@ -331,9 +403,8 @@ class Menu:
                     # Truyền hàm khởi tạo trò chơi vào
                     self.name_screen.run()
                 
-                # if event.ui_element == self.btn_settings:
-                    # self.win_lose_screen.run()
-
+                if event.ui_element == self.btn_settings:
+                    self.setting_screen = SettingWindow(pygame.Rect((10, 10), (640, 480)), self.manager, self.options.resolution[0], self.options.resolution[1])
                 if event.ui_element == self.btn_continue:
                     self.game_screen.continue_game()
                     while True:
@@ -341,7 +412,7 @@ class Menu:
 
 
             if (event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED
-                    and event.ui_element == self.setting_resolution):
+                    and event.ui_element == self.setting_screen.resolution_drop_down):
                 self.change_size(event.text)
 
     def run(self):
