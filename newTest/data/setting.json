@@ -4,9 +4,10 @@
         "height": 600
     },
     "grid" : {
-        "size_x" : 10,
+        "size_x" : 8,
         "size_y" : 8,
         "thickness" : 5,
+        "num_of_lines": 11,
         "color_0" : [243, 224,  95],
         "color_1" : [180, 205, 230]
     },

@@ -1,16 +1,20 @@
 import pygame, json, sys, winlose
 from lib import color, save_manager, win_checker
 
+theme_color = json.load(open('themes/theme.json'))
 setting = json.load(open('data/setting.json'))
 # screen
 SCREEN_WIDTH  = setting['screen']['width']
 SCREEN_HEIGHT = setting['screen']['height']
 # grid
-# NUM_OF_LINES  = setting['grid']['num_of_lines']
-SIZE_X    = setting['grid']['size_x']
-SIZE_Y    = setting['grid']['size_y']
-THICKNESS = setting['grid']['thickness']
-# GRID_COLOR    = [setting['grid']['color_0'], setting['grid']['color_1']]
+NUM_OF_LINES  = setting['grid']['num_of_lines']
+SIZE_X        = setting['grid']['size_x']
+SIZE_Y        = setting['grid']['size_y']
+THICKNESS     = setting['grid']['thickness']
+# GRID_COLOR    = ["#5D5FEF", "#843CE0"]
+# GRID_COLOR = [setting['grid']['color_0'], setting['grid']['color_1']]
+BACKGROUND_COLOR = "#501be8"
+LINE_COLOR       = color.BLACK
 # theme
 THEME = setting['theme']
 
@@ -23,14 +27,16 @@ class Game:
         self.img_piece = [pygame.image.load('res/images/' + THEME + '/piece_' + str(i) + '.png') for i in range(2)]
 
         # ----- grid -----
+        # self.grid_width  = 32
+        # self.grid_height = 32
         # self.grid_width  = (SCREEN_WIDTH  - THICKNESS * NUM_OF_LINES) // (NUM_OF_LINES - 1) + THICKNESS
         # self.grid_height = (SCREEN_HEIGHT - THICKNESS * NUM_OF_LINES) // (NUM_OF_LINES - 1) + THICKNESS
         self.grid_width   = self.img_grid.get_width() // 2
         self.grid_height  = self.img_grid.get_width() // 2
-        self.grid_start_x = 30
-        self.grid_start_y = 30 + 128
-        self.grid_end_x = self.grid_start_x + self.grid_width  * SIZE_X
-        self.grid_end_y = self.grid_start_y + self.grid_height * SIZE_Y
+        self.grid_start_x = (SCREEN_HEIGHT - self.grid_height * SIZE_Y) // 2
+        self.grid_start_y = (SCREEN_HEIGHT - self.grid_height * SIZE_Y) // 2
+        self.grid_end_x   = self.grid_start_x + self.grid_width  * SIZE_X
+        self.grid_end_y   = self.grid_start_y + self.grid_height * SIZE_Y
 
         # ----- img -----
         self.save_manager = save_manager.SaveManager('game_data.json', 'data')
@@ -47,8 +53,6 @@ class Game:
 
         # Screen Win Lose
         self.win_lose_screen = winlose.WinLose(SCREEN_WIDTH, SCREEN_HEIGHT ,self.screen)
-
-
 
     # khởi tạo game mới
     def new_game(self):
@@ -75,24 +79,35 @@ class Game:
     def draw_grid_on(self):
 
         # tô screen bằng màu background
-        self.screen.fill(color.BACKGROUND)
+        self.screen.fill(BACKGROUND_COLOR)
+        # for i in range(self.grid_start_x, SCREEN_WIDTH - self.grid_width * 2, self.grid_width * 2):
+        #     for j in range(self.grid_start_y, SCREEN_HEIGHT - self.grid_height * 2, self.grid_height * 2):
+        #         self.screen.blit(self.img_grid, (i, j))
 
-        for i in range(self.grid_start_x, SCREEN_WIDTH - self.grid_width * 2, self.grid_width * 2):
-            for j in range(self.grid_start_y, SCREEN_HEIGHT - self.grid_height * 2, self.grid_height * 2):
-                self.screen.blit(self.img_grid, (i, j))
+        cur_y = self.grid_start_y
+        for i in range(SIZE_X // 2):
+            cur_x = self.grid_start_x
+            for j in range(SIZE_Y // 2):
+                self.screen.blit(self.img_grid, (cur_x, cur_y))
+                cur_x += self.grid_height * 2
+            cur_y += self.grid_width * 2
+
+        delta = 10
+
+        pygame.draw.rect(self.screen, LINE_COLOR, (self.grid_start_x - delta, self.grid_start_y - delta, self.grid_end_x - self.grid_start_x + delta * 2, self.grid_end_y - self.grid_start_y + delta * 2), 5, 10)
 
         # # vẽ các ô màu xen kẽ
         # for i in range(0, SCREEN_WIDTH, self.grid_width):
         #     for j in range(0, SCREEN_HEIGHT, self.grid_height):
-        #         pygame.draw.rect(screen, GRID_COLOR[(i + j) % 2], (i, j, self.grid_width, self.grid_height))
+        #         pygame.draw.rect(self.screen, GRID_COLOR[(i + j) % 2], (i, j, self.grid_width, self.grid_height))
         
         # # vẽ các đường dọc
         # for i in range(self.grid_width, SCREEN_WIDTH - self.grid_width, self.grid_width):
-        #     pygame.draw.line(screen, color.BLACK, (i + THICKNESS // 2, 40), (i + THICKNESS // 2, SCREEN_HEIGHT - 40), THICKNESS)
+        #     pygame.draw.line(self.screen, color.BLACK, (i + THICKNESS // 2, 40), (i + THICKNESS // 2, SCREEN_HEIGHT - 40), THICKNESS)
 
         # # vẽ cách đường ngang
         # for i in range(self.grid_height, SCREEN_HEIGHT - self.grid_height, self.grid_height):
-        #     pygame.draw.line(screen, color.BLACK, (40, i + THICKNESS // 2), (SCREEN_WIDTH - 40, i + THICKNESS // 2), THICKNESS)
+        #     pygame.draw.line(self.screen, color.BLACK, (40, i + THICKNESS // 2), (SCREEN_WIDTH - 40, i + THICKNESS // 2), THICKNESS)
 
     # vòng lặp
     def loop_on(self):
