@@ -62,7 +62,7 @@
         "font":
         {
             "name": "montserrat",
-            "size": "24",
+            "size": "22",
             "bold": "1",
             "italic": "0",
             "regular_resource": { "package": "themes.fonts", "resource": "Montserrat-Regular.ttf"},
@@ -140,7 +140,8 @@
     "#drop_down_shape_prototype": {
         "misc": {
             "shape": "rounded_rectangle",
-            "shape_corner_radius": "20"
+            "shape_corner_radius": "10"
+            
         }
     },
     "#drop_down_menu":
@@ -161,20 +162,18 @@
         }
     },
 
-    "drop_down_menu.#drop_down_options_list":
+    "#setting_window.drop_down_menu":
     {
         "prototype": "#drop_down_shape_prototype",
 
         "misc":
         {
+            "shape": "rounded_rectangle",
             "shadow_width": "2",
             "border_width": "1"
         }
     },
-
-
-
-    "drop_down_menu.#drop_down_options_list.button":
+    "#setting_window.drop_down_menu.button":
     {
         "prototype": "#drop_down_shape_prototype",
         "prototype": "#drop_down_text_prototype",
@@ -190,5 +189,79 @@
                 "hovered_normal": "0.5"
             }
         }
+    },
+    
+    "#setting_window.horizontal_slider":
+    {
+        "colours":
+        {
+            "dark_bg": "#fb8691,#fd92A0,180",
+            "normal_border": "#ffB2A5",
+            "normal_bg": "#fb9e91"
+        },
+        "misc":
+        {
+            "shape": "rounded_rectangle",
+            "border_width": "2",
+            "shadow_width": "1",
+            "enable_arrow_buttons": "1"
+        }
+    },
+    
+    "#setting_window.label":
+    {
+        "colours":
+        {
+            "normal_text": "#0091fbFF,#20fdA0FF,90",
+            "text_shadow": "#10101070"
+        },
+        "font":
+        {
+            "name": "montserrat",
+            "size": "22",
+            "bold": "1",
+            "italic": "0",
+            "regular_resource": { "package": "data.fonts", "resource": "Montserrat-Regular.ttf"},
+            "bold_resource": { "package": "data.fonts", "resource": "Montserrat-Bold.ttf"},
+            "italic_resource": { "package": "data.fonts", "resource": "Montserrat-Italic.ttf"},
+            "bold_italic_resource": { "package": "data.fonts", "resource": "Montserrat-BoldItalic.ttf"}
+        },
+        "misc":
+        {
+            "text_shadow_size": "1",
+            "text_shadow_offset": "0,0"
+        }
+    },"window":
+    {
+       "colours":
+       {
+          "dark_bg":"#2B3467",
+          "normal_border": "#999999"
+       },
+ 
+       "misc":
+       {
+          "shape": "rounded_rectangle",
+          "shape_corner_radius": "20",
+          "border_width": "3",
+          "shadow_width": "15",
+          "title_bar_height": "30",
+          "title_bar_radius": "20"
+       }
+    },
+    "window.#title_bar":
+    {
+        "prototype": "#test_prototype_font",
+        "misc":
+       {
+          "text_horiz_alignment": "center"
+       }
+    },
+    "window.#content":
+    {
+        "misc":
+        {
+            "text_horiz_alignment": "center"
+        }    
     }
 }
