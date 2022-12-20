@@ -1,7 +1,7 @@
 import pygame, pygame_gui, sys, menu
 
 from paint import PAINT
-import menu
+import menu, game
 
 
 class WinLose:
@@ -98,7 +98,8 @@ class WinLose:
                 sys.exit()
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.btn_back:
-                    break
+                    menu.Menu(self.SCREEN_WIDTH, self.SCREEN_HEIGHT).run()
+
             # Quản lý và xử lý các sự kiện (như click, hover, ...)
             self.manager_win_lose.process_events(event)
    
@@ -114,7 +115,3 @@ class WinLose:
             self.manager_win_lose.draw_ui(self.screen)
 
             pygame.display.update()
-
-if __name__ == "__main__":
-    screen = pygame.display.set_mode((800, 600))
-    app = WinLose(800, 600, screen).run()
