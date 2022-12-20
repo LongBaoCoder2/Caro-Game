@@ -1,5 +1,5 @@
 import pygame, json, sys, winlose
-from lib import color, save_manager, win_checker, text_switcher
+from lib import color, save_manager, win_checker, text_switcher, cursor_trail
 
 theme_color = json.load(open('themes/theme.json'))
 setting = json.load(open('data/setting.json'))
@@ -55,6 +55,7 @@ class Game:
         self.player_1      = self.game_data['PlayerName']['Player1']
         self.player_2      = self.game_data['PlayerName']['Player2']
         self.text_switcher = text_switcher.TextSwitcher(self.screen, BACKGROUND_COLOR, [self.player_1, self.player_2])
+        self.cursor_trail  = cursor_trail.CursorTrail()
 
     # khởi tạo game mới
     def new_game(self):
@@ -113,6 +114,8 @@ class Game:
     # vòng lặp
     def loop_on(self):
 
+        self.continue_game()
+
         # duyệt qua các event
         for event in pygame.event.get():
 
@@ -167,6 +170,7 @@ class Game:
                 sys.exit()
         
         self.text_switcher.draw_on(600, 40)
+        self.cursor_trail.draw_on(self.screen)
 
         # cập nhật display
         pygame.display.update()
