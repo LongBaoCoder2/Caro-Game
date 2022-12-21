@@ -28,4 +28,4 @@ class CursorTrail:
         for i in range(len(self.pos_list)):
 
             # vẽ hình tròn theo lịch sử vị trí chuột trong list
-            pygame.draw.circle(screen, color.RED, self.pos_list[i], i // 2)
+            pygame.draw.circle(screen, color.RED, self.pos_list[i], i // 3)
