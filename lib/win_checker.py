@@ -24,7 +24,7 @@ class WinChecker:
             return -100
         return 0
 
-    def horizontal_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int = 5):
+    def horizontal_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win):
         # print()
         # print(board)
         for i in range(-pieces_to_win + 1, 1):
@@ -57,7 +57,7 @@ class WinChecker:
                 return True
         return False
     
-    def vertical_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int = 5):
+    def vertical_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win):
         # print()
         # print(board)
         for i in range(-pieces_to_win + 1, 1):
@@ -89,7 +89,7 @@ class WinChecker:
                 return True
         return False
 
-    def main_diag_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int = 5):
+    def main_diag_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win):
         # print()
         for i in range(-pieces_to_win + 1, 1):
             startX = posX + i
@@ -117,7 +117,7 @@ class WinChecker:
                 return True
         return False
 
-    def anti_diag_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int = 5):
+    def anti_diag_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win):
         # print()
         for i in range(-pieces_to_win + 1, 1):
             startX = posX + i
@@ -150,7 +150,7 @@ class WinChecker:
                 return True
         return False
 
-    def check_win(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int = 5):
+    def check_win(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int = 3):
         # if self.hv_check(board, user, posX, posY):
         #     print("User %d wins horizontal or vertical" % (user))
         # if self.main_diag_check(board, user, posX, posY):

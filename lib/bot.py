@@ -31,7 +31,7 @@ class Bot(win_checker.WinChecker):
                     nb_cell = (row + move[0], col + move[1])
                     if self.in_board(nb_cell[0], nb_cell[1]) and board[nb_cell[0]][nb_cell[1]] == -1:
                         candidate_move.add(nb_cell)
-        
+
         # print('Candidate move: ', end=' ')
         # for move in candidate_move:
         #     print(move, end=' ')
@@ -49,14 +49,18 @@ class Bot(win_checker.WinChecker):
 
         # nếu tìm vượt quá độ sâu thì dừng lại (xem như hoà)
         if depth == 0:
-            return 0
+            print('Brain break...')
+            return ((-1, -1), -1)
 
         # tìm các bước đi ứng cử
         candidate_move = self.find_candidate_move(board)
 
         # nếu không có nước đi ứng cử nào thì trả về 0 (hoà)
         if len(candidate_move) == 0:
-            return 0
+            return ((-1, -1), 0)
+
+        alpha_move = (-1, -1)
+        beta_move  = (-1, -1)
 
         # duyệt qua các bước trong các bước ứng cử
         for move in candidate_move:
@@ -69,9 +73,9 @@ class Bot(win_checker.WinChecker):
             # nếu thắng luôn
             if val == True:
                 if turn == 1:
-                    self.memory[(str(board), turn)] = 1
+                    self.memory[(str(board), turn)] = (move, 1)
                 elif turn == 0:
-                    self.memory[(str(board), turn)] = -1
+                    self.memory[(str(board), turn)] = (move, -1)
                 return self.memory[(str(board), turn)]
 
             # nếu không thắng luôn
@@ -83,33 +87,37 @@ class Bot(win_checker.WinChecker):
                 board[move[0]][move[1]] = -1
                 
                 if turn == 1:
-                    alpha = max(alpha, val)
+                    if alpha < val:
+                        alpha = val
+                        alpha_move = move
                 elif turn == 0:
-                    beta = min(beta, val)
+                    if beta > val:
+                        beta = val
+                        beta_move = move
             
             # cắt tỉa
             if alpha >= beta:
                 break
 
         if turn == 1:
-            self.memory[(str(board), turn)] = alpha
+            self.memory[(str(board), turn)] = (alpha_move, alpha)
         elif turn == 0:
-            self.memory[(str(board), turn)] = beta
+            self.memory[(str(board), turn)] = (beta_move ,  beta)
         return self.memory[(str(board), turn)]
     
     # hàm tìm nước đi tốt nhất
     def find_best_move(self, board):
 
-        # tìm các bước đi ứng cử
-        candidate_move = self.find_candidate_move(board)
-        temp_candidate = (-1, -1)
+        found = self.minimax_abp(board, turn = 1, alpha = -1, beta = 1, depth = 10)
 
         # duyệt qua các bước trong các bước ứng cử
         for move in candidate_move:
 
             board[move[0]][move[1]] = 1
-            val = self.minimax_abp(board, turn = 0, alpha = -1, beta = 1, depth = 4)
+            val = self.minimax_abp(board, turn = 0, alpha = -1, beta = 1, depth = 10)
             board[move[0]][move[1]] = -1
+
+            print(move, val)
 
             # nếu tìm ra nước đi dẫn tới chắc chắn chiến thắng
             if val == 1:
