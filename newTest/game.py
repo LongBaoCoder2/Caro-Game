@@ -8,8 +8,8 @@ SCREEN_WIDTH  = setting['screen']['width']
 SCREEN_HEIGHT = setting['screen']['height']
 # grid
 NUM_OF_LINES  = setting['grid']['num_of_lines']
-SIZE_X        = setting['grid']['size_x']
-SIZE_Y        = setting['grid']['size_y']
+SIZE_X        = min(setting['grid']['size_x'], 8)
+SIZE_Y        = min(setting['grid']['size_y'], 8)
 THICKNESS     = setting['grid']['thickness']
 # GRID_COLOR    = ["#5D5FEF", "#843CE0"]
 # GRID_COLOR = [setting['grid']['color_0'], setting['grid']['color_1']]
@@ -88,9 +88,9 @@ class Game:
         #         self.screen.blit(self.img_grid, (i, j))
 
         cur_y = self.grid_start_y
-        for i in range(SIZE_X // 2):
+        for i in range(SIZE_Y // 2):
             cur_x = self.grid_start_x
-            for j in range(SIZE_Y // 2):
+            for j in range(SIZE_X // 2):
                 self.screen.blit(self.img_grid, (cur_x, cur_y))
                 cur_x += self.grid_height * 2
             cur_y += self.grid_width * 2
