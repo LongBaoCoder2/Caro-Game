@@ -1,4 +1,6 @@
-class PAINT:
+import pygame
+
+class Paint:
     def __init__(self, screen):
         self.screen = screen
 
