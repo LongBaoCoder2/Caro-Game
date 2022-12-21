@@ -1,4 +1,6 @@
 import pygame, json, sys, winlose
+from lib.play_sound import PlaySound
+
 from lib import color, save_manager, win_checker, text_switcher, cursor_trail
 
 theme_color = json.load(open('themes/theme.json'))
@@ -142,6 +144,9 @@ class Game:
                     # switch tên đang hiển thị
                     self.text_switcher.switch()
                     
+                    # am thanh khi bam chuot
+                    PlaySound.play('res\sounds/click.mp3')
+
                     # đưa về dạng tâm của bàn cờ
                     (center_x, center_y) = (board_x * self.grid_width + (self.grid_width + THICKNESS) // 2, board_y * self.grid_width + (self.grid_width + THICKNESS) // 2)
 
