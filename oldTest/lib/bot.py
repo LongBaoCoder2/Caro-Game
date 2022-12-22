@@ -27,7 +27,7 @@ class Bot(win_checker.WinChecker):
     # hàm tìm những nước đi ứng cử viên
     def find_candidate_move(self, board : list):
         candidate_move = set()
-
+        
         for row in range(SIZE_X):
             for col in range(SIZE_Y):
                 if (board[row][col] == -1):
@@ -85,6 +85,7 @@ class Bot(win_checker.WinChecker):
         beta_move  = (-1, -1)
 
         # duyệt qua từng nước ứng cử
+
         for move in candidate_move:
 
             # kiểm tra xem nước đi có thắng luôn không
