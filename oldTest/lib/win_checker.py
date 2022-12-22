@@ -3,9 +3,8 @@
 import json
 
 setting = json.load(open('data/setting.json'))
-SIZE_X  = setting['grid']['size_x']
-SIZE_Y  = setting['grid']['size_y']
-WIN_CNT = setting['game']['win_cnt']
+SIZE_X = setting['grid']['size_x']
+SIZE_Y = setting['grid']['size_y']
 
 class WinChecker:
     
@@ -151,7 +150,7 @@ class WinChecker:
                 return True
         return False
 
-    def check_win(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int = WIN_CNT):
+    def check_win(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int = 3):
         # if self.hv_check(board, user, posX, posY):
         #     print("User %d wins horizontal or vertical" % (user))
         # if self.main_diag_check(board, user, posX, posY):
