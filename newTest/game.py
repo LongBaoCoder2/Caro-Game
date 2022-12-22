@@ -1,7 +1,7 @@
 import pygame, json, sys, winlose
 from lib.play_sound import PlaySound
-
-from lib import color, save_manager, win_checker, text_switcher, cursor_trail
+from lib import color, save_manager, win_checker
+from lib import text_switcher, cursor_trail, bot
 
 theme_color = json.load(open('themes/theme.json'))
 setting = json.load(open('data/setting.json'))
@@ -9,9 +9,9 @@ setting = json.load(open('data/setting.json'))
 SCREEN_WIDTH  = setting['screen']['width']
 SCREEN_HEIGHT = setting['screen']['height']
 # grid
-NUM_OF_LINES  = setting['grid']['num_of_lines']
-SIZE_X        = min(setting['grid']['size_x'], 8)
-SIZE_Y        = min(setting['grid']['size_y'], 8)
+# NUM_OF_LINES  = setting['grid']['num_of_lines']
+SIZE_X        = min(setting['grid']['size_x'], 100)
+SIZE_Y        = min(setting['grid']['size_y'], 100)
 THICKNESS     = setting['grid']['thickness']
 # GRID_COLOR    = ["#5D5FEF", "#843CE0"]
 # GRID_COLOR = [setting['grid']['color_0'], setting['grid']['color_1']]
@@ -29,8 +29,8 @@ class Game:
         self.clock = pygame.time.Clock()
 
         # ảnh lưới và cờ
-        self.img_grid  =  pygame.image.load('res/images/' + THEME + '/grid.png')
-        self.img_piece = [pygame.image.load('res/images/' + THEME + '/piece_' + str(i) + '.png') for i in range(2)]
+        self.img_grid  = pygame.transform.scale(pygame.image.load('res/images/' + THEME + '/grid.png'), (64, 64))
+        self.img_piece = [pygame.transform.scale(pygame.image.load('res/images/' + THEME + '/piece_' + str(i) + '.png'), (32, 32)) for i in range(2)]
 
         # một số thông tin về lưới
         # self.grid_width  = 32
@@ -58,6 +58,12 @@ class Game:
         self.player_2      = self.game_data['PlayerName']['Player2']
         self.text_switcher = text_switcher.TextSwitcher(self.screen, BACKGROUND_COLOR, [self.player_1, self.player_2])
         self.cursor_trail  = cursor_trail.CursorTrail()
+        self.bot           = bot.Bot()
+
+        # for bot
+        self.end_game = False
+        self.cnt_move = 0
+        self.turn     = 1
 
     # khởi tạo game mới
     def new_game(self):
@@ -113,13 +119,43 @@ class Game:
         # for i in range(self.grid_height, SCREEN_HEIGHT - self.grid_height, self.grid_height):
         #     pygame.draw.line(self.screen, color.BLACK, (40, i + THICKNESS // 2), (SCREEN_WIDTH - 40, i + THICKNESS // 2), THICKNESS)
 
+    # vẽ cờ lên màn hình
+    def draw_piece_on(self, board_x, board_y, cur_piece):
+        # đưa về dạng tâm của bàn cờ
+        (center_x, center_y) = (board_x * self.grid_width + (self.grid_width + THICKNESS) // 2, board_y * self.grid_width + (self.grid_width + THICKNESS) // 2)
+
+        # đưa về dạng góc trái trên của cờ trong bàn cờ
+        display_pos = (center_x + self.grid_start_x - cur_piece.get_width() / 2, center_y + self.grid_start_y - cur_piece.get_height() / 2)
+        
+        # vẽ cờ lên màn hình
+        self.screen.blit(cur_piece, display_pos)
+
     # vòng lặp
     def loop_on(self):
 
         self.continue_game()
 
+        # nếu đã đánh hết bàn cờ
+        if SIZE_X * SIZE_Y == self.cnt_move:
+            self.end_game = True
+
         # duyệt qua các event
         for event in pygame.event.get():
+
+            # xử lý bot
+            if self.turn == 1:
+                # Comment these lines to enable PvP mode
+                if SIZE_X * SIZE_Y != self.cnt_move:
+                    best_move = self.bot.find_best_move(self.game_data['Board'])
+                    cur_piece = self.img_piece[self.game_data['Turn']]
+                    self.draw_piece_on(best_move[0], best_move[1], cur_piece)
+                    self.game_data['Board'][best_move[0]][best_move[1]] = 1
+                    self.cnt_move += 1
+                    if self.win_checker.check_win(self.game_data['Board'], 1, best_move[0], best_move[1]):
+                        print('BOT WIN!')
+                        self.end_game = True
+                    self.game_data['Turn'] = 1 - self.game_data['Turn']
+                    self.turn = 0
 
             # nếu người chơi bấm chuột trái
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -145,16 +181,10 @@ class Game:
                     self.text_switcher.switch()
                     
                     # am thanh khi bam chuot
-                    PlaySound.play('res\sounds/click.mp3')
+                    PlaySound.play('res/sounds/click.mp3')
 
-                    # đưa về dạng tâm của bàn cờ
-                    (center_x, center_y) = (board_x * self.grid_width + (self.grid_width + THICKNESS) // 2, board_y * self.grid_width + (self.grid_width + THICKNESS) // 2)
-
-                    # đưa về dạng góc trái trên của cờ trong bàn cờ
-                    display_pos = (center_x + self.grid_start_x - cur_piece.get_width() / 2, center_y + self.grid_start_y - cur_piece.get_height() / 2)
-                    
                     # vẽ cờ lên màn hình
-                    self.screen.blit(cur_piece, display_pos)
+                    self.draw_piece_on(board_x, board_y, cur_piece)
 
                     # lưu lại giá trị trong bảng
                     self.game_data['Board'][board_x][board_y] = self.game_data['Turn']
@@ -165,6 +195,9 @@ class Game:
                         
                     # Thay đổi Turn ở cuối mỗi lượt
                     self.game_data['Turn'] = 1 - self.game_data['Turn']
+
+                    # thay đổi turn
+                    self.turn = 1
                     
             
             # nếu người dùng bấm thoát

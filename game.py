@@ -10,7 +10,7 @@ SCREEN_HEIGHT = setting['screen']['height']
 SIZE_X    = setting['grid']['size_x']
 SIZE_Y    = setting['grid']['size_y']
 THICKNESS = setting['grid']['thickness']
-# GRID_COLOR    = [setting['grid']['color_0'], setting['grid']['color_1']]
+GRID_COLOR    = [setting['grid']['color_0'], setting['grid']['color_1']]
 # theme
 THEME = setting['theme']
 
@@ -23,8 +23,8 @@ class Game:
 
         # self.grid_width  = (SCREEN_WIDTH  - THICKNESS * NUM_OF_LINES) // (NUM_OF_LINES - 1) + THICKNESS
         # self.grid_height = (SCREEN_HEIGHT - THICKNESS * NUM_OF_LINES) // (NUM_OF_LINES - 1) + THICKNESS
-        self.grid_width    = self.img_grid.get_width() // 2
-        self.grid_height   = self.img_grid.get_width() // 2
+        self.grid_width    = 30
+        self.grid_height   = 30
         self.grid_start_x  = 30
         self.grid_start_y  = 30 + 128
         self.grid_end_x    = self.grid_start_x + self.grid_width  * SIZE_X
@@ -38,6 +38,7 @@ class Game:
 
         self.end_game = False
         self.cnt_move = 0
+        self.turn     = 1
 
     # khởi tạo game mới
     def new_game(self, screen):
@@ -66,32 +67,33 @@ class Game:
         # tô screen bằng màu background
         screen.fill(color.BACKGROUND)
 
-        for i in range(self.grid_start_x, SCREEN_WIDTH - self.grid_width * 2, self.grid_width * 2):
-            for j in range(self.grid_start_y, SCREEN_HEIGHT - self.grid_height * 2, self.grid_height * 2):
-                screen.blit(self.img_grid, (i, j))
+        # for i in range(self.grid_start_x, SCREEN_WIDTH - self.grid_width * 2, self.grid_width * 2):
+        #     for j in range(self.grid_start_y, SCREEN_HEIGHT - self.grid_height * 2, self.grid_height * 2):
+        #         screen.blit(self.img_grid, (i, j))
 
-        # # vẽ các ô màu xen kẽ
-        # for i in range(0, SCREEN_WIDTH, self.grid_width):
-        #     for j in range(0, SCREEN_HEIGHT, self.grid_height):
-        #         pygame.draw.rect(screen, GRID_COLOR[(i + j) % 2], (i, j, self.grid_width, self.grid_height))
+        # vẽ các ô màu xen kẽ
+        for i in range(0, SCREEN_WIDTH, self.grid_width):
+            for j in range(0, SCREEN_HEIGHT, self.grid_height):
+                pygame.draw.rect(screen, GRID_COLOR[(i + j) % 2], (i, j, self.grid_width, self.grid_height))
         
-        # # vẽ các đường dọc
-        # for i in range(self.grid_width, SCREEN_WIDTH - self.grid_width, self.grid_width):
-        #     pygame.draw.line(screen, color.BLACK, (i + THICKNESS // 2, 40), (i + THICKNESS // 2, SCREEN_HEIGHT - 40), THICKNESS)
+        # vẽ các đường dọc
+        for i in range(self.grid_start_x, SCREEN_WIDTH - self.grid_width, self.grid_width):
+            pygame.draw.line(screen, color.BLACK, (i + THICKNESS // 2, 40), (i + THICKNESS // 2, SCREEN_HEIGHT - 40), THICKNESS)
 
-        # # vẽ cách đường ngang
-        # for i in range(self.grid_height, SCREEN_HEIGHT - self.grid_height, self.grid_height):
-        #     pygame.draw.line(screen, color.BLACK, (40, i + THICKNESS // 2), (SCREEN_WIDTH - 40, i + THICKNESS // 2), THICKNESS)
+        # vẽ cách đường ngang
+        for i in range(self.grid_start_y, SCREEN_HEIGHT - self.grid_height, self.grid_height):
+            pygame.draw.line(screen, color.BLACK, (40, i + THICKNESS // 2), (SCREEN_WIDTH - 40, i + THICKNESS // 2), THICKNESS)
 
-    def draw_piece_on(self, screen, board_x, board_y, cur_piece):
+    def draw_piece_on(self, screen, board_x, board_y, color):
         # đưa về dạng tâm của bàn cờ
-        (center_x, center_y) = (board_x * self.grid_width + (self.grid_width + THICKNESS) // 2, board_y * self.grid_width + (self.grid_width + THICKNESS) // 2)
+        (center_x, center_y) = (board_x * self.grid_width + (self.grid_width + THICKNESS), board_y * self.grid_width + (self.grid_width + THICKNESS))
 
         # đưa về dạng góc trái trên của cờ trong bàn cờ
-        display_pos = (center_x + self.grid_start_x - cur_piece.get_width() / 2, center_y + self.grid_start_y - cur_piece.get_height() / 2)
+        display_pos = (center_x + self.grid_start_x - self.grid_width, center_y + self.grid_start_y - self.grid_height)
         
         # vẽ cờ lên màn hình
-        screen.blit(cur_piece, display_pos)
+        # screen.blit(cur_piece, display_pos)
+        pygame.draw.circle(screen, color, display_pos, 5)
 
     # vòng lặp
     def loop_on(self, screen):
@@ -102,6 +104,20 @@ class Game:
 
         # duyệt qua các event
         for event in pygame.event.get():
+
+            # xử lý bot
+            if self.turn == 1:
+                # Comment these lines to enable PvP mode
+                if SIZE_X * SIZE_Y != self.cnt_move:
+                    best_move = self.bot.find_best_move(self.game_data['Board'])
+                    self.draw_piece_on(screen, best_move[0], best_move[1], color.BLUE)
+                    self.game_data['Board'][best_move[0]][best_move[1]] = 1
+                    self.cnt_move += 1
+                    if self.win_checker.check_win(self.game_data['Board'], 1, best_move[0], best_move[1]):
+                        print('BOT WIN!')
+                        self.end_game = True
+                    self.game_data['Turn'] = 1 - self.game_data['Turn']
+                    self.turn = 0
 
             # nếu game chưa kết thúc
             if not self.end_game:
@@ -126,7 +142,7 @@ class Game:
                             continue
 
                         # vẽ cờ lên màn hình
-                        self.draw_piece_on(screen, board_x, board_y, cur_piece)
+                        self.draw_piece_on(screen, board_x, board_y, color.RED)
 
                         # cập nhật display
                         pygame.display.update()
@@ -144,17 +160,12 @@ class Game:
                             
                         # Thay đổi Turn ở cuối mỗi lượt
                         self.game_data['Turn'] = 1 - self.game_data['Turn']
+                        
+                        # thay đổi turn
+                        self.turn = 1
 
-                        # Comment these lines to enable PvP mode
-                        if SIZE_X * SIZE_Y != self.cnt_move:
-                            best_move = self.bot.find_best_move(self.game_data['Board'])
-                            self.draw_piece_on(screen, best_move[0], best_move[1], self.img_piece[1])
-                            self.game_data['Board'][best_move[0]][best_move[1]] = 1
-                            self.cnt_move += 1
-                            if self.win_checker.check_win(self.game_data['Board'], 1, best_move[0], best_move[1]):
-                                print('BOT WIN!')
-                                self.end_game = True
-                            self.game_data['Turn'] = 1 - self.game_data['Turn']
+                        # In ra bàn cờ
+                        print(self.game_data['Board'])
             
             # nếu người dùng bấm thoát
             if event.type == pygame.QUIT:
