@@ -5,15 +5,14 @@ SIZE_X = setting['grid']['size_x']
 SIZE_Y = setting['grid']['size_y']
 
 class SaveManager:
-
     def __init__(self, filename, path_folder):
 
         self.default_board = [[-1 for row in range(SIZE_Y)] for column in range(SIZE_X)]
         # self.default_value = dict.fromkeys(['PlayerName','Board', 'Turn'])
         self.default_value = {
             "PlayerName" : {
-                "Player1" : "Anonymous",
-                "Player2" : "Anonymous"
+                "Player1" : "",
+                "Player2" : ""
             },
             "Board" : self.default_board,
             # phải để 1, đừng để True False
