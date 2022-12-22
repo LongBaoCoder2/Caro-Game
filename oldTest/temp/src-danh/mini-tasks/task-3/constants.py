@@ -1,6 +1,6 @@
 # khai báo hằng
 STEP = 50
-MAX_X = STEP * 32
+MAX_X = STEP * 16
 MAX_Y = MAX_X * 9 // 16
 BACKGROUND_COLORS = [(44, 202, 96), (20, 140, 80)]
 LINE_COLOR = (255, 255, 255)
