@@ -1,6 +1,6 @@
 *.pyc
 /__pycache__/
-.DS_Store
 lib/__pycache__/
 newTest/__pycache__/
 newTest/lib/__pycache__/
+.DS_Store

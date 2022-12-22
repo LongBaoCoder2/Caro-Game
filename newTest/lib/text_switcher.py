@@ -50,4 +50,4 @@ class TextSwitcher:
         # vẽ chữ Play Turn và hình chữ nhật bao quanh tên người chơi
         self.screen.blit(pygame.font.SysFont('Consolas', 25).render('Play Turn:', True, color.WHITE), (x, y))
         delta = 5
-        pygame.draw.rect(self.screen, color.BLACK, (x - delta * 2, y - delta + 35, 220, 35 + delta * 2), 5, 10)
+        # pygame.draw.rect(self.screen, color.BLACK, (x - delta * 2, y - delta + 35, 220, 35 + delta * 2), 5, 10)
