@@ -85,7 +85,6 @@ class Bot(win_checker.WinChecker):
         beta_move  = (-1, -1)
 
         # duyệt qua từng nước ứng cử
-
         for move in candidate_move:
 
             # kiểm tra xem nước đi có thắng luôn không
