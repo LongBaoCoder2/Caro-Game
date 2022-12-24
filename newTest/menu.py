@@ -252,7 +252,7 @@ class Menu:
                     self.game_screen = game.Game(self.screen)
                     self.game_screen.continue_game()
                     while True:
-                        self.game_screen.loop_on()
+                        self.game_screen.loop_on(setting["gamemode"])
                 
                 #self.exit_screen_created = quit_button_pressed or btn_quit_clicked
                 
