@@ -272,12 +272,15 @@ class Menu:
             if (event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED
                     and event.ui_element == self.setting_screen.resolution_drop_down):
                 self.change_size(event.text)
+                res = event.text.split('x')
+                setting["screen"]["width"] = int(res[0])
+                setting["screen"]["height"] = int(res[1])
             if (event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED
                     and event.ui_element == self.setting_screen.pieces_mode_drop_down):
                 print("Pieces mode changed from %d to %s" % (setting["game"]["win_cnt"], event.text))
                 setting["game"]["win_cnt"] = int(event.text)
                 # https://www.programiz.com/python-programming/json
-                json.dump(setting, open('data/setting.json', 'w'), indent = 4)
+            json.dump(setting, open('data/setting.json', 'w'), indent = 4)
             
 
     def run(self):
@@ -285,7 +288,7 @@ class Menu:
         """
         self.exit_screen_created = False
         while self.running:
-            time_delta = self.clock.tick(90)
+            time_delta = self.clock.tick(120)
             #print(time_delta)
             # Vẽ hình nền lên screen
             self.screen.blit(self.background_surface, (0,0))
@@ -300,3 +303,5 @@ class Menu:
             self.manager.draw_ui(self.screen)
             #pygame.time.delay(25)
             pygame.display.update()
+        pygame.quit()
+        sys.exit()
