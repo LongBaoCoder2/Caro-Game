@@ -193,7 +193,7 @@ class Name:
                     self.game_screen = game.Game(self.screen)
                     self.game_screen.new_game()
                     while True:
-                        self.game_screen.run(self.gamemode)
+                        self.game_screen.loop_on(self.gamemode)
                         
                         
     def run(self):
