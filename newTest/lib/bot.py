@@ -1,11 +1,6 @@
 import json, random, time
 from . import win_checker
 
-setting = json.load(open('data/setting.json'))
-SIZE_X  = setting['grid']['size_x']
-SIZE_Y  = setting['grid']['size_y']
-WIN_CNT = setting['game']['win_cnt']
-
 # các bước giúp di chuyển tới ô kề
 NB_MOVE = [
     (-1, -1), ( 0, -1), ( 1, -1),
@@ -17,7 +12,11 @@ NB_MOVE = [
 class Bot(win_checker.WinChecker):
 
     def __init__(self):
-
+        self.setting = json.load(open('data/setting.json'))
+        self.SIZE_X  = self.setting['grid']['size_x']
+        self.SIZE_Y  = self.setting['grid']['size_y']
+        self.WIN_CNT = self.setting['game']['win_cnt']
+        
         # khởi tạo bộ nhớ của bot
         self.memory = dict()
         self.cnt    = 0
@@ -51,8 +50,8 @@ class Bot(win_checker.WinChecker):
 
         candidate_move = list()
 
-        for row in range(SIZE_X):
-            for col in range(SIZE_Y):
+        for row in range(self.SIZE_X):
+            for col in range(self.SIZE_Y):
                 if (board[row][col] == -1):
                     candidate_move.append((row, col))
 
@@ -104,7 +103,7 @@ class Bot(win_checker.WinChecker):
             # kiểm tra xem nước đi có thắng luôn không
             board[move[0]][move[1]] = turn
 
-            for cnt in range(WIN_CNT, WIN_CNT - 1, -1):
+            for cnt in range(self.WIN_CNT, self.WIN_CNT - 1, -1):
 
                 # cắt tỉa
                 if alpha >= beta:
@@ -166,16 +165,16 @@ class Bot(win_checker.WinChecker):
 
         print(history, '\n')
 
-        found = self.minimax_abp(board, history, turn = 1, alpha = -WIN_CNT, beta = WIN_CNT, depth = WIN_CNT)
+        found = self.minimax_abp(board, history, turn = 1, alpha = -self.WIN_CNT, beta = self.WIN_CNT, depth = self.WIN_CNT)
 
         # nếu không tìm được nước đi thắng hay hoà
-        if found[1] == -WIN_CNT:
+        if found[1] == -self.WIN_CNT:
             print('Cant find any!', found[1])
 
             # trả về ngẫu nhiên một nước đi trong các nước ứng cử
             return random.choice(self.find_candidate_move(board, history))
 
-        elif found[1] == WIN_CNT:
+        elif found[1] == self.WIN_CNT:
             # nếu tìm ra nước đi dẫn tới chắc chắn chiến thắng
             print('Found best move!', found[1])
             return found[0]

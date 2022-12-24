@@ -2,15 +2,15 @@
 # Check 4 o chi dung trong truong hop danh voi may (AI)
 import json
 
-setting = json.load(open('data/setting.json'))
-SIZE_X  = setting['grid']['size_x']
-SIZE_Y  = setting['grid']['size_y']
-WIN_CNT = setting['game']['win_cnt']
-
 class WinChecker:
+    def __init__(self) -> None:
+        self.setting = json.load(open('data/setting.json'))
+        self.SIZE_X  = self.setting['grid']['size_x']
+        self.SIZE_Y  = self.setting['grid']['size_y']
+        self.WIN_CNT = self.setting['game']['win_cnt']
     
     def in_board(self, posX : int, posY : int) -> bool:
-        return posX >= 0 and posX < SIZE_X and posY >= 0 and posY < SIZE_Y
+        return posX >= 0 and posX < self.SIZE_X and posY >= 0 and posY < self.SIZE_Y
 
     def check_cell(self, board: list, user: int, posX: int, posY: int) -> int:
         # nếu ô đó có đúng ký tự của user đó thì return 1
@@ -25,7 +25,7 @@ class WinChecker:
             return -100
         return 0
 
-    def horizontal_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win):
+    def horizontal_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int):
         # print()
         # print(board)
         for i in range(-pieces_to_win + 1, 1):
@@ -58,7 +58,7 @@ class WinChecker:
                 return True
         return False
     
-    def vertical_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win):
+    def vertical_check(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int):
         # print()
         # print(board)
         for i in range(-pieces_to_win + 1, 1):
@@ -151,13 +151,14 @@ class WinChecker:
                 return True
         return False
 
-    def check_win(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int = WIN_CNT):
+    def check_win(self, board: list, user: int, posX: int, posY: int, pieces_to_win: int = 5):
         # if self.hv_check(board, user, posX, posY):
         #     print("User %d wins horizontal or vertical" % (user))
         # if self.main_diag_check(board, user, posX, posY):
         #     print("User %d wins main diag" % (user))
         # if self.anti_diag_check(board, user, posX, posY):
         #     print("User %d wins anti diag" % (user))
+        pieces_to_win = self.WIN_CNT
         return (
             self.horizontal_check(board, user, posX, posY, pieces_to_win)
             or self.vertical_check(board, user, posX, posY, pieces_to_win)

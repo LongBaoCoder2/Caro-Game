@@ -98,6 +98,7 @@ class WinLose:
                 sys.exit()
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.btn_back:
+                    # print(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
                     menu.Menu(self.SCREEN_WIDTH, self.SCREEN_HEIGHT).run()
 
             # Quản lý và xử lý các sự kiện (như click, hover, ...)
@@ -105,7 +106,7 @@ class WinLose:
    
     def run(self):
         while self.running:
-            time_delta = self.clock.tick() / 1000.0
+            time_delta = self.clock.tick(120)
             self.screen.blit(self.background_surface, (0,0))
             self.paint.render_surface(self.win_image, self.win_image_rect)
 

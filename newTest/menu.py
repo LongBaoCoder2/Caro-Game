@@ -3,8 +3,9 @@ from lib import button, color, save_manager
 import game
 
 from lib.paint import Paint
+from name import *
+from subwindow import *
 # from winlose import WinLose
-
 
 # Import DATA
 setting = json.load(open('data/setting.json'))
@@ -15,227 +16,6 @@ game_data = json.load(open('data/game_data.json'))
 SCREEN_WIDTH  = setting['screen']['width']
 SCREEN_HEIGHT = setting['screen']['height']
 PLAYER_NAME = game_data["PlayerName"]
-
-
-
-class Options:
-    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
-        self.resolution = (SCREEN_WIDTH, SCREEN_HEIGHT)   # Kích thước
-        # self.fullscreen = False                         # Toàn màn hình
-
-class SettingWindow(pygame_gui.elements.UIWindow):
-    def __init__(self, rect, ui_manager,SCREEN_WIDTH, SCREEN_HEIGHT):
-        super().__init__(rect, ui_manager,
-                         window_display_title='Setting',
-                         object_id='#setting_window',
-                         resizable=True)
-
-        self.options = Options(SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.btn_size = ( int(self.rect.width *0.6), 30 )
-
-
-
-        # Setting Volumn
-            # Dòng chữ "Volumn"
-        self.volumn_label = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
-                                                            int(self.rect.height / 2 - 50)),
-                                                            self.btn_size),
-                                                            "Volumn: ",
-                                                            self.ui_manager,
-                                                            container=self)
-            # Thanh trượt qua lại
-        self.volumn_settings = pygame_gui.elements.UIHorizontalSlider(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
-                                                            int(self.rect.height / 2)),
-                                                            self.btn_size),
-                                                            50.0,
-                                                            (0.0, 100.0),
-                                                            self.ui_manager,
-                                                            container=self,
-                                                            click_increment=5)
-            # Âm thanh
-        self.current_volumn = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 + self.btn_size[0] /2),
-                                                int(self.rect.height / 2 - 10)),
-                                                (50, 50)),
-                                    str(int(self.volumn_settings.get_current_value())),
-                                    self.ui_manager,
-                                    container=self)
-
-
-        self.resolution_label = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
-                                                            int(self.rect.height / 2 - 150)),
-                                                            self.btn_size),
-                                                            "Resolution: ",
-                                                            self.ui_manager,
-                                                            container=self)
-        self.current_resolution_string = (str(self.options.resolution[0]) +
-                                     'x' +
-                                     str(self.options.resolution[1]))
-        self.resolution_drop_down = pygame_gui.elements.UIDropDownMenu(['640x480', '800x600', '1024x768'],
-                                                  self.current_resolution_string,
-                                                  pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
-                                                            int(self.rect.height / 2 - 100)),
-                                                            self.btn_size),
-                                                  self.ui_manager,
-                                                  container=self)
-
-        # self.health_bar = UIScreenSpaceHealthBar(pygame.Rect((int(self.rect.width / 9),
-        #                                                       int(self.rect.height * 0.7)),
-        #                                                      (200, 30)),
-        #                                          self.ui_manager,
-        #                                          container=self)
-
-    def update(self, time_delta):
-        super().update(time_delta)
-
-        if self.alive() and self.volumn_settings.has_moved_recently:
-            self.current_volumn.set_text(str(int(self.volumn_settings.get_current_value())))
-    
-class Name:
-    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, screen):
-
-        self.screen = screen
-        
-        self.paint = Paint(self.screen)
-
-
-        # Load từ data / Nếu không có hoặc new game thì load từ Input
-        self.play_one = PLAYER_NAME["Player1"]
-        self.play_two = PLAYER_NAME["Player2"]
-
-
-        self.SCREEN_WIDTH, self.SCREEN_HEIGHT = SCREEN_WIDTH, SCREEN_HEIGHT
-        
-        self.clock = pygame.time.Clock()
-
-        self.options = Options(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)    
-
-        self.manager_name = pygame_gui.UIManager(self.options.resolution, 
-                                                    pygame_gui.PackageResource(package='themes',
-                                                    resource='theme.json'))   
-
-
-
-        # # Import Font
-        # self.manager_name.preload_fonts([{ 'point_size': 20, 'style': 'bold'},
-        #                             { 'point_size': 20, 'style': 'regular'},
-        #                             { 'point_size': 20, 'style': 'italic'},
-        #                             { 'point_size': 28, 'style': 'italic'},
-        #                             { 'point_size': 28, 'style': 'bold'}
-        #                             ])
-
-        self.running = True
-
-        # Tạo background 
-        self.background_surface = None
-
-        # Tạo text input để nhập tên
-        self.name_player_one = None
-        self.name_player_two = None
-
-        # Tạo Button Play để bắt đầu trò chơi
-        self.btn_play = None
-
-        # Thiết kế giao diện
-        self.name_message_one = None
-        self.name_message_two = None
-        self.label = None
-
-
-        # Gọi hàm để cập nhật UI sẽ được setup bằng pygame_gui
-        self.update_ui()    
-
-    def update_ui(self):
-
-        self.background_surface = pygame.Surface(self.options.resolution)
-        self.background_surface.fill(self.manager_name.get_theme().get_colour("dark_bg"))
-
-
-        self.btn_size = (int(self.options.resolution[0] * 0.4), int(self.options.resolution[1] * 0.1))
-        self.text_entry_size = (int(self.options.resolution[0] * 0.6) , int(self.options.resolution[1] * 0.1))
-        self.label_size = (int(self.options.resolution[0] * 0.6), int(self.options.resolution[1] * 0.25))
-        
-        self.name_player_one = pygame_gui.elements.UITextEntryLine(pygame.Rect((int(self.options.resolution[0] / 2 - self.text_entry_size[0] / 3.5),
-                                                                                int(self.options.resolution[1] / 2 - 100)), self.text_entry_size),
-                                                                    manager = self.manager_name,
-                                                                    object_id="#text_entry")
-
-        self.name_player_two = pygame_gui.elements.UITextEntryLine(pygame.Rect((int(self.options.resolution[0] / 2 - self.text_entry_size[0] / 3.5),
-                                                                                int(self.options.resolution[1] / 2)), self.text_entry_size),
-                                                                    manager = self.manager_name,
-                                                                    object_id="#text_entry")
-        
-        self.btn_play = pygame_gui.elements.UIButton(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2),
-                                                        int(self.options.resolution[1] / 2 + 150)), self.btn_size),
-                                                        "PLAY",
-                                                        self.manager_name,
-                                                        object_id="#all_button")
-    
-        self.name_message_one = pygame_gui.elements.UILabel(pygame.Rect((int(self.options.resolution[0]/2 - self.btn_size[0]*1.3),
-                                                            int(self.options.resolution[1] / 2 - 100)), self.btn_size),
-                                                            text="PLAYER X:", 
-                                                            manager=self.manager_name,
-                                                            object_id="#name_message")
-
-        self.name_message_two = pygame_gui.elements.UILabel(pygame.Rect((int(self.options.resolution[0]/2 - self.btn_size[0]*1.3),
-                                                            int(self.options.resolution[1] / 2)), self.btn_size),
-                                                            text="PLAYER O:", 
-                                                            manager=self.manager_name,
-                                                            object_id="#name_message")
-
-        self.label = pygame_gui.elements.UILabel(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0]* 1.3),
-                                                        int(self.options.resolution[1] / 2 - 250)), self.label_size),
-                                                            text="SETTINGS", 
-                                                            manager=self.manager_name,
-                                                            object_id="#label")
-
-
-        # Tạo animation cho chữ
-        self.label.set_active_effect(pygame_gui.TEXT_EFFECT_TYPING_APPEAR)
-
-        
-
-    def process_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            # Quản lý và xử lý các sự kiện (như click, hover, ...)
-            self.manager_name.process_events(event)
-
-            if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
-                self.play_one = self.name_player_one.get_text()
-                self.play_two = self.name_player_two.get_text()
-
-            # if event.type == pygame_gui.UI_B:
-            #     if event.ui_element == self.name_player_one and event.ui_element == self.name_player_two:
-            #         # play()
-            #         pass
-
-            if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if self.play_one != '' and self.play_two != '':
-                    game_data = save_manager.SaveManager('game_data.json', 'data').refresh()
-                    game_data['PlayerName']['Player1'] = self.play_one
-                    game_data['PlayerName']['Player2'] = self.play_two
-                    save_manager.SaveManager('game_data.json', 'data').save(game_data)
-                    print("> ", self.play_one)
-                    print("> ", self.play_two)
-                    self.game_screen = game.Game(self.screen)
-                    self.game_screen.new_game()
-                    while True:
-                        self.game_screen.loop_on()
-   
-    def run(self):
-         while self.running:
-            time_delta = self.clock.tick() / 1000.0
-
-            self.process_events()
-
-            self.screen.blit(self.background_surface, (0,0))
-            self.manager_name.update(time_delta)
-            self.manager_name.draw_ui(self.screen)
-
-            pygame.display.update()
-
 
 class Menu:
     # khởi tạo
@@ -286,6 +66,8 @@ class Menu:
         # Màn hình setting
         self.setting_screen = None
 
+        # Màn hình Quit
+        self.exit_screen = None
 
         self.running = True
         
@@ -296,9 +78,11 @@ class Menu:
         self.title_game_caro = None
 
         # Tạo Button
-        self.btn_play = None
+        self.btn_AIplay = None
+        self.btn_PvPplay = None
         self.btn_continue = None
         self.btn_settings = None
+        self.btn_quit = None
 
 
         # Thiết kế giao diện
@@ -318,6 +102,9 @@ class Menu:
         # Dropdown Box Setting size
         self.setting_resolution = None
 
+        # Tạo Box Quit
+        self.quit_window = None
+        
         self.update_ui()
 
 
@@ -326,7 +113,7 @@ class Menu:
         self.manager.set_window_resolution(self.options.resolution)
         self.manager.clear_and_reset()
 
-        self.name_screen = Name(self.options.resolution[0], self.options.resolution[1], self.screen)
+        #self.name_screen = Name(self.options.resolution[0], self.options.resolution[1], self.screen)
 
 
         self.btn_size = (int(self.options.resolution[0] * 0.4), int(self.options.resolution[1] * 0.1))
@@ -335,9 +122,16 @@ class Menu:
         self.background_surface = pygame.Surface(self.options.resolution)
         self.background_surface.fill(self.manager.get_theme().get_colour("dark_bg"))  # dark_bg nằm trong file theme.json
 
-        self.btn_play = pygame_gui.elements.UIButton(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2),
+        # Tạo ra các button ở màn hình Intro
+        self.btn_AIplay = pygame_gui.elements.UIButton(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2),
+                                                        int(self.options.resolution[1] / 2 - 200)), self.btn_size),
+                                                        "BOT",
+                                                        self.manager,
+                                                        object_id="#all_button")
+        
+        self.btn_PvPplay = pygame_gui.elements.UIButton(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2),
                                                         int(self.options.resolution[1] / 2 - 100)), self.btn_size),
-                                                        "PLAY",
+                                                        "PVP",
                                                         self.manager,
                                                         object_id="#all_button")
         
@@ -353,9 +147,16 @@ class Menu:
                                                         self.manager,
                                                         object_id="#all_button")
         
+        self.btn_quit = pygame_gui.elements.UIButton(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2),
+                                                        int(self.options.resolution[1] / 2 + 200)), 
+                                                        self.btn_size),
+                                                        "QUIT",
+                                                        self.manager,
+                                                        object_id="#all_button")
+        
         
         self.title_game_caro = pygame_gui.elements.UILabel(pygame.Rect((int(self.options.resolution[0] / 2 - self.label_size[0] / 2),
-                                                        int(self.options.resolution[1] / 2 - 250)), self.label_size),
+                                                        int(self.options.resolution[1] / 2 - 400)), self.label_size),
                                                         text="Game Caro", 
                                                         manager=self.manager,
                                                         object_id="#label")
@@ -375,7 +176,7 @@ class Menu:
         current_resolution = f"{self.options.resolution[0]}x{self.options.resolution[1]}"
         
         
-        self.size_arr = ['640x480', '800x600', '1024x768']
+        self.size_arr = ['640x480', '800x600', '1024x768', '1280x960']
         # self.setting_resolution = pygame_gui.elements.UIDropDownMenu(self.size_arr,
         #                                      current_resolution,
         #                                      pygame.Rect((int(self.options.resolution[0] * 0.7),
@@ -397,42 +198,110 @@ class Menu:
 
     
     def process_events(self):
+        #self.exit_screen_created = False
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
+            #if event.type == pygame.QUIT:
+            #    self.running = False
 
             # Quản lý và xử lý các sự kiện (như click, hover, ...)
             self.manager.process_events(event)
-
-            if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.btn_play:
+            
+            quit_button_pressed = (event.type == pygame.QUIT)
+            
+            
+            if quit_button_pressed or event.type == pygame_gui.UI_BUTTON_PRESSED:
+                #print("test")
+                # chiều rộng (ngang) cửa sổ settings, quit
+                sub_window_width = self.options.resolution[0] * 5 // 8
+                # chiều cao (dọc) cửa sổ settings, quit
+                sub_window_height = self.options.resolution[1] * 5 // 8
+                
+                if quit_button_pressed:
+                    self.exit_screen_created = True
+                    self.exit_screen = ExitWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
+                                                        int(self.options.resolution[1] / 2) - 125), 
+                                                        (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
+                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
+                    
+                elif event.ui_element == self.btn_quit:
+                    self.exit_screen_created = True
+                    self.exit_screen = ExitWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
+                                                        int(self.options.resolution[1] / 2) - 125), 
+                                                        (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
+                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
+                
+                elif event.ui_element == self.btn_AIplay:
                     # Truyền hàm khởi tạo trò chơi vào
+                    self.name_screen = Name(self.options.resolution[0], self.options.resolution[1], self.screen, "Bot")
+                    self.name_screen.run()
+                    
+                elif event.ui_element == self.btn_PvPplay:
+                    # Truyền hàm khởi tạo trò chơi vào
+                    self.name_screen = Name(self.options.resolution[0], self.options.resolution[1], self.screen, "PvP")
                     self.name_screen.run()
                 
-                if event.ui_element == self.btn_settings:
-                    self.setting_screen = SettingWindow(pygame.Rect((10, 10), (640, 480)), self.manager, self.options.resolution[0], self.options.resolution[1])
-                if event.ui_element == self.btn_continue:
+                
+                elif event.ui_element == self.btn_settings:
+                    self.setting_screen = SettingWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 150),
+                                                        int(self.options.resolution[1] / 2) - 200), 
+                                                        (sub_window_width, sub_window_height)), 
+                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
+                
+                    
+                elif event.ui_element == self.btn_continue:
                     self.game_screen = game.Game(self.screen)
-                    self.game_screen.continue_game()
+                    #self.game_screen.continue_game()
                     while True:
-                        self.game_screen.loop_on()
+                        self.game_screen.loop_on(setting["gamemode"])
+                
+                #self.exit_screen_created = quit_button_pressed or btn_quit_clicked
+                
+                #print(self.exit_screen_created)
+                
+                if not quit_button_pressed and self.exit_screen_created:
+                    if event.ui_element == self.exit_screen.btn_Exit:
+                        #print("Hello")
+                        self.running = False
+                        break
+                            
+                    if event.ui_element == self.exit_screen.btn_continue:
+                        self.exit_screen.hide()
+                        self.exit_screen_created = False
 
 
             if (event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED
                     and event.ui_element == self.setting_screen.resolution_drop_down):
                 self.change_size(event.text)
+                res = event.text.split('x')
+                setting["screen"]["width"] = int(res[0])
+                setting["screen"]["height"] = int(res[1])
+            if (event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED
+                    and event.ui_element == self.setting_screen.pieces_mode_drop_down):
+                print("Pieces mode changed from %d to %s" % (setting["game"]["win_cnt"], event.text))
+                setting["game"]["win_cnt"] = int(event.text)
+                # https://www.programiz.com/python-programming/json
+            json.dump(setting, open('data/setting.json', 'w'), indent = 4)
+            
 
     def run(self):
+        """Chạy màn hình game
+        """
+        self.exit_screen_created = False
         while self.running:
-            time_delta = self.clock.tick() / 1000.0
+            time_delta = self.clock.tick(120)
+            #print(time_delta)
+            # Vẽ hình nền lên screen
             self.screen.blit(self.background_surface, (0,0))
 
             # Vẽ các hình mini
             for index in range(4):
                 self.paint.render_surface(self.image_list[index], self.image_position[index])
-
+            #print("Help")
             self.process_events()
 
             self.manager.update(time_delta)
             self.manager.draw_ui(self.screen)
+            #pygame.time.delay(25)
             pygame.display.update()
+        pygame.quit()
+        sys.exit()
