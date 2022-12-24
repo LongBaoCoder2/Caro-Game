@@ -7,15 +7,15 @@ from lib.paint import Paint
 #from menu import *
 # from winlose import WinLose
 
-# Import DATA
-setting = json.load(open('data/setting.json'))
-game_data = json.load(open('data/game_data.json'))
+# # Import DATA
+# setting = json.load(open('data/setting.json'))
+# game_data = json.load(open('data/game_data.json'))
 
 
-# LOAD DATA
-SCREEN_WIDTH  = setting['screen']['width']
-SCREEN_HEIGHT = setting['screen']['height']
-PLAYER_NAME = game_data["PlayerName"]
+# # LOAD DATA
+# SCREEN_WIDTH  = setting['screen']['width']
+# SCREEN_HEIGHT = setting['screen']['height']
+# PLAYER_NAME = game_data["PlayerName"]
 
 
 class Options:
@@ -48,6 +48,17 @@ class SettingWindow(pygame_gui.elements.UIWindow):
             SCREEN_WIDTH (int): chiều dài (ngang) của cửa sổ
             SCREEN_HEIGHT (int): chiều cao (dọc) của cửa sổ
         """
+        
+        # Import DATA
+        setting = json.load(open('data/setting.json'))
+        game_data = json.load(open('data/game_data.json'))
+
+
+        # LOAD DATA
+        SCREEN_WIDTH  = setting['screen']['width']
+        SCREEN_HEIGHT = setting['screen']['height']
+        PLAYER_NAME = game_data["PlayerName"]
+        
         super().__init__(rect, ui_manager,
                          window_display_title='Setting',
                          object_id='#setting_window',
