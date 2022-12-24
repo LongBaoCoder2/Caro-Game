@@ -19,12 +19,35 @@ PLAYER_NAME = game_data["PlayerName"]
 
 
 class Options:
+    """
+    Khởi tạo game các lựa chọn
+    """
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
+        """ khởi tạo cửa sổ intro
+
+        Args:
+            SCREEN_WIDTH (int): độ rộng chiều ngang của của màn hình pygame
+            SCREEN_HEIGHT (int): độ cao chiều dọc của màn hình pygame
+        """
         self.resolution = (SCREEN_WIDTH, SCREEN_HEIGHT)   # Kích thước
         # self.fullscreen = False                         # Toàn màn hình
 
+
 class SettingWindow(pygame_gui.elements.UIWindow):
+    """class SettingWindow là class kế thừa (Inheritance) từ class pygame_gui.elements.UIWindow
+
+    Args:
+        pygame_gui (_type_): _description_
+    """
     def __init__(self, rect, ui_manager,SCREEN_WIDTH, SCREEN_HEIGHT):
+        """Hàm khởi tạo (constructor)
+
+        Args:
+            rect (_type_): _description_
+            ui_manager (_type_): _description_
+            SCREEN_WIDTH (int): chiều dài (ngang) của cửa sổ
+            SCREEN_HEIGHT (int): chiều cao (dọc) của cửa sổ
+        """
         super().__init__(rect, ui_manager,
                          window_display_title='Setting',
                          object_id='#setting_window',
@@ -35,17 +58,17 @@ class SettingWindow(pygame_gui.elements.UIWindow):
 
 
 
-        # Setting Volumn
-            # Dòng chữ "Volumn"
-        self.volumn_label = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
-                                                            int(self.rect.height / 2 - 50)),
+        # Setting Volume
+        # Dòng chữ "Volume"
+        self.volume_label = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
+                                                            int(self.rect.height / 2 - 0)),
                                                             self.btn_size),
-                                                            "Volumn: ",
+                                                            "Volume: ",
                                                             self.ui_manager,
                                                             container=self)
-            # Thanh trượt qua lại
-        self.volumn_settings = pygame_gui.elements.UIHorizontalSlider(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
-                                                            int(self.rect.height / 2)),
+        # Thanh trượt qua lại
+        self.volume_settings = pygame_gui.elements.UIHorizontalSlider(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
+                                                            int(self.rect.height / 2) + 50),
                                                             self.btn_size),
                                                             50.0,
                                                             (0.0, 100.0),
@@ -53,27 +76,50 @@ class SettingWindow(pygame_gui.elements.UIWindow):
                                                             container=self,
                                                             click_increment=5)
             # Âm thanh
-        self.current_volumn = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 + self.btn_size[0] /2),
-                                                int(self.rect.height / 2 - 10)),
+        self.current_volume = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 + self.btn_size[0] /2),
+                                                int(self.rect.height / 2 + 50)),
                                                 (50, 50)),
-                                    str(int(self.volumn_settings.get_current_value())),
+                                    str(int(self.volume_settings.get_current_value())),
                                     self.ui_manager,
                                     container=self)
 
-
+        # Độ phân giải
         self.resolution_label = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
-                                                            int(self.rect.height / 2 - 150)),
+                                                            int(self.rect.height / 2 - 100)),
                                                             self.btn_size),
                                                             "Resolution: ",
                                                             self.ui_manager,
                                                             container=self)
+        # Lấy giá trị của độ phân giải màn hình hiện tại
         self.current_resolution_string = (str(self.options.resolution[0]) +
                                      'x' +
                                      str(self.options.resolution[1]))
-        self.resolution_drop_down = pygame_gui.elements.UIDropDownMenu(['640x480', '800x600', '1024x768'],
+        # Dòng này hiện ra menu xổ xuống
+        self.resolution_drop_down = pygame_gui.elements.UIDropDownMenu(['1280x960'],
                                                   self.current_resolution_string,
                                                   pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
-                                                            int(self.rect.height / 2 - 100)),
+                                                            int(self.rect.height / 2 - 50)),
+                                                            self.btn_size),
+                                                  self.ui_manager,
+                                                  container=self)
+        
+       
+        
+        # Số quân liên tiếp cần để thắng
+        self.pieces_mode_label = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
+                                                            int(self.rect.height / 2 - 200)),
+                                                            self.btn_size),
+                                                            "Số quân liên tiếp để thắng: ",
+                                                            self.ui_manager,
+                                                            container=self)
+        # Lấy giá trị của số quân liên tiếp để thắng
+        self.current_pieces_mode = (str(setting["game"]["win_cnt"]))
+         
+        # Dòng này hiện ra menu xổ xuống của số quân liên tiếp cần để thắng
+        self.pieces_mode_drop_down = pygame_gui.elements.UIDropDownMenu(['3', '4', '5', '6'],
+                                                  self.current_pieces_mode,
+                                                  pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
+                                                            int(self.rect.height / 2 - 150)),
                                                             self.btn_size),
                                                   self.ui_manager,
                                                   container=self)
@@ -87,8 +133,65 @@ class SettingWindow(pygame_gui.elements.UIWindow):
     def update(self, time_delta):
         super().update(time_delta)
 
-        if self.alive() and self.volumn_settings.has_moved_recently:
-            self.current_volumn.set_text(str(int(self.volumn_settings.get_current_value())))
+        if self.alive() and self.volume_settings.has_moved_recently:
+            self.current_volume.set_text(str(int(self.volume_settings.get_current_value())))
+            
+class ExitWindow(pygame_gui.elements.UIWindow):
+    """class ExitWindows là class kế thừa (Inheritance) từ class pygame_gui.elements.UIWindow
+
+    Args:
+        pygame_gui (_type_): _description_
+    """
+    def __init__(self, rect, ui_manager,SCREEN_WIDTH, SCREEN_HEIGHT):
+        """Hàm khởi tạo (constructor)
+
+        Args:
+            rect (_type_): _description_
+            ui_manager (_type_): _description_
+            SCREEN_WIDTH (int): chiều dài (ngang) của cửa sổ
+            SCREEN_HEIGHT (int): chiều cao (dọc) của cửa sổ
+        """
+        super().__init__(rect, ui_manager,
+                         window_display_title='Exit',
+                         object_id='#setting_window',
+                         resizable=True)
+
+        self.options = Options(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.btn_size = ( int(self.rect.width * 0.4), int(self.rect.height * 0.2))
+        self.quit_size = (int(self.rect.width * 0.8), int(self.rect.height * 0.2))
+
+
+
+        # Setting quit
+        # Dòng chữ "quit"
+        self.quit_label = pygame_gui.elements.UILabel(pygame.Rect((int((self.rect.width - self.quit_size[0]) // 2),
+                                                        int(self.rect.height / 2 - 125)),
+                                                        self.quit_size),
+                                                        #"vai lon luon",
+                                                        "Are you sure you want to quit the game?",
+                                                        self.ui_manager,
+                                                        container=self)
+        self.btn_Exit = pygame_gui.elements.UIButton(pygame.Rect((int(self.rect.width / 20),
+                                                        int(self.rect.height / 2 - self.btn_size[1] + 50)),
+                                                        self.btn_size),
+                                                        "Exit",
+                                                        self.ui_manager,
+                                                        container=self,
+                                                        object_id="#all_button")
+        
+        self.btn_continue = pygame_gui.elements.UIButton(pygame.Rect((int(self.rect.width / 20 + self.btn_size[0] + 20),
+                                                        int(self.rect.height / 2 - self.btn_size[1] + 50)), 
+                                                        self.btn_size),
+                                                        "Keep Playing",
+                                                        self.ui_manager,
+                                                        container=self,
+                                                        object_id="#all_button")
+
+    # def update(self, time_delta):
+    #     super().update(time_delta)
+
+    #     if self.alive() and self.volume_settings.has_moved_recently:
+    #         self.current_volume.set_text(str(int(self.volume_settings.get_current_value())))
     
 class Name:
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, screen):
@@ -286,6 +389,8 @@ class Menu:
         # Màn hình setting
         self.setting_screen = None
 
+        # Màn hình Quit
+        self.quit_screen = None
 
         self.running = True
         
@@ -299,6 +404,7 @@ class Menu:
         self.btn_play = None
         self.btn_continue = None
         self.btn_settings = None
+        self.btn_quit = None
 
 
         # Thiết kế giao diện
@@ -318,6 +424,9 @@ class Menu:
         # Dropdown Box Setting size
         self.setting_resolution = None
 
+        # Tạo Box Quit
+        self.quit_window = None
+        
         self.update_ui()
 
 
@@ -335,6 +444,7 @@ class Menu:
         self.background_surface = pygame.Surface(self.options.resolution)
         self.background_surface.fill(self.manager.get_theme().get_colour("dark_bg"))  # dark_bg nằm trong file theme.json
 
+        # Tạo ra các button ở màn hình Intro
         self.btn_play = pygame_gui.elements.UIButton(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2),
                                                         int(self.options.resolution[1] / 2 - 100)), self.btn_size),
                                                         "PLAY",
@@ -350,6 +460,13 @@ class Menu:
         self.btn_settings = pygame_gui.elements.UIButton(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2),
                                                         int(self.options.resolution[1] / 2 + 100)), self.btn_size),
                                                         "SETTINGS",
+                                                        self.manager,
+                                                        object_id="#all_button")
+        
+        self.btn_quit = pygame_gui.elements.UIButton(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2),
+                                                        int(self.options.resolution[1] / 2 + 200)), 
+                                                        self.btn_size),
+                                                        "QUIT",
                                                         self.manager,
                                                         object_id="#all_button")
         
@@ -375,7 +492,7 @@ class Menu:
         current_resolution = f"{self.options.resolution[0]}x{self.options.resolution[1]}"
         
         
-        self.size_arr = ['640x480', '800x600', '1024x768']
+        self.size_arr = ['640x480', '800x600', '1024x768', '1280x960']
         # self.setting_resolution = pygame_gui.elements.UIDropDownMenu(self.size_arr,
         #                                      current_resolution,
         #                                      pygame.Rect((int(self.options.resolution[0] * 0.7),
@@ -409,22 +526,47 @@ class Menu:
                     # Truyền hàm khởi tạo trò chơi vào
                     self.name_screen.run()
                 
+                # chiều rộng (ngang) cửa sổ settings, quit
+                sub_window_width = self.options.resolution[0] * 5 // 8
+                # chiều cao (dọc) cửa sổ settings, quit
+                sub_window_height = self.options.resolution[1] * 5 // 8
+                
                 if event.ui_element == self.btn_settings:
-                    self.setting_screen = SettingWindow(pygame.Rect((10, 10), (640, 480)), self.manager, self.options.resolution[0], self.options.resolution[1])
+                    self.setting_screen = SettingWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 150),
+                                                        int(self.options.resolution[1] / 2) - 200), 
+                                                        (sub_window_width, sub_window_height)), 
+                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
+                
+                if event.ui_element == self.btn_quit:
+                    self.exit_screen = ExitWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
+                                                        int(self.options.resolution[1] / 2) - 125), 
+                                                        (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
+                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
+                
                 if event.ui_element == self.btn_continue:
                     self.game_screen = game.Game(self.screen)
                     self.game_screen.continue_game()
                     while True:
                         self.game_screen.loop_on()
+                
+                if event.ui_element == self.exit_screen.btn_Exit:
+                    self.running = False
+                    
+                if event.ui_element == self.exit_screen.btn_continue:
+                    self.exit_screen.hide()
 
 
             if (event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED
                     and event.ui_element == self.setting_screen.resolution_drop_down):
                 self.change_size(event.text)
+            
 
     def run(self):
+        """Chạy màn hình game
+        """
         while self.running:
             time_delta = self.clock.tick() / 1000.0
+            # Vẽ hình nền lên screen
             self.screen.blit(self.background_surface, (0,0))
 
             # Vẽ các hình mini
