@@ -18,7 +18,10 @@ SCREEN_HEIGHT = setting['screen']['height']
 PLAYER_NAME = game_data["PlayerName"]
 
 class Name:
-    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, screen):
+    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, screen, gamemode: str):
+
+        # Lưu game mode thành biến của cả class
+        self.gamemode = gamemode
 
         self.screen = screen
         
@@ -81,7 +84,14 @@ class Name:
         self.text_entry_size = (int(self.options.resolution[0] * 0.6) , int(self.options.resolution[1] * 0.1))
         self.label_size = (int(self.options.resolution[0] * 0.6), int(self.options.resolution[1] * 0.25))
         
-        self.name_player_one = pygame_gui.elements.UITextEntryLine(pygame.Rect((int(self.options.resolution[0] / 2 - self.text_entry_size[0] / 3.5),
+        if (self.gamemode == "Bot"):
+            self.name_message_bot = pygame_gui.elements.UILabel(pygame.Rect((int(self.options.resolution[0] / 2 - self.text_entry_size[0] / 3.5),
+                                                            int(self.options.resolution[1] / 2 - 100)), self.btn_size),
+                                                            text="BOT", 
+                                                            manager=self.manager_name,
+                                                            object_id="#name_message")
+        else:    
+            self.name_player_one = pygame_gui.elements.UITextEntryLine(pygame.Rect((int(self.options.resolution[0] / 2 - self.text_entry_size[0] / 3.5),
                                                                                 int(self.options.resolution[1] / 2 - 100)), self.text_entry_size),
                                                                     manager = self.manager_name,
                                                                     object_id="#text_entry")
@@ -130,7 +140,11 @@ class Name:
             self.manager_name.process_events(event)
 
             if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
-                self.play_one = self.name_player_one.get_text()
+                if self.gamemode == "PvP": # Chỉ lấy input tên player one nếu chơi chế độ PvP
+                    self.play_one = self.name_player_one.get_text()
+                else:
+                    self.play_one = 'BOT'
+                
                 self.play_two = self.name_player_two.get_text()
 
             # if event.type == pygame_gui.UI_B:
@@ -149,7 +163,7 @@ class Name:
                     self.game_screen = game.Game(self.screen)
                     self.game_screen.new_game()
                     while True:
-                        self.game_screen.loop_on()
+                        self.game_screen.loop_on(self.gamemode)
    
     def run(self):
          while self.running:

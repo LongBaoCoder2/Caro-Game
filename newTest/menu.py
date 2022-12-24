@@ -78,7 +78,8 @@ class Menu:
         self.title_game_caro = None
 
         # Tạo Button
-        self.btn_play = None
+        self.btn_AIplay = None
+        self.btn_PvPplay = None
         self.btn_continue = None
         self.btn_settings = None
         self.btn_quit = None
@@ -112,7 +113,7 @@ class Menu:
         self.manager.set_window_resolution(self.options.resolution)
         self.manager.clear_and_reset()
 
-        self.name_screen = Name(self.options.resolution[0], self.options.resolution[1], self.screen)
+        #self.name_screen = Name(self.options.resolution[0], self.options.resolution[1], self.screen)
 
 
         self.btn_size = (int(self.options.resolution[0] * 0.4), int(self.options.resolution[1] * 0.1))
@@ -122,9 +123,15 @@ class Menu:
         self.background_surface.fill(self.manager.get_theme().get_colour("dark_bg"))  # dark_bg nằm trong file theme.json
 
         # Tạo ra các button ở màn hình Intro
-        self.btn_play = pygame_gui.elements.UIButton(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2),
+        self.btn_AIplay = pygame_gui.elements.UIButton(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2),
+                                                        int(self.options.resolution[1] / 2 - 200)), self.btn_size),
+                                                        "BOT",
+                                                        self.manager,
+                                                        object_id="#all_button")
+        
+        self.btn_PvPplay = pygame_gui.elements.UIButton(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2),
                                                         int(self.options.resolution[1] / 2 - 100)), self.btn_size),
-                                                        "PLAY",
+                                                        "PVP",
                                                         self.manager,
                                                         object_id="#all_button")
         
@@ -223,8 +230,14 @@ class Menu:
                                                         (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
                                                         self.manager, self.options.resolution[0], self.options.resolution[1])
                 
-                elif event.ui_element == self.btn_play:
+                elif event.ui_element == self.btn_AIplay:
                     # Truyền hàm khởi tạo trò chơi vào
+                    self.name_screen = Name(self.options.resolution[0], self.options.resolution[1], self.screen, "Bot")
+                    self.name_screen.run()
+                    
+                elif event.ui_element == self.btn_PvPplay:
+                    # Truyền hàm khởi tạo trò chơi vào
+                    self.name_screen = Name(self.options.resolution[0], self.options.resolution[1], self.screen, "PvP")
                     self.name_screen.run()
                 
                 
@@ -259,6 +272,12 @@ class Menu:
             if (event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED
                     and event.ui_element == self.setting_screen.resolution_drop_down):
                 self.change_size(event.text)
+            if (event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED
+                    and event.ui_element == self.setting_screen.pieces_mode_drop_down):
+                print("Pieces mode changed from %d to %s" % (setting["game"]["win_cnt"], event.text))
+                setting["game"]["win_cnt"] = int(event.text)
+                # https://www.programiz.com/python-programming/json
+                json.dump(setting, open('data/setting.json', 'w'), indent = 4)
             
 
     def run(self):

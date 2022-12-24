@@ -1,17 +1,25 @@
 {
-    "screen" : {
-        "width" : 1280,
+    "screen": {
+        "width": 1280,
         "height": 960
     },
-    "grid" : {
-        "size_x" : 16,
-        "size_y" : 16,
-        "thickness" : 5,
-        "color_0" : [243, 224,  95],
-        "color_1" : [180, 205, 230]
+    "grid": {
+        "size_x": 16,
+        "size_y": 16,
+        "thickness": 5,
+        "color_0": [
+            243,
+            224,
+            95
+        ],
+        "color_1": [
+            180,
+            205,
+            230
+        ]
     },
-    "game" : {
-        "win_cnt" : 5
+    "game": {
+        "win_cnt": 3
     },
-    "theme" : "theme_2"
+    "theme": "theme_2"
 }

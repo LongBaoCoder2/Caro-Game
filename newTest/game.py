@@ -146,7 +146,7 @@ class Game:
 
 
     # vòng lặp
-    def loop_on(self):
+    def loop_on(self, gamemode: str):
 
         self.continue_game()
 
@@ -158,20 +158,21 @@ class Game:
         for event in pygame.event.get():
 
             # xử lý bot
-            if self.turn == 1:
-                # Comment these lines to enable PvP mode
-                if SIZE_X * SIZE_Y != self.cnt_move:
-                    best_move = self.bot.find_best_move(self.game_data['Board'], self.history)
-                    cur_piece = self.img_piece[self.game_data['Turn']]
-                    self.draw_piece_on(best_move[0], best_move[1], cur_piece)
-                    self.add_to_history(best_move[0], best_move[1])
-                    self.game_data['Board'][best_move[0]][best_move[1]] = 1
-                    self.cnt_move += 1
-                    if self.win_checker.check_win(self.game_data['Board'], 1, best_move[0], best_move[1]):
-                        print('BOT WIN!')
-                        self.end_game = True
-                    self.game_data['Turn'] = 1 - self.game_data['Turn']
-                    self.turn = 0
+            if gamemode == "Bot":
+                if self.turn == 1:
+                    # Comment these lines to enable PvP mode
+                    if SIZE_X * SIZE_Y != self.cnt_move:
+                        best_move = self.bot.find_best_move(self.game_data['Board'], self.history)
+                        cur_piece = self.img_piece[self.game_data['Turn']]
+                        self.draw_piece_on(best_move[0], best_move[1], cur_piece)
+                        self.add_to_history(best_move[0], best_move[1])
+                        self.game_data['Board'][best_move[0]][best_move[1]] = 1
+                        self.cnt_move += 1
+                        if self.win_checker.check_win(self.game_data['Board'], 1, best_move[0], best_move[1]):
+                            print('BOT WIN!')
+                            self.end_game = True
+                        self.game_data['Turn'] = 1 - self.game_data['Turn']
+                        self.turn = 0
 
             # nếu người chơi bấm chuột trái
             if event.type == pygame.MOUSEBUTTONDOWN:
