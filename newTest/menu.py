@@ -250,7 +250,7 @@ class Menu:
                     
                 elif event.ui_element == self.btn_continue:
                     self.game_screen = game.Game(self.screen)
-                    self.game_screen.continue_game()
+                    #self.game_screen.continue_game()
                     while True:
                         self.game_screen.loop_on(setting["gamemode"])
                 

@@ -71,9 +71,9 @@ class Game:
         self.max_his  = 10
 
     # khởi tạo game mới
-    def new_game(self):
-        self.draw_grid_on()
-        self.game_data = self.save_manager.refresh()
+    #def new_game(self):
+    #    self.draw_grid_on()
+        #self.game_data = self.save_manager.refresh()
 
     # tiếp tục game từ save
     def continue_game(self):
@@ -179,6 +179,7 @@ class Game:
             # nếu người chơi bấm chuột trái
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
+                    print(self.game_data)
                     # lấy hình ảnh của cờ theo turn
                     cur_piece = self.img_piece[self.game_data['Turn']]
 
@@ -225,6 +226,7 @@ class Game:
             # nếu người dùng bấm thoát
             if event.type == pygame.QUIT:
                 # save game trước khi thoát
+                #print(self.game_data)
                 self.save_manager.save(self.game_data)
                 pygame.quit()
                 sys.exit()
@@ -237,6 +239,6 @@ class Game:
         
         # 120 fps
         self.clock.tick(120)
-        
+        #print(self.game_data)
         # nếu không có sự kiện gì thì trả về -1
         return -1

@@ -206,7 +206,7 @@ class Name:
                     print("> ", self.play_one)
                     print("> ", self.play_two)
                     self.game_screen = game.Game(self.screen)
-                    self.game_screen.new_game()
+                    #self.game_screen.new_game()
                     while True:
                         self.game_screen.loop_on(self.gamemode)
                         
