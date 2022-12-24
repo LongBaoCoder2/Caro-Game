@@ -37,5 +37,5 @@ class SaveManager:
                 return json.load(file)
         return self.default_value
 
-    # def refresh(self):
-    #     return self.default_value
+    def refresh(self):
+        return self.default_value
