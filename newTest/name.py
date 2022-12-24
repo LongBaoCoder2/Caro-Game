@@ -3,6 +3,7 @@ from lib import button, color, save_manager
 import game
 
 from subwindow import *
+import menu
 from lib.paint import Paint
 # from winlose import WinLose
 
@@ -67,6 +68,7 @@ class Name:
 
         # Tạo Button Play để bắt đầu trò chơi
         self.btn_play = None
+        self.btn_back = None
 
         # Thiết kế giao diện
         self.name_message_one = None
@@ -89,45 +91,50 @@ class Name:
         
         if (self.gamemode == "Bot"):
             self.name_message_bot = pygame_gui.elements.UILabel(pygame.Rect((int(self.options.resolution[0] / 2 - self.text_entry_size[0] / 3.5),
-                                                            int(self.options.resolution[1] / 2 - 100)), self.btn_size),
+                                                            int(self.options.resolution[1] / 2) - 200), self.btn_size),
                                                             text="BOT", 
                                                             manager=self.manager_name,
                                                             object_id="#name_message")
         else:    
             self.name_player_one = pygame_gui.elements.UITextEntryLine(pygame.Rect((int(self.options.resolution[0] / 2 - self.text_entry_size[0] / 3.5),
-                                                                                int(self.options.resolution[1] / 2 - 100)), self.text_entry_size),
+                                                                                int(self.options.resolution[1] / 2) - 200), self.text_entry_size),
                                                                     manager = self.manager_name,
                                                                     object_id="#text_entry")
 
         self.name_player_two = pygame_gui.elements.UITextEntryLine(pygame.Rect((int(self.options.resolution[0] / 2 - self.text_entry_size[0] / 3.5),
-                                                                                int(self.options.resolution[1] / 2)), self.text_entry_size),
+                                                                                int(self.options.resolution[1] / 2) - 100), self.text_entry_size),
                                                                     manager = self.manager_name,
                                                                     object_id="#text_entry")
         
-        self.btn_play = pygame_gui.elements.UIButton(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2),
-                                                        int(self.options.resolution[1] / 2 + 150)), self.btn_size),
-                                                        "PLAY",
-                                                        self.manager_name,
-                                                        object_id="#all_button")
-    
         self.name_message_one = pygame_gui.elements.UILabel(pygame.Rect((int(self.options.resolution[0]/2 - self.btn_size[0]*1.3),
-                                                            int(self.options.resolution[1] / 2 - 100)), self.btn_size),
+                                                            int(self.options.resolution[1] / 2) - 200), self.btn_size),
                                                             text="PLAYER X:", 
                                                             manager=self.manager_name,
                                                             object_id="#name_message")
 
         self.name_message_two = pygame_gui.elements.UILabel(pygame.Rect((int(self.options.resolution[0]/2 - self.btn_size[0]*1.3),
-                                                            int(self.options.resolution[1] / 2)), self.btn_size),
+                                                            int(self.options.resolution[1] / 2) - 100), self.btn_size),
                                                             text="PLAYER O:", 
                                                             manager=self.manager_name,
                                                             object_id="#name_message")
 
         self.label = pygame_gui.elements.UILabel(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0]* 1.3),
-                                                        int(self.options.resolution[1] / 2 - 250)), self.label_size),
-                                                            text="SETTINGS", 
+                                                        int(self.options.resolution[1] / 2 - 400)), self.label_size),
+                                                            text="ENTER PLAYER NAME", 
                                                             manager=self.manager_name,
                                                             object_id="#label")
 
+        self.btn_play = pygame_gui.elements.UIButton(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2),
+                                                        int(self.options.resolution[1] / 2 + 50)), self.btn_size),
+                                                        "PLAY",
+                                                        self.manager_name,
+                                                        object_id="#all_button")
+
+        self.btn_back = pygame_gui.elements.UIButton(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2),
+                                                        int(self.options.resolution[1] / 2 + 200)), self.btn_size),
+                                                        "BACK",
+                                                        self.manager_name,
+                                                        object_id="#all_button")
 
         # Tạo animation cho chữ
         self.label.set_active_effect(pygame_gui.TEXT_EFFECT_TYPING_APPEAR)
@@ -182,7 +189,10 @@ class Name:
                     if event.ui_element == self.exit_screen.btn_continue:
                         self.exit_screen.hide()
                         self.exit_screen_created = False
-   
+                
+                elif event.ui_element == self.btn_back:
+                    menu.Menu(self.SCREEN_WIDTH, self.SCREEN_HEIGHT).run()
+                
                 elif self.play_one != '' and self.play_two != '':
                     game_data = save_manager.SaveManager('game_data.json', 'data').refresh()
                     game_data['PlayerName']['Player1'] = self.play_one
