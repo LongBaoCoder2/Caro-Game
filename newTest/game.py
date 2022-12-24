@@ -2,6 +2,7 @@ import pygame, json, sys, winlose
 from lib.play_sound import PlaySound
 from lib import color, save_manager, win_checker
 from lib import text_switcher, cursor_trail, bot
+from subwindow import *
 
 theme_color = json.load(open('themes/theme.json'))
 setting = json.load(open('data/setting.json'))
@@ -224,7 +225,7 @@ class Game:
                 self.save_manager.save(self.game_data)
                 pygame.quit()
                 sys.exit()
-        
+                
         self.text_switcher.draw_on(600, 40)
         self.cursor_trail.draw_on(self.screen)
 
