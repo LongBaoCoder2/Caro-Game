@@ -67,7 +67,7 @@ class Menu:
         self.setting_screen = None
 
         # Màn hình Quit
-        self.quit_screen = None
+        self.exit_screen = None
 
         self.running = True
         

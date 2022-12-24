@@ -98,7 +98,7 @@ class WinLose:
                 sys.exit()
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.btn_back:
-                    print(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+                    # print(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
                     menu.Menu(self.SCREEN_WIDTH, self.SCREEN_HEIGHT).run()
 
             # Quản lý và xử lý các sự kiện (như click, hover, ...)

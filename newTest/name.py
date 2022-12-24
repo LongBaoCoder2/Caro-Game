@@ -19,7 +19,6 @@ PLAYER_NAME = game_data["PlayerName"]
 
 class Name:
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, screen, gamemode: str):
-
         # Lưu game mode thành biến của cả class
         self.gamemode = gamemode
 
@@ -39,9 +38,13 @@ class Name:
 
         self.options = Options(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)    
 
+        # Tạo một manager UI (Quản lý Giao diện màn hình)
+        # Tham số truyền vào sẽ là kích thước màn hình và package
+        # Hãy xem manager như là một người quản lý màn hình:
+        # Với công việc là set up background và vẽ button quản lý các hiệu ứng v.v
         self.manager_name = pygame_gui.UIManager(self.options.resolution, 
-                                                    pygame_gui.PackageResource(package='themes',
-                                                    resource='theme.json'))   
+                                            pygame_gui.PackageResource(package='themes',
+                                                            resource='theme.json'))
 
 
 
@@ -133,9 +136,9 @@ class Name:
 
     def process_events(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+            # if event.type == pygame.QUIT:
+            #     pygame.quit()
+            #     sys.exit()
             # Quản lý và xử lý các sự kiện (như click, hover, ...)
             self.manager_name.process_events(event)
 
@@ -151,9 +154,36 @@ class Name:
             #     if event.ui_element == self.name_player_one and event.ui_element == self.name_player_two:
             #         # play()
             #         pass
-
-            if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if self.play_one != '' and self.play_two != '':
+            
+    
+            quit_button_pressed = (event.type == pygame.QUIT)
+            if quit_button_pressed or event.type == pygame_gui.UI_BUTTON_PRESSED:
+                # chiều rộng (ngang) cửa sổ settings, quit
+                sub_window_width = self.options.resolution[0] * 5 // 8
+                # chiều cao (dọc) cửa sổ settings, quit
+                sub_window_height = self.options.resolution[1] * 5 // 8
+                
+                if quit_button_pressed:
+                    self.exit_screen_created = True
+                    self.exit_screen = ExitWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
+                                                        int(self.options.resolution[1] / 2) - 125), 
+                                                        (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
+                                                        self.manager_name, self.options.resolution[0], self.options.resolution[1])
+                
+                #self.exit_screen_created = quit_button_pressed or btn_quit_clicked
+                # print(self.exit_screen_created)
+                
+                elif not quit_button_pressed and self.exit_screen_created:
+                    if event.ui_element == self.exit_screen.btn_Exit:
+                        #print("Hello")
+                        self.running = False
+                        break
+                            
+                    if event.ui_element == self.exit_screen.btn_continue:
+                        self.exit_screen.hide()
+                        self.exit_screen_created = False
+   
+                elif self.play_one != '' and self.play_two != '':
                     game_data = save_manager.SaveManager('game_data.json', 'data').refresh()
                     game_data['PlayerName']['Player1'] = self.play_one
                     game_data['PlayerName']['Player2'] = self.play_two
@@ -163,11 +193,14 @@ class Name:
                     self.game_screen = game.Game(self.screen)
                     self.game_screen.new_game()
                     while True:
-                        self.game_screen.loop_on(self.gamemode)
-   
+                        self.game_screen.run(self.gamemode)
+                        
+                        
     def run(self):
-         while self.running:
-            time_delta = self.clock.tick() / 1000.0
+        self.exit_screen_created = False
+        while self.running:
+            # 120 FPS
+            time_delta = self.clock.tick(120)
 
             self.process_events()
 
@@ -176,3 +209,6 @@ class Name:
             self.manager_name.draw_ui(self.screen)
 
             pygame.display.update()
+        pygame.quit()
+        sys.exit()
+    

@@ -50,14 +50,14 @@ class SettingWindow(pygame_gui.elements.UIWindow):
         """
         
         # Import DATA
-        setting = json.load(open('data/setting.json'))
-        game_data = json.load(open('data/game_data.json'))
+        self.setting = json.load(open('data/setting.json'))
+        self.game_data = json.load(open('data/game_data.json'))
 
 
         # LOAD DATA
-        SCREEN_WIDTH  = setting['screen']['width']
-        SCREEN_HEIGHT = setting['screen']['height']
-        PLAYER_NAME = game_data["PlayerName"]
+        self.SCREEN_WIDTH  = self.setting['screen']['width']
+        self.SCREEN_HEIGHT = self.setting['screen']['height']
+        PLAYER_NAME = self.game_data["PlayerName"]
         
         super().__init__(rect, ui_manager,
                          window_display_title='Setting',
@@ -124,7 +124,7 @@ class SettingWindow(pygame_gui.elements.UIWindow):
                                                             self.ui_manager,
                                                             container=self)
         # Lấy giá trị của số quân liên tiếp để thắng
-        self.current_pieces_mode = (str(setting["game"]["win_cnt"]))
+        self.current_pieces_mode = (str(self.setting["game"]["win_cnt"]))
          
         # Dòng này hiện ra menu xổ xuống của số quân liên tiếp cần để thắng
         self.pieces_mode_drop_down = pygame_gui.elements.UIDropDownMenu(['3', '4', '5', '6'],
