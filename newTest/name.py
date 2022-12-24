@@ -8,20 +8,25 @@ from lib.paint import Paint
 # from winlose import WinLose
 
 
-# Import DATA
-setting = json.load(open('data/setting.json'))
-game_data = json.load(open('data/game_data.json'))
-
-
-# LOAD DATA
-SCREEN_WIDTH  = setting['screen']['width']
-SCREEN_HEIGHT = setting['screen']['height']
-PLAYER_NAME = game_data["PlayerName"]
 
 class Name:
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, screen, gamemode: str):
+        # Import DATA
+        self.setting = json.load(open('data/setting.json'))
+        self.game_data = json.load(open('data/game_data.json'))
+
+
+        # LOAD DATA
+        self.SCREEN_WIDTH  = self.setting['screen']['width']
+        self.SCREEN_HEIGHT = self.setting['screen']['height']
+        self.PLAYER_NAME = self.game_data["PlayerName"]
+        
         # Lưu game mode thành biến của cả class
         self.gamemode = gamemode
+
+        # https://www.programiz.com/python-programming/json
+        self.setting["gamemode"] = gamemode
+        json.dump(self.setting, open('data/setting.json', 'w'), indent = 4)
 
         self.screen = screen
         
@@ -29,8 +34,8 @@ class Name:
 
 
         # Load từ data / Nếu không có hoặc new game thì load từ Input
-        self.play_one = PLAYER_NAME["Player1"]
-        self.play_two = PLAYER_NAME["Player2"]
+        self.play_one = self.PLAYER_NAME["Player1"]
+        self.play_two = self.PLAYER_NAME["Player2"]
 
 
         self.SCREEN_WIDTH, self.SCREEN_HEIGHT = SCREEN_WIDTH, SCREEN_HEIGHT
