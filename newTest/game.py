@@ -86,11 +86,11 @@ class Game:
         # chiều cao (dọc) cửa sổ settings, quit
         sub_window_height = self.options.resolution[1] * 5 // 8 
         self.win_lose_screen = winlose.WinLoseWindow(window_RECT, self.manager, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, "")
-        self.exit_screen = ExitWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
+        self.pause_screen = pause.PauseWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
                                                         int(self.options.resolution[1] / 2) - 125), 
                                                         (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
                                                         self.manager, self.options.resolution[0], self.options.resolution[1])
-        self.pause_screen = pause.PauseWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
+        self.exit_screen = ExitWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
                                                         int(self.options.resolution[1] / 2) - 125), 
                                                         (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
                                                         self.manager, self.options.resolution[0], self.options.resolution[1])
@@ -133,14 +133,15 @@ class Game:
         self.win_checker   = win_checker.WinChecker()
         self.player_1      = self.game_data['PlayerName']['Player1']
         self.player_2      = self.game_data['PlayerName']['Player2']
-        self.text_switcher = text_switcher.TextSwitcher(self.screen, self.BACKGROUND_COLOR, [self.player_1, self.player_2])
+        self.text_switcher = text_switcher.TextSwitcher(self.screen, self.BACKGROUND_COLOR, 
+                                                        [self.player_1, self.player_2], self.game_data['Turn'])
         self.cursor_trail  = cursor_trail.CursorTrail()
         self.bot           = bot.Bot()
 
         # for bot
         self.end_game = False
         self.cnt_move = 0
-        self.turn     = 1
+        self.turn     = self.game_data['Turn']
         self.history  = list()
         self.max_his  = 10
         
@@ -294,6 +295,14 @@ class Game:
                 
                 if quit_button_pressed:
                     self.exit_screen.show()
+                    
+                elif event.ui_element == self.btn_pause:
+                    self.pause_screen.show()
+                
+                elif event.ui_element == self.pause_screen.btn_Resume:
+                    self.pause_screen.hide()
+                
+                #cửa sổ nào hiện sau thì cừa sổ đó đè lên cửa sổ  còn lại
                 
                 elif self.exit_screen.visible:
                     if event.ui_element == self.exit_screen.btn_Exit:
@@ -310,11 +319,6 @@ class Game:
                 elif event.ui_element == self.win_lose_screen.btn_back:
                     self.win_lose_screen.hide()
                 
-                elif event.ui_element == self.btn_pause:
-                    self.pause_screen.show()
-                
-                elif event.ui_element == self.pause_screen.btn_Resume:
-                    self.pause_screen.hide()
                 
                 # Điều hướng sau khi chơi
                 # elif 
@@ -329,6 +333,7 @@ class Game:
             
                 elif event.ui_element == self.btn_menu or event.ui_element == self.pause_screen.btn_menu:
                     if event.ui_element == self.pause_screen.btn_menu:
+                        self.game_data["Turn"] = self.turn
                         self.save_manager.save(self.game_data)
                     menu.Menu(self.SCREEN_WIDTH, self.SCREEN_HEIGHT).run()
                 

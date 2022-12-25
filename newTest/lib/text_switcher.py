@@ -3,15 +3,24 @@ from . import color
 
 class TextSwitcher:
     
-    def __init__(self, screen, bg_color, player):
+    
+    def __init__(self, screen, bg_color, player, initial_turn):
 
+        self.player = player
         self.screen   = screen
         self.bg_color = bg_color
         self.font     = pygame.font.SysFont('Consolas', 35)
-        self.player   = [self.font.render(player[1], True, color.WHITE), self.font.render(player[0], True, color.WHITE)]
         self.turn     = 0
+        if initial_turn == 1:
+            self.swapPlayerName()
+        self.player   = [self.font.render(self.player[0], True, color.WHITE), self.font.render(self.player[1], True, color.WHITE)]
         self.v_y      = 0
         self.d_y      = 0
+        
+    def swapPlayerName(self) -> None:
+        temp = self.player[0]
+        self.player[0] = self.player[1]
+        self.player[1] = temp
     
     def switch(self):
 
