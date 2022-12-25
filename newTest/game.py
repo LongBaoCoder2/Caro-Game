@@ -3,15 +3,18 @@ import pygame, json, sys, winlose
 from lib import color, save_manager, win_checker
 from lib import text_switcher, cursor_trail, bot
 from subwindow import *
+import menu
 
 class Game:
 
     # khởi tạo
     def __init__(self, screen):
+        pygame.display.set_caption('GAME')
         
         theme_color = json.load(open('themes/theme.json'))
         self.setting = json.load(open('data/setting.json'))
-        # screen
+        # Khởi tạo Screen
+        self.screen = screen
         self.SCREEN_WIDTH  = self.setting['screen']['width']
         self.SCREEN_HEIGHT = self.setting['screen']['height']
         # grid
@@ -21,11 +24,20 @@ class Game:
         self.THICKNESS     = self.setting['grid']['thickness']
         # GRID_COLOR    = ["#5D5FEF", "#843CE0"]
         # GRID_COLOR = [setting['grid']['color_0'], setting['grid']['color_1']]
+        
+        # Tạo tùy chọn cho màn hình
+        self.options = Options(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+        
+        # Tạo background (sẽ setup sau)
+        self.background_surface = None
         self.BACKGROUND_COLOR = "#501be8"
+        
         self.LINE_COLOR       = color.BLACK
         # theme
         self.THEME = self.setting['theme']
 
+        # lấy dữ liệu gamemode từ setting.json
+        self.gamemode = self.setting["gamemode"]
 
         # pygame clock
         self.clock = pygame.time.Clock()
@@ -46,12 +58,55 @@ class Game:
         self.grid_end_x   = self.grid_start_x + self.grid_width  * self.SIZE_X
         self.grid_end_y   = self.grid_start_y + self.grid_height * self.SIZE_Y
 
-        # Khởi tạo Screen
-        self.screen = screen
+        # Tạo một manager UI (Quản lý Giao diện màn hình)
+        # Tham số truyền vào sẽ là kích thước màn hình và package
+        # Hãy xem manager như là một người quản lý màn hình:
+        # Với công việc là set up background và vẽ button quản lý các hiệu ứng v.v
+        self.manager = pygame_gui.UIManager(self.options.resolution, 
+                                            pygame_gui.PackageResource(package='themes',
+                                                            resource='theme.json'))
+
+        self.btn_size = (int(self.options.resolution[0] * 0.4), int(self.options.resolution[1] * 0.1))
+        self.text_entry_size = (int(self.options.resolution[0] * 0.6) , int(self.options.resolution[1] * 0.1))
+        self.label_size = (int(self.options.resolution[0] * 0.6), int(self.options.resolution[1] * 0.25))
 
         # Screen Win Lose
-        print((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-        self.win_lose_screen = winlose.WinLose(self.SCREEN_WIDTH, self.SCREEN_HEIGHT ,self.screen)
+        # --- Đưa window vào center
+        window_RECT = pygame.Rect((0,0), (self.SCREEN_WIDTH * 5 // 8, self.SCREEN_HEIGHT * 5 // 8))
+        window_RECT.center = (self.SCREEN_WIDTH / 2 , self.SCREEN_HEIGHT / 2)
+        
+        # Khởi tạo
+        # chiều rộng (ngang) cửa sổ settings, quit
+        sub_window_width = self.options.resolution[0] * 5 // 8
+        # chiều cao (dọc) cửa sổ settings, quit
+        sub_window_height = self.options.resolution[1] * 5 // 8 
+        self.win_lose_screen = winlose.WinLoseWindow(window_RECT, self.manager, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, "")
+        self.exit_screen = ExitWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
+                                                        int(self.options.resolution[1] / 2) - 125), 
+                                                        (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
+                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
+        # Ban đầu ẩn màn hình nhỏ đi
+        self.win_lose_screen.hide()
+        self.exit_screen.hide()
+        
+        # Button điều hướng khi chiến thắng trò chơi
+        # Này demo trước, sau tách ra thành một class riêng
+        
+        self.btn_play_again = pygame_gui.elements.UIButton(pygame.Rect((int(self.SCREEN_WIDTH * 0.65),
+                                                        int(self.SCREEN_HEIGHT * 0.4)), 
+                                                        tuple(i * 3 // 4 for i in self.btn_size)),
+                                                        "Play Again",
+                                                        self.manager,
+                                                        object_id="#all_button")
+        self.btn_menu = pygame_gui.elements.UIButton(pygame.Rect((int(self.SCREEN_WIDTH * 0.65),
+                                                        int(self.SCREEN_HEIGHT * 0.5)), 
+                                                        tuple(i * 3 // 4 for i in self.btn_size)),
+                                                        "Menu",
+                                                        self.manager,
+                                                        object_id="#all_button")
+        # Ẩn các button này đi
+        self.btn_play_again.hide()
+        self.btn_menu.hide()
 
         # các thành phần điều khiển của game
         self.save_manager  = save_manager.SaveManager('game_data.json', 'data')
@@ -69,11 +124,22 @@ class Game:
         self.turn     = 1
         self.history  = list()
         self.max_his  = 10
+        
+        #biến vòng lặp game
+        self.running = True
+        
+        # Setup Background
+        self.background_surface = pygame.Surface(self.options.resolution)
+        self.background_surface.fill(self.manager.get_theme().get_colour("dark_bg"))  # dark_bg nằm trong file theme.json
+        
+        # self.exit_screen_created = False
+        # self.winlose_window_created = False
+        # self.blocked = False
 
     # khởi tạo game mới
-    #def new_game(self):
-    #    self.draw_grid_on()
-        #self.game_data = self.save_manager.refresh()
+    def new_game(self):
+        self.draw_grid_on()
+        self.game_data = self.save_manager.refresh()
 
     # tiếp tục game từ save
     def continue_game(self):
@@ -95,7 +161,7 @@ class Game:
     def draw_grid_on(self):
 
         # tô screen bằng màu background
-        self.screen.fill(self.BACKGROUND_COLOR)
+        #self.screen.fill(self.BACKGROUND_COLOR)
         # for i in range(self.grid_start_x, SCREEN_WIDTH - self.grid_width * 2, self.grid_width * 2):
         #     for j in range(self.grid_start_y, SCREEN_HEIGHT - self.grid_height * 2, self.grid_height * 2):
         #         self.screen.blit(self.img_grid, (i, j))
@@ -146,21 +212,34 @@ class Game:
             # xoá vị trí cũ nhất trong list
             del self.history[0]
 
+    # process check win 
+    def check_process(self, board_x, board_y) -> None:
+        if self.win_checker.check_win(self.game_data['Board'], self.game_data['Turn'], board_x, board_y):
+            # Save game trước khi làm việc khác
+            #game_data = save_manager.SaveManager('game_data.json', 'data').refresh()
+            self.game_data['PlayerName']['Player1'] = self.player_1
+            self.game_data['PlayerName']['Player2'] = self.player_2
+            self.game_data["GameEnded"] = True
+            #print(self.game_data)
+            save_manager.SaveManager('game_data.json', 'data').save(self.game_data)
+            win_player_name = self.player_1 if self.game_data['Turn'] == 1 else self.player_2
+            self.win_lose_screen.set_name(win_player_name)
+            self.win_lose_screen.show()
+            self.btn_play_again.show()
+            self.btn_menu.show()
+            # self.win_lose_screen.run()
 
     # vòng lặp
-    def loop_on(self, gamemode: str):
-
-        self.continue_game()
-
+    def loop_on(self):
         # nếu đã đánh hết bàn cờ
         if self.SIZE_X * self.SIZE_Y == self.cnt_move:
             self.end_game = True
 
         # duyệt qua các event
         for event in pygame.event.get():
-
+            
             # xử lý bot
-            if gamemode == "Bot":
+            if self.gamemode == "Bot":
                 if self.turn == 1:
                     # Comment these lines to enable PvP mode
                     if self.SIZE_X * self.SIZE_Y != self.cnt_move:
@@ -170,16 +249,64 @@ class Game:
                         self.add_to_history(best_move[0], best_move[1])
                         self.game_data['Board'][best_move[0]][best_move[1]] = 1
                         self.cnt_move += 1
-                        if self.win_checker.check_win(self.game_data['Board'], 1, best_move[0], best_move[1]):
-                            print('BOT WIN!')
-                            self.end_game = True
+                        # check xem bot win hay thua
+                        self.check_process(best_move[0], best_move[1])
+                        
+                        # if self.win_checker.check_win(self.game_data['Board'], 1, best_move[0], best_move[1]):
+                        #     print('BOT WIN!')
+                        #     self.end_game = True
                         self.game_data['Turn'] = 1 - self.game_data['Turn']
                         self.turn = 0
-
+            
+            
+            # Quản lý và xử lý các sự kiện (như click, hover, ...)
+            # Nếu thiếu dòng này thì pygame_gui sẽ không detect được việc mình đã nhấn nút hay chưa
+            self.manager.process_events(event)
+            
+            quit_button_pressed = (event.type == pygame.QUIT)
+            # if (event.type == pygame_gui.UI_BUTTON_PRESSED):
+            #     print(True)
+            if quit_button_pressed or event.type == pygame_gui.UI_BUTTON_PRESSED:
+                
+                # print("Triggered")
+                
+                if quit_button_pressed:
+                    self.exit_screen.show()
+                
+                elif self.exit_screen.visible:
+                    if event.ui_element == self.exit_screen.btn_Exit:
+                        #print("Hello")
+                        #print(self.game_data)
+                        self.save_manager.save(self.game_data)
+                        self.running = False
+                        break
+                            
+                    if event.ui_element == self.exit_screen.btn_continue:
+                        self.exit_screen.hide()
+                
+                elif event.ui_element == self.win_lose_screen.btn_back:
+                    self.win_lose_screen.hide()
+                
+                # Điều hướng sau khi chơi
+                # elif 
+                elif event.ui_element == self.btn_play_again:
+                    self.game_data = save_manager.SaveManager('game_data.json', 'data').refresh()
+                    self.game_data['PlayerName']['Player1'] = self.player_1
+                    self.game_data['PlayerName']['Player2'] = self.player_2
+                    save_manager.SaveManager('game_data.json', 'data').save(self.game_data)
+                    self.__init__(self.screen)
+                    self.new_game()
+                    self.run()
+                elif event.ui_element == self.btn_menu:
+                    menu.Menu(self.SCREEN_WIDTH, self.SCREEN_HEIGHT).run()
+                
+                #self.exit_screen_created = quit_button_pressed or btn_quit_clicked
+                #print(self.exit_screen_created)
+            
             # nếu người chơi bấm chuột trái
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            elif not self.exit_screen.visible and not self.win_lose_screen.visible and event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    print(self.game_data)
+                    #print(self.game_data)
                     # lấy hình ảnh của cờ theo turn
                     cur_piece = self.img_piece[self.game_data['Turn']]
 
@@ -212,33 +339,66 @@ class Game:
                     # lưu lại giá trị trong bảng
                     self.game_data['Board'][board_x][board_y] = self.game_data['Turn']
                     
+                    
+                    
                     # kiểm tra đã thắng chưa
-                    if self.win_checker.check_win(self.game_data['Board'], self.game_data['Turn'], board_x, board_y):
-                        self.win_lose_screen.run()
+                    self.check_process(board_x, board_y)
+                    
+                    # if self.win_checker.check_win(self.game_data['Board'], self.game_data['Turn'], board_x, board_y):
+                    #     # Save game trước khi làm việc khác
+                    #     #game_data = save_manager.SaveManager('game_data.json', 'data').refresh()
+                    #     self.game_data['PlayerName']['Player1'] = self.player_1
+                    #     self.game_data['PlayerName']['Player2'] = self.player_2
+                    #     self.game_data["GameEnded"] = True
+                    #     #print(self.game_data)
+                    #     save_manager.SaveManager('game_data.json', 'data').save(self.game_data)
+                    #     win_player_name = self.player_1 if self.game_data['Turn'] == 1 else self.player_2
+                    #     self.win_lose_screen.set_name(win_player_name)
+                    #     self.win_lose_screen.show()
+                    #     self.btn_play_again.show()
+                    #     self.btn_menu.show()
+                    #     # self.win_lose_screen.run()
                         
                     # Thay đổi Turn ở cuối mỗi lượt
                     self.game_data['Turn'] = 1 - self.game_data['Turn']
 
                     # thay đổi turn
-                    self.turn = 1
+                    self.turn = 1 - self.turn
                     
             
             # nếu người dùng bấm thoát
-            if event.type == pygame.QUIT:
-                # save game trước khi thoát
-                #print(self.game_data)
-                self.save_manager.save(self.game_data)
-                pygame.quit()
-                sys.exit()
-                
-        self.text_switcher.draw_on(600, 40)
-        self.cursor_trail.draw_on(self.screen)
+            # if event.type == pygame.QUIT:
+            #     # save game trước khi thoát
+            #     #print(self.game_data)
+            #     self.save_manager.save(self.game_data)
+            #     pygame.quit()
+            #     sys.exit()
 
-        # cập nhật display
-        pygame.display.update()
-        
-        # 120 fps
-        self.clock.tick(120)
-        #print(self.game_data)
         # nếu không có sự kiện gì thì trả về -1
-        return -1
+        # return -1
+    
+    def run(self):
+        #self.exit_screen_created = False
+        #self.winlose_window_created = False
+        #self.blocked = False
+        while self.running:
+            # 120 FPS
+            time_delta = self.clock.tick(120)
+            
+            self.screen.blit(self.background_surface, (0,0))
+            
+            self.continue_game()
+
+            self.loop_on()
+
+            self.text_switcher.draw_on(600, 40)
+            self.cursor_trail.draw_on(self.screen)
+            
+            # vẽ pop-up window sau cùng sẽ giúp nó đè lên trên các hình các, tránh bug text_switcher che mất window
+            self.manager.update(time_delta)
+            self.manager.draw_ui(self.screen)
+            
+            # cập nhật display
+            pygame.display.update()
+        pygame.quit()
+        sys.exit()
