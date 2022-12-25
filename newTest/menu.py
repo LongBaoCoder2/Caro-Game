@@ -7,19 +7,19 @@ from name import *
 from subwindow import *
 # from winlose import WinLose
 
-# Import DATA
-setting = json.load(open('data/setting.json'))
-game_data = json.load(open('data/game_data.json'))
-
-
-# LOAD DATA
-SCREEN_WIDTH  = setting['screen']['width']
-SCREEN_HEIGHT = setting['screen']['height']
-PLAYER_NAME = game_data["PlayerName"]
-
 class Menu:
     # khởi tạo
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
+        # Import DATA
+        self.setting = json.load(open('data/setting.json'))
+        self.game_data = json.load(open('data/game_data.json'))
+
+
+        # LOAD DATA
+        self.SCREEN_WIDTH  = self.setting['screen']['width']
+        self.SCREEN_HEIGHT = self.setting['screen']['height']
+        self.PLAYER_NAME = self.game_data["PlayerName"]
+        
         pygame.init()
 
         self.clock = pygame.time.Clock()
@@ -249,8 +249,9 @@ class Menu:
                 
                     
                 elif event.ui_element == self.btn_continue:
+                    self.game_data = json.load(open('data/game_data.json'))
+                    save_manager.SaveManager('game_data.json', 'data').save(self.game_data)
                     self.game_screen = game.Game(self.screen)
-                    #self.game_screen.continue_game()
                     self.game_screen.run()
                 
                 #self.exit_screen_created = quit_button_pressed or btn_quit_clicked
@@ -272,14 +273,14 @@ class Menu:
                     and event.ui_element == self.setting_screen.resolution_drop_down):
                 self.change_size(event.text)
                 res = event.text.split('x')
-                setting["screen"]["width"] = int(res[0])
-                setting["screen"]["height"] = int(res[1])
+                self.setting["screen"]["width"] = int(res[0])
+                self.setting["screen"]["height"] = int(res[1])
             if (event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED
                     and event.ui_element == self.setting_screen.pieces_mode_drop_down):
-                print("Pieces mode changed from %d to %s" % (setting["game"]["win_cnt"], event.text))
-                setting["game"]["win_cnt"] = int(event.text)
+                print("Pieces mode changed from %d to %s" % (self.setting["game"]["win_cnt"], event.text))
+                self.setting["game"]["win_cnt"] = int(event.text)
                 # https://www.programiz.com/python-programming/json
-            json.dump(setting, open('data/setting.json', 'w'), indent = 4)
+            json.dump(self.setting, open('data/setting.json', 'w'), indent = 4)
             
 
     def run(self):
