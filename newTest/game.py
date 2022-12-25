@@ -8,6 +8,7 @@ class Game:
 
     # khởi tạo
     def __init__(self, screen):
+        pygame.display.set_caption('GAME')
         
         theme_color = json.load(open('themes/theme.json'))
         self.setting = json.load(open('data/setting.json'))

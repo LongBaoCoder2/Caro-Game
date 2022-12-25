@@ -11,6 +11,8 @@ from lib.paint import Paint
 
 class Name:
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, screen, gamemode: str):
+        pygame.display.set_caption('PLAYER NAME')
+        
         # Import DATA
         self.setting = json.load(open('data/setting.json'))
         self.game_data = json.load(open('data/game_data.json'))
