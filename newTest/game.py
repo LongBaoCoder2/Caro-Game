@@ -1,5 +1,5 @@
 import pygame, json, sys, winlose
-from lib.play_sound import PlaySound
+#from lib.play_sound import PlaySound
 from lib import color, save_manager, win_checker
 from lib import text_switcher, cursor_trail, bot, pause
 from subwindow import *
@@ -369,7 +369,7 @@ class Game:
                     self.text_switcher.switch()
                     
                     # âm thanh khi bấm chuột
-                    PlaySound.play('res\sounds/click2.mp3')
+                    #PlaySound.play('res\sounds/click2.mp3')
 
                     # vẽ cờ lên màn hình
                     self.draw_piece_on(board_x, board_y, cur_piece)
