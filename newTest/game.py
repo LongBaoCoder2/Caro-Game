@@ -287,7 +287,7 @@ class Game:
             # if (event.type == pygame_gui.UI_BUTTON_PRESSED):
             #     print(True)
             
-            print(self.exit_screen.visible)
+            #print(self.exit_screen.visible)
             if quit_button_pressed or event.type == pygame_gui.UI_BUTTON_PRESSED:
                 
                 # print("Triggered")
