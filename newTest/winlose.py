@@ -3,9 +3,10 @@ import pygame, pygame_gui, sys, menu
 from lib.paint import Paint
 import menu
 
-
 class WinLose:
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, screen):
+        
+        
         self.screen = screen
         self.SCREEN_WIDTH, self.SCREEN_HEIGHT = SCREEN_WIDTH, SCREEN_HEIGHT
         
@@ -25,14 +26,14 @@ class WinLose:
                                     { 'point_size': 28, 'style': 'italic'},
                                     { 'point_size': 28, 'style': 'bold'}
                                     ])
-
+        
         self.running = True
-
+        
         self.win_image = pygame.image.load("./res/images/win_lose/Win-1.png").convert_alpha()
         self.win_image = pygame.transform.scale(self.win_image, (self.SCREEN_WIDTH/3, self.SCREEN_WIDTH/3))
-    
+        
         self.win_image_rect = self.win_image.get_rect(center=(self.SCREEN_WIDTH/2, self.SCREEN_HEIGHT/2))
-
+        
 
         # Tạo background 
         self.background_surface = None
@@ -49,11 +50,13 @@ class WinLose:
         # Thiết kế giao diện
         self.label = None
 
-
+           
         # Gọi hàm để cập nhật UI sẽ được setup bằng pygame_gui
-        self.update_ui()    
+        self.update_ui() 
+        
 
     def update_ui(self):
+        
 
         self.background_surface = pygame.Surface(self.options.resolution)
         self.background_surface.fill(self.manager_win_lose.get_theme().get_colour("dark_bg"))
@@ -92,6 +95,7 @@ class WinLose:
         
 
     def process_events(self):
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -103,9 +107,10 @@ class WinLose:
 
             # Quản lý và xử lý các sự kiện (như click, hover, ...)
             self.manager_win_lose.process_events(event)
-   
+    
     def run(self):
         while self.running:
+            
             time_delta = self.clock.tick(120)
             self.screen.blit(self.background_surface, (0,0))
             self.paint.render_surface(self.win_image, self.win_image_rect)

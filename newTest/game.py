@@ -1,19 +1,24 @@
 import pygame, json, sys, winlose
-#from lib.play_sound import PlaySound
+from lib.play_sound import PlaySound
 from lib import color, save_manager, win_checker
 from lib import text_switcher, cursor_trail, bot
 from subwindow import *
+from lib.music_game import MusicGame
+from lib.win_music import WinMusic
 
 class Game:
 
     # khởi tạo
     def __init__(self, screen):
-        
+        #âm thanh nhạc nền 
+        MusicGame.play('res/musicgame/musicgame1.mp3')
+
         theme_color = json.load(open('themes/theme.json'))
         self.setting = json.load(open('data/setting.json'))
         # screen
         self.SCREEN_WIDTH  = self.setting['screen']['width']
         self.SCREEN_HEIGHT = self.setting['screen']['height']
+        
         # grid
         # NUM_OF_LINES  = setting['grid']['num_of_lines']
         self.SIZE_X        = min(self.setting['grid']['size_x'], 100)
@@ -51,8 +56,9 @@ class Game:
 
         # Screen Win Lose
         print((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        
         self.win_lose_screen = winlose.WinLose(self.SCREEN_WIDTH, self.SCREEN_HEIGHT ,self.screen)
-
+        
         # các thành phần điều khiển của game
         self.save_manager  = save_manager.SaveManager('game_data.json', 'data')
         self.game_data     = self.save_manager.load()
@@ -199,8 +205,8 @@ class Game:
                     # switch tên đang hiển thị
                     self.text_switcher.switch()
                     
-                    # am thanh khi bam chuot
-                    #PlaySound.play('res/sounds/click.mp3')
+                    # âm thanh khi bấm chuột
+                    PlaySound.play('res\sounds/click2.mp3')
 
                     # vẽ cờ lên màn hình
                     self.draw_piece_on(board_x, board_y, cur_piece)
@@ -214,6 +220,7 @@ class Game:
                     # kiểm tra đã thắng chưa
                     if self.win_checker.check_win(self.game_data['Board'], self.game_data['Turn'], board_x, board_y):
                         self.win_lose_screen.run()
+                        WinMusic.play('res/winmusic/win.mp3')
                         
                     # Thay đổi Turn ở cuối mỗi lượt
                     self.game_data['Turn'] = 1 - self.game_data['Turn']
