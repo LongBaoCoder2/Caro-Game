@@ -180,7 +180,7 @@ class ExitWindow(pygame_gui.elements.UIWindow):
         self.quit_label = pygame_gui.elements.UILabel(pygame.Rect((int((self.rect.width - self.quit_size[0]) // 2),
                                                         int(self.rect.height / 2 - 125)),
                                                         self.quit_size),
-                                                        #"vai lon luon",
+                                                        
                                                         "Are you sure you want to quit the game?",
                                                         self.ui_manager,
                                                         container=self)
