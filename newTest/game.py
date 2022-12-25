@@ -1,14 +1,19 @@
 import pygame, json, sys, winlose
-#from lib.play_sound import PlaySound
+from lib.play_sound import PlaySound
 from lib import color, save_manager, win_checker
 from lib import text_switcher, cursor_trail, bot
 from subwindow import *
 import menu
+from lib.music_game import MusicGame
+from lib.win_music import WinMusic
 
 class Game:
 
     # khởi tạo
     def __init__(self, screen):
+        #âm thanh nhạc nền 
+        MusicGame.play('res/musicgame/musicgame1.mp3')
+        
         pygame.display.set_caption('GAME')
         
         theme_color = json.load(open('themes/theme.json'))
@@ -328,8 +333,8 @@ class Game:
                     # switch tên đang hiển thị
                     self.text_switcher.switch()
                     
-                    # am thanh khi bam chuot
-                    #PlaySound.play('res/sounds/click.mp3')
+                    # âm thanh khi bấm chuột
+                    PlaySound.play('res\sounds/click2.mp3')
 
                     # vẽ cờ lên màn hình
                     self.draw_piece_on(board_x, board_y, cur_piece)
