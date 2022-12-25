@@ -105,7 +105,17 @@ class Menu:
         # Tạo Box Quit
         self.quit_window = None
         
+        self.btn_size = (int(self.options.resolution[0] * 0.4), int(self.options.resolution[1] * 0.1))
+        self.label_size = (int(self.options.resolution[0] * 0.6), int(self.options.resolution[1] * 0.25))
+        
+        # chiều rộng (ngang) cửa sổ settings, quit
+        self.sub_window_width = self.options.resolution[0] * 5 // 8
+        # chiều cao (dọc) cửa sổ settings, quit
+        self.sub_window_height = self.options.resolution[1] * 5 // 8
+        
         self.update_ui()
+        
+        #self.exit_screen.hide()
 
 
     # Hàm cập nhật kích thước màn hình
@@ -115,9 +125,6 @@ class Menu:
 
         #self.name_screen = Name(self.options.resolution[0], self.options.resolution[1], self.screen)
 
-
-        self.btn_size = (int(self.options.resolution[0] * 0.4), int(self.options.resolution[1] * 0.1))
-        self.label_size = (int(self.options.resolution[0] * 0.6), int(self.options.resolution[1] * 0.25))
         # Setup Background
         self.background_surface = pygame.Surface(self.options.resolution)
         self.background_surface.fill(self.manager.get_theme().get_colour("dark_bg"))  # dark_bg nằm trong file theme.json
@@ -170,6 +177,18 @@ class Menu:
 
         self.title_game_caro.set_active_effect(pygame_gui.TEXT_EFFECT_TYPING_APPEAR)
         
+        self.exit_screen = ExitWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
+                                                        int(self.options.resolution[1] / 2) - 125), 
+                                                        (self.sub_window_width * 3 // 4, self.sub_window_height * 3 // 5)),
+                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
+        self.no_game = NoGameWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
+                                                    int(self.options.resolution[1] / 2) - 125), 
+                                                    (self.sub_window_width * 9 // 10, self.sub_window_height * 3 // 5)),
+                                                    self.manager, self.options.resolution[0], self.options.resolution[1])
+        
+        # Ban đầu ẩn màn hình nhỏ đi
+        self.exit_screen.hide()
+        self.no_game.hide()
         
         
         # Kích thước 
@@ -208,27 +227,11 @@ class Menu:
             
             quit_button_pressed = (event.type == pygame.QUIT)
             
-            
             if quit_button_pressed or event.type == pygame_gui.UI_BUTTON_PRESSED:
-                #print("test")
-                # chiều rộng (ngang) cửa sổ settings, quit
-                sub_window_width = self.options.resolution[0] * 5 // 8
-                # chiều cao (dọc) cửa sổ settings, quit
-                sub_window_height = self.options.resolution[1] * 5 // 8
-                
-                if quit_button_pressed:
-                    self.exit_screen_created = True
-                    self.exit_screen = ExitWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
-                                                        int(self.options.resolution[1] / 2) - 125), 
-                                                        (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
-                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
-                    
-                elif event.ui_element == self.btn_quit:
-                    self.exit_screen_created = True
-                    self.exit_screen = ExitWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
-                                                        int(self.options.resolution[1] / 2) - 125), 
-                                                        (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
-                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
+                #print("Help")
+                if quit_button_pressed or event.ui_element == self.btn_quit:
+                    #print("Help")
+                    self.exit_screen.show()
                 
                 elif event.ui_element == self.btn_AIplay:
                     # Truyền hàm khởi tạo trò chơi vào
@@ -244,29 +247,35 @@ class Menu:
                 elif event.ui_element == self.btn_settings:
                     self.setting_screen = SettingWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 150),
                                                         int(self.options.resolution[1] / 2) - 200), 
-                                                        (sub_window_width, sub_window_height)), 
+                                                        (self.sub_window_width, self.sub_window_height)), 
                                                         self.manager, self.options.resolution[0], self.options.resolution[1])
                 
                     
                 elif event.ui_element == self.btn_continue:
                     self.game_data = json.load(open('data/game_data.json'))
-                    save_manager.SaveManager('game_data.json', 'data').save(self.game_data)
-                    self.game_screen = game.Game(self.screen)
-                    self.game_screen.run()
+                    if (self.game_data["GameEnded"] == True):
+                        self.no_game.show()
+                    else:
+                        save_manager.SaveManager('game_data.json', 'data').save(self.game_data)
+                        self.game_screen = game.Game(self.screen)
+                        self.game_screen.run()
                 
                 #self.exit_screen_created = quit_button_pressed or btn_quit_clicked
                 
                 #print(self.exit_screen_created)
                 
-                if not quit_button_pressed and self.exit_screen_created:
+                elif self.exit_screen.visible:
                     if event.ui_element == self.exit_screen.btn_Exit:
                         #print("Hello")
                         self.running = False
                         break
                             
-                    if event.ui_element == self.exit_screen.btn_continue:
+                    elif event.ui_element == self.exit_screen.btn_continue:
                         self.exit_screen.hide()
-                        self.exit_screen_created = False
+                        #self.exit_screen_created = False
+                
+                elif self.no_game.visible and event.ui_element == self.no_game.btn_Back:
+                    self.no_game.hide()
 
 
             if (event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED
@@ -286,7 +295,6 @@ class Menu:
     def run(self):
         """Chạy màn hình game
         """
-        self.exit_screen_created = False
         while self.running:
             time_delta = self.clock.tick(120)
             #print(time_delta)
