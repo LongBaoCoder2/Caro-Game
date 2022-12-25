@@ -199,6 +199,14 @@ class ExitWindow(pygame_gui.elements.UIWindow):
                                                         self.ui_manager,
                                                         container=self,
                                                         object_id="#all_button")
+        
+    def on_close_window_button_pressed(self):
+        """
+        Override this method to call 'hide()' instead if you want to hide a window when the
+        close button is pressed.
+        """
+        # self.kill()
+        self.hide()
     
 class NoGameWindow(pygame_gui.elements.UIWindow):
     """class NoGameWindows là class kế thừa (Inheritance) từ class pygame_gui.elements.UIWindow

@@ -1,7 +1,7 @@
 import pygame, json, sys, winlose
 from lib.play_sound import PlaySound
 from lib import color, save_manager, win_checker
-from lib import text_switcher, cursor_trail, bot
+from lib import text_switcher, cursor_trail, bot, pause
 from subwindow import *
 import menu
 from lib.music_game import MusicGame
@@ -90,9 +90,15 @@ class Game:
                                                         int(self.options.resolution[1] / 2) - 125), 
                                                         (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
                                                         self.manager, self.options.resolution[0], self.options.resolution[1])
+        self.pause_screen = pause.PauseWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
+                                                        int(self.options.resolution[1] / 2) - 125), 
+                                                        (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
+                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
+        
         # Ban đầu ẩn màn hình nhỏ đi
         self.win_lose_screen.hide()
         self.exit_screen.hide()
+        self.pause_screen.hide()
         
         # Button điều hướng khi chiến thắng trò chơi
         # Này demo trước, sau tách ra thành một class riêng
@@ -109,6 +115,14 @@ class Game:
                                                         "Menu",
                                                         self.manager,
                                                         object_id="#all_button")
+        
+        self.btn_pause = pygame_gui.elements.UIButton(pygame.Rect((int(self.SCREEN_WIDTH * 0.75),
+                                                        int(10)), 
+                                                        (self.btn_size[0] * 4 // 8, self.btn_size[1] * 3 // 4)),
+                                                        "Pause",
+                                                        self.manager,
+                                                        object_id="#all_button")
+        
         # Ẩn các button này đi
         self.btn_play_again.hide()
         self.btn_menu.hide()
@@ -233,7 +247,7 @@ class Game:
             self.win_lose_screen.show()
             self.btn_play_again.show()
             self.btn_menu.show()
-            # self.win_lose_screen.run()
+            # self.win_lose_screen.run()       
 
     # vòng lặp
     def loop_on(self):
@@ -272,6 +286,8 @@ class Game:
             quit_button_pressed = (event.type == pygame.QUIT)
             # if (event.type == pygame_gui.UI_BUTTON_PRESSED):
             #     print(True)
+            
+            print(self.exit_screen.visible)
             if quit_button_pressed or event.type == pygame_gui.UI_BUTTON_PRESSED:
                 
                 # print("Triggered")
@@ -290,8 +306,15 @@ class Game:
                     if event.ui_element == self.exit_screen.btn_continue:
                         self.exit_screen.hide()
                 
+                
                 elif event.ui_element == self.win_lose_screen.btn_back:
                     self.win_lose_screen.hide()
+                
+                elif event.ui_element == self.btn_pause:
+                    self.pause_screen.show()
+                
+                elif event.ui_element == self.pause_screen.btn_Resume:
+                    self.pause_screen.hide()
                 
                 # Điều hướng sau khi chơi
                 # elif 
@@ -303,14 +326,21 @@ class Game:
                     self.__init__(self.screen)
                     self.new_game()
                     self.run()
-                elif event.ui_element == self.btn_menu:
+            
+                elif event.ui_element == self.btn_menu or event.ui_element == self.pause_screen.btn_menu:
+                    if event.ui_element == self.pause_screen.btn_menu:
+                        self.save_manager.save(self.game_data)
                     menu.Menu(self.SCREEN_WIDTH, self.SCREEN_HEIGHT).run()
                 
                 #self.exit_screen_created = quit_button_pressed or btn_quit_clicked
                 #print(self.exit_screen_created)
             
             # nếu người chơi bấm chuột trái
-            elif not self.exit_screen.visible and not self.win_lose_screen.visible and not self.end_game and event.type == pygame.MOUSEBUTTONDOWN:
+            elif (not self.exit_screen.visible 
+                  and not self.win_lose_screen.visible 
+                  and not self.pause_screen.visible
+                  and not self.end_game
+                  and event.type == pygame.MOUSEBUTTONDOWN):
                 if event.button == 1:
                     #print(self.game_data)
                     # lấy hình ảnh của cờ theo turn
