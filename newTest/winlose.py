@@ -1,8 +1,75 @@
 import pygame, pygame_gui, sys, menu
 
 from lib.paint import Paint
+from subwindow import *
 import menu
 
+class WinLoseWindow(pygame_gui.elements.UIWindow):
+    def __init__(self, rect, ui_manager,SCREEN_WIDTH, SCREEN_HEIGHT, win_player_name):
+        super().__init__(rect, ui_manager,
+                         window_display_title='Victory',
+                         object_id='#win_lose_window',
+                         resizable=False)
+
+        self.SCREEN_WIDTH, self.SCREEN_HEIGHT = SCREEN_WIDTH, SCREEN_HEIGHT
+        self.options = Options(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.btn_size = ( int(self.rect.width *0.4), 55 )
+        self.win_lose_label = (300, 100)
+        self.win_player_name = win_player_name
+
+        self.win_image = pygame.image.load("./res/images/win_lose/Win-1.png").convert_alpha()
+        self.win_image = pygame.transform.scale(self.win_image, (int(self.SCREEN_WIDTH/5),
+                                                                int(self.SCREEN_WIDTH/5)))
+        
+
+        self.win_image_ui = None
+        self.win_lose_message = None
+        self.btn_back = None
+        self.btn_continue = None
+
+        self.update_ui()
+
+    def update_ui(self):
+        self.win_image_ui = pygame_gui.elements.UIImage(pygame.Rect((int(self.rect.width/3.1),
+                                                        int(self.rect.height * 0.2)),
+                                                        self.win_image.get_rect().size),
+                                                        self.win_image, self.ui_manager,
+                                                        container=self)
+
+        self.win_lose_message = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width/2 - self.win_lose_label[0]/1.8), 0),
+                                                            self.win_lose_label),
+                                                            self.win_player_name,
+                                                            self.ui_manager,
+                                                            container=self,
+                                                            object_id="#all_button")
+
+        self.btn_back = pygame_gui.elements.UIButton(pygame.Rect((int(self.rect.width/2 - self.btn_size[0] / 1.8),
+                                                        int(self.rect.height * 5 // 8 + self.btn_size[1])), 
+                                                        self.btn_size),
+                                                        "BACK",
+                                                        self.ui_manager,
+                                                        object_id="#all_button",
+                                                        container=self)
+
+        
+                                
+
+
+    def update(self, time_delta):
+        super().update(time_delta)
+
+    def set_name(self, name):
+        self.current_name = name
+        self.win_lose_message.set_text(self.current_name)
+        
+        
+    def process_events(self, event):
+        if event.type == pygame_gui.UI_BUTTON_PRESSED:
+            if event.ui_element == self.btn_back:
+                self.hide()
+
+        # Quản lý và xử lý các sự kiện (như click, hover, ...)
+        self.ui_manager.process_events(event)
 
 class WinLose:
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, screen):
