@@ -21,11 +21,20 @@ class Game:
         self.THICKNESS     = self.setting['grid']['thickness']
         # GRID_COLOR    = ["#5D5FEF", "#843CE0"]
         # GRID_COLOR = [setting['grid']['color_0'], setting['grid']['color_1']]
+        
+        # Tạo tùy chọn cho màn hình
+        self.options = Options(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+        
+        # Tạo background (sẽ setup sau)
+        self.background_surface = None
         self.BACKGROUND_COLOR = "#501be8"
+        
         self.LINE_COLOR       = color.BLACK
         # theme
         self.THEME = self.setting['theme']
 
+        # lấy dữ liệu gamemode từ setting.json
+        self.gamemode = self.setting["gamemode"]
 
         # pygame clock
         self.clock = pygame.time.Clock()
@@ -69,6 +78,25 @@ class Game:
         self.turn     = 1
         self.history  = list()
         self.max_his  = 10
+        
+        #biến vòng lặp game
+        self.running = True
+        
+        # Tạo một manager UI (Quản lý Giao diện màn hình)
+        # Tham số truyền vào sẽ là kích thước màn hình và package
+        # Hãy xem manager như là một người quản lý màn hình:
+        # Với công việc là set up background và vẽ button quản lý các hiệu ứng v.v
+        self.manager = pygame_gui.UIManager(self.options.resolution, 
+                                            pygame_gui.PackageResource(package='themes',
+                                                            resource='theme.json'))
+        
+        # Setup Background
+        self.background_surface = pygame.Surface(self.options.resolution)
+        self.background_surface.fill(self.manager.get_theme().get_colour("dark_bg"))  # dark_bg nằm trong file theme.json
+        
+        self.btn_size = (int(self.options.resolution[0] * 0.4), int(self.options.resolution[1] * 0.1))
+        self.text_entry_size = (int(self.options.resolution[0] * 0.6) , int(self.options.resolution[1] * 0.1))
+        self.label_size = (int(self.options.resolution[0] * 0.6), int(self.options.resolution[1] * 0.25))
 
     # khởi tạo game mới
     #def new_game(self):
@@ -95,7 +123,7 @@ class Game:
     def draw_grid_on(self):
 
         # tô screen bằng màu background
-        self.screen.fill(self.BACKGROUND_COLOR)
+        #self.screen.fill(self.BACKGROUND_COLOR)
         # for i in range(self.grid_start_x, SCREEN_WIDTH - self.grid_width * 2, self.grid_width * 2):
         #     for j in range(self.grid_start_y, SCREEN_HEIGHT - self.grid_height * 2, self.grid_height * 2):
         #         self.screen.blit(self.img_grid, (i, j))
@@ -148,10 +176,7 @@ class Game:
 
 
     # vòng lặp
-    def loop_on(self, gamemode: str):
-
-        self.continue_game()
-
+    def loop_on(self):
         # nếu đã đánh hết bàn cờ
         if self.SIZE_X * self.SIZE_Y == self.cnt_move:
             self.end_game = True
@@ -160,7 +185,7 @@ class Game:
         for event in pygame.event.get():
 
             # xử lý bot
-            if gamemode == "Bot":
+            if self.gamemode == "Bot":
                 if self.turn == 1:
                     # Comment these lines to enable PvP mode
                     if self.SIZE_X * self.SIZE_Y != self.cnt_move:
@@ -175,11 +200,49 @@ class Game:
                             self.end_game = True
                         self.game_data['Turn'] = 1 - self.game_data['Turn']
                         self.turn = 0
-
+            
+            
+            # Quản lý và xử lý các sự kiện (như click, hover, ...)
+            # Nếu thiếu dòng này thì pygame_gui sẽ không detect được việc mình đã nhấn nút hay chưa
+            self.manager.process_events(event)
+            
+            quit_button_pressed = (event.type == pygame.QUIT)
+            # if (event.type == pygame_gui.UI_BUTTON_PRESSED):
+            #     print(True)
+            if quit_button_pressed or event.type == pygame_gui.UI_BUTTON_PRESSED:
+                self.save_manager.save(self.game_data)
+                
+                # print("Triggered")
+                
+                # chiều rộng (ngang) cửa sổ settings, quit
+                sub_window_width = self.options.resolution[0] * 5 // 8
+                # chiều cao (dọc) cửa sổ settings, quit
+                sub_window_height = self.options.resolution[1] * 5 // 8
+                
+                if quit_button_pressed:
+                    self.exit_screen_created = True
+                    self.exit_screen = ExitWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
+                                                        int(self.options.resolution[1] / 2) - 125), 
+                                                        (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
+                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
+                
+                #self.exit_screen_created = quit_button_pressed or btn_quit_clicked
+                
+                elif not quit_button_pressed and self.exit_screen_created:
+                    if event.ui_element == self.exit_screen.btn_Exit:
+                        #print("Hello")
+                        self.running = False
+                        break
+                            
+                    if event.ui_element == self.exit_screen.btn_continue:
+                        self.exit_screen.hide()
+                        self.exit_screen_created = False
+                #print(self.exit_screen_created)
+            
             # nếu người chơi bấm chuột trái
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            elif not self.exit_screen_created and event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    print(self.game_data)
+                    #print(self.game_data)
                     # lấy hình ảnh của cờ theo turn
                     cur_piece = self.img_piece[self.game_data['Turn']]
 
@@ -224,21 +287,35 @@ class Game:
                     
             
             # nếu người dùng bấm thoát
-            if event.type == pygame.QUIT:
-                # save game trước khi thoát
-                #print(self.game_data)
-                self.save_manager.save(self.game_data)
-                pygame.quit()
-                sys.exit()
-                
-        self.text_switcher.draw_on(600, 40)
-        self.cursor_trail.draw_on(self.screen)
+            # if event.type == pygame.QUIT:
+            #     # save game trước khi thoát
+            #     #print(self.game_data)
+            #     self.save_manager.save(self.game_data)
+            #     pygame.quit()
+            #     sys.exit()
 
-        # cập nhật display
-        pygame.display.update()
-        
-        # 120 fps
-        self.clock.tick(120)
-        #print(self.game_data)
         # nếu không có sự kiện gì thì trả về -1
-        return -1
+        # return -1
+    
+    def run(self):
+        self.exit_screen_created = False
+        while self.running:
+            # 120 FPS
+            time_delta = self.clock.tick(120)
+            
+            self.screen.blit(self.background_surface, (0,0))
+            
+            self.continue_game()
+
+            self.loop_on()
+
+            self.manager.update(time_delta)
+            self.manager.draw_ui(self.screen)
+
+            self.text_switcher.draw_on(600, 40)
+            self.cursor_trail.draw_on(self.screen)
+            
+            # cập nhật display
+            pygame.display.update()
+        pygame.quit()
+        sys.exit()
