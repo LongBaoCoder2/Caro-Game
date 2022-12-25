@@ -219,6 +219,7 @@ class Game:
             #game_data = save_manager.SaveManager('game_data.json', 'data').refresh()
             self.game_data['PlayerName']['Player1'] = self.player_1
             self.game_data['PlayerName']['Player2'] = self.player_2
+            self.end_game = True
             self.game_data["GameEnded"] = True
             #print(self.game_data)
             save_manager.SaveManager('game_data.json', 'data').save(self.game_data)
@@ -304,7 +305,7 @@ class Game:
                 #print(self.exit_screen_created)
             
             # nếu người chơi bấm chuột trái
-            elif not self.exit_screen.visible and not self.win_lose_screen.visible and event.type == pygame.MOUSEBUTTONDOWN:
+            elif not self.exit_screen.visible and not self.win_lose_screen.visible and not self.end_game and event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     #print(self.game_data)
                     # lấy hình ảnh của cờ theo turn
