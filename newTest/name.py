@@ -37,8 +37,11 @@ class Name:
 
 
         # Load từ data / Nếu không có hoặc new game thì load từ Input
-        self.play_one = self.PLAYER_NAME["Player1"]
-        self.play_two = self.PLAYER_NAME["Player2"]
+        # self.play_one = self.PLAYER_NAME["Player1"]
+        # self.play_two = self.PLAYER_NAME["Player2"]
+        # Khởi tạo tên rỗng để tránh bug từ việc lấy dữ liệu từ game cũ lên
+        self.play_one = ''
+        self.play_two = ''
 
 
         self.SCREEN_WIDTH, self.SCREEN_HEIGHT = SCREEN_WIDTH, SCREEN_HEIGHT
