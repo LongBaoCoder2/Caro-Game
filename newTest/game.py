@@ -3,6 +3,7 @@ import pygame, json, sys, winlose
 from lib import color, save_manager, win_checker
 from lib import text_switcher, cursor_trail, bot
 from subwindow import *
+import menu
 
 class Game:
 
@@ -12,7 +13,8 @@ class Game:
         
         theme_color = json.load(open('themes/theme.json'))
         self.setting = json.load(open('data/setting.json'))
-        # screen
+        # Khởi tạo Screen
+        self.screen = screen
         self.SCREEN_WIDTH  = self.setting['screen']['width']
         self.SCREEN_HEIGHT = self.setting['screen']['height']
         # grid
@@ -56,12 +58,47 @@ class Game:
         self.grid_end_x   = self.grid_start_x + self.grid_width  * self.SIZE_X
         self.grid_end_y   = self.grid_start_y + self.grid_height * self.SIZE_Y
 
-        # Khởi tạo Screen
-        self.screen = screen
+        # Tạo một manager UI (Quản lý Giao diện màn hình)
+        # Tham số truyền vào sẽ là kích thước màn hình và package
+        # Hãy xem manager như là một người quản lý màn hình:
+        # Với công việc là set up background và vẽ button quản lý các hiệu ứng v.v
+        self.manager = pygame_gui.UIManager(self.options.resolution, 
+                                            pygame_gui.PackageResource(package='themes',
+                                                            resource='theme.json'))
+
+        
 
         # Screen Win Lose
-        print((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-        self.win_lose_screen = winlose.WinLose(self.SCREEN_WIDTH, self.SCREEN_HEIGHT ,self.screen)
+        # --- Đưa window vào center
+        window_RECT = pygame.Rect((0,0), (self.SCREEN_WIDTH * 5 // 8, self.SCREEN_HEIGHT * 5 // 8))
+        window_RECT.center = (self.SCREEN_WIDTH / 2 , self.SCREEN_HEIGHT / 2)
+        
+        # Khởi tạo
+        self.win_lose_screen = winlose.WinLoseWindow(window_RECT, self.manager, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, "")
+        # Ban đầu ẩn màn hình nhỏ đi
+        self.win_lose_screen.hide()
+        
+        # Button điều hướng khi chiến thắng trò chơi
+        # Này demo trước, sau tách ra thành một class riêng
+        self.btn_size = (int(self.options.resolution[0] * 0.4), int(self.options.resolution[1] * 0.1))
+        self.text_entry_size = (int(self.options.resolution[0] * 0.6) , int(self.options.resolution[1] * 0.1))
+        self.label_size = (int(self.options.resolution[0] * 0.6), int(self.options.resolution[1] * 0.25))
+        
+        self.btn_play_again = pygame_gui.elements.UIButton(pygame.Rect((int(self.SCREEN_WIDTH * 0.65),
+                                                        int(self.SCREEN_HEIGHT * 0.4)), 
+                                                        tuple(i * 3 // 4 for i in self.btn_size)),
+                                                        "Play Again",
+                                                        self.manager,
+                                                        object_id="#all_button")
+        self.btn_menu = pygame_gui.elements.UIButton(pygame.Rect((int(self.SCREEN_WIDTH * 0.65),
+                                                        int(self.SCREEN_HEIGHT * 0.5)), 
+                                                        tuple(i * 3 // 4 for i in self.btn_size)),
+                                                        "Menu",
+                                                        self.manager,
+                                                        object_id="#all_button")
+        # Ẩn các button này đi
+        self.btn_play_again.hide()
+        self.btn_menu.hide()
 
         # các thành phần điều khiển của game
         self.save_manager  = save_manager.SaveManager('game_data.json', 'data')
@@ -83,26 +120,19 @@ class Game:
         #biến vòng lặp game
         self.running = True
         
-        # Tạo một manager UI (Quản lý Giao diện màn hình)
-        # Tham số truyền vào sẽ là kích thước màn hình và package
-        # Hãy xem manager như là một người quản lý màn hình:
-        # Với công việc là set up background và vẽ button quản lý các hiệu ứng v.v
-        self.manager = pygame_gui.UIManager(self.options.resolution, 
-                                            pygame_gui.PackageResource(package='themes',
-                                                            resource='theme.json'))
-        
         # Setup Background
         self.background_surface = pygame.Surface(self.options.resolution)
         self.background_surface.fill(self.manager.get_theme().get_colour("dark_bg"))  # dark_bg nằm trong file theme.json
         
-        self.btn_size = (int(self.options.resolution[0] * 0.4), int(self.options.resolution[1] * 0.1))
-        self.text_entry_size = (int(self.options.resolution[0] * 0.6) , int(self.options.resolution[1] * 0.1))
-        self.label_size = (int(self.options.resolution[0] * 0.6), int(self.options.resolution[1] * 0.25))
+        #
+        self.exit_screen_created = False
+        self.winlose_window_created = False
+        self.blocked = False
 
     # khởi tạo game mới
-    #def new_game(self):
-    #    self.draw_grid_on()
-        #self.game_data = self.save_manager.refresh()
+    def new_game(self):
+        self.draw_grid_on()
+        self.game_data = self.save_manager.refresh()
 
     # tiếp tục game từ save
     def continue_game(self):
@@ -184,7 +214,7 @@ class Game:
 
         # duyệt qua các event
         for event in pygame.event.get():
-
+            
             # xử lý bot
             if self.gamemode == "Bot":
                 if self.turn == 1:
@@ -227,8 +257,6 @@ class Game:
                                                         (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
                                                         self.manager, self.options.resolution[0], self.options.resolution[1])
                 
-                #self.exit_screen_created = quit_button_pressed or btn_quit_clicked
-                
                 elif not quit_button_pressed and self.exit_screen_created:
                     if event.ui_element == self.exit_screen.btn_Exit:
                         #print("Hello")
@@ -238,10 +266,27 @@ class Game:
                     if event.ui_element == self.exit_screen.btn_continue:
                         self.exit_screen.hide()
                         self.exit_screen_created = False
+                
+                elif event.ui_element == self.win_lose_screen.btn_back:
+                    self.win_lose_screen.hide()
+                
+                # Điều hướng sau khi chơi
+                elif event.ui_element == self.btn_play_again:
+                    game_data = save_manager.SaveManager('game_data.json', 'data').refresh()
+                    game_data['PlayerName']['Player1'] = self.player_1
+                    game_data['PlayerName']['Player2'] = self.player_2
+                    save_manager.SaveManager('game_data.json', 'data').save(game_data)
+                    self.__init__(self.screen)
+                    self.new_game()
+                    self.run()
+                elif event.ui_element == self.btn_menu:
+                    menu.Menu(self.SCREEN_WIDTH, self.SCREEN_HEIGHT).run()
+                
+                #self.exit_screen_created = quit_button_pressed or btn_quit_clicked
                 #print(self.exit_screen_created)
             
             # nếu người chơi bấm chuột trái
-            elif not self.exit_screen_created and event.type == pygame.MOUSEBUTTONDOWN:
+            elif not self.blocked and not self.exit_screen_created and event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     #print(self.game_data)
                     # lấy hình ảnh của cờ theo turn
@@ -278,13 +323,23 @@ class Game:
                     
                     # kiểm tra đã thắng chưa
                     if self.win_checker.check_win(self.game_data['Board'], self.game_data['Turn'], board_x, board_y):
-                        self.win_lose_screen.run()
+                        self.blocked = True
+                        win_player_name = self.player_1 if self.game_data['Turn'] == 1 else self.player_2
+                        self.win_lose_screen.set_name(win_player_name)
+                        self.win_lose_screen.show()
+                        self.btn_play_again.show()
+                        self.btn_menu.show()
+                        game_data = save_manager.SaveManager('game_data.json', 'data').refresh()
+                        game_data['PlayerName']['Player1'] = self.player_1
+                        game_data['PlayerName']['Player2'] = self.player_2
+                        save_manager.SaveManager('game_data.json', 'data').save(game_data)
+                        # self.win_lose_screen.run()
                         
                     # Thay đổi Turn ở cuối mỗi lượt
                     self.game_data['Turn'] = 1 - self.game_data['Turn']
 
                     # thay đổi turn
-                    self.turn = 1
+                    self.turn = 1 - self.turn
                     
             
             # nếu người dùng bấm thoát
@@ -299,7 +354,9 @@ class Game:
         # return -1
     
     def run(self):
-        self.exit_screen_created = False
+        #self.exit_screen_created = False
+        #self.winlose_window_created = False
+        #self.blocked = False
         while self.running:
             # 120 FPS
             time_delta = self.clock.tick(120)

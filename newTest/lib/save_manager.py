@@ -10,10 +10,11 @@ class SaveManager:
 
         self.default_board = [[-1 for row in range(self.SIZE_Y)] for column in range(self.SIZE_X)]
         # self.default_value = dict.fromkeys(['PlayerName','Board', 'Turn'])
+        game_data = json.load(open('data/game_data.json'))
         self.default_value = {
             "PlayerName" : {
-                "Player1" : "",
-                "Player2" : ""
+                "Player1" : game_data["PlayerName"]["Player1"],
+                "Player2" : game_data["PlayerName"]["Player2"]
             },
             "Board" : self.default_board,
             # phải để 1, đừng để True False
