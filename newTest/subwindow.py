@@ -49,20 +49,22 @@ class SettingWindow(pygame_gui.elements.UIWindow):
             SCREEN_HEIGHT (int): chiều cao (dọc) của cửa sổ
         """
         
-        # Import DATA
-        setting = json.load(open('data/setting.json'))
-        game_data = json.load(open('data/game_data.json'))
-
-
-        # LOAD DATA
-        SCREEN_WIDTH  = setting['screen']['width']
-        SCREEN_HEIGHT = setting['screen']['height']
-        PLAYER_NAME = game_data["PlayerName"]
-        
         super().__init__(rect, ui_manager,
                          window_display_title='Setting',
                          object_id='#setting_window',
                          resizable=True)
+        
+        # Import DATA
+        self.setting = json.load(open('data/setting.json'))
+        self.game_data = json.load(open('data/game_data.json'))
+
+        self.is_blocking = True  # blocks all clicking events from interacting beyond this window
+        
+        # LOAD DATA
+        self.SCREEN_WIDTH  = self.setting['screen']['width']
+        self.SCREEN_HEIGHT = self.setting['screen']['height']
+        PLAYER_NAME = self.game_data["PlayerName"]
+        
 
         self.options = Options(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.btn_size = ( int(self.rect.width *0.6), 30 )
@@ -124,7 +126,7 @@ class SettingWindow(pygame_gui.elements.UIWindow):
                                                             self.ui_manager,
                                                             container=self)
         # Lấy giá trị của số quân liên tiếp để thắng
-        self.current_pieces_mode = (str(setting["game"]["win_cnt"]))
+        self.current_pieces_mode = (str(self.setting["game"]["win_cnt"]))
          
         # Dòng này hiện ra menu xổ xuống của số quân liên tiếp cần để thắng
         self.pieces_mode_drop_down = pygame_gui.elements.UIDropDownMenu(['3', '4', '5', '6'],
@@ -171,7 +173,7 @@ class ExitWindow(pygame_gui.elements.UIWindow):
         self.btn_size = (int(self.rect.width * 0.4), int(self.rect.height * 0.2))
         self.quit_size = (int(self.rect.width * 0.8), int(self.rect.height * 0.2))
 
-
+        self.is_blocking = True  # blocks all clicking events from interacting beyond this window
 
         # Setting quit
         # Dòng chữ "quit"
@@ -194,6 +196,48 @@ class ExitWindow(pygame_gui.elements.UIWindow):
                                                         int(self.rect.height / 2 - self.btn_size[1] + 50)), 
                                                         self.btn_size),
                                                         "Keep Playing",
+                                                        self.ui_manager,
+                                                        container=self,
+                                                        object_id="#all_button")
+    
+class NoGameWindow(pygame_gui.elements.UIWindow):
+    """class NoGameWindows là class kế thừa (Inheritance) từ class pygame_gui.elements.UIWindow
+
+    Args:
+        pygame_gui (_type_): _description_
+    """
+    def __init__(self, rect, ui_manager,SCREEN_WIDTH, SCREEN_HEIGHT):
+        """Hàm khởi tạo (constructor)
+
+        Args:
+            rect (_type_): _description_
+            ui_manager (_type_): _description_
+            SCREEN_WIDTH (int): chiều dài (ngang) của cửa sổ
+            SCREEN_HEIGHT (int): chiều cao (dọc) của cửa sổ
+        """
+        super().__init__(rect, ui_manager,
+                         window_display_title='No game available',
+                         object_id='#setting_window',
+                         resizable=True)
+
+        self.options = Options(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.btn_size = (int(self.rect.width * 0.4), int(self.rect.height * 0.2))
+        self.quit_size = (int(self.rect.width * 0.8), int(self.rect.height * 0.2))
+
+        self.is_blocking = True  # blocks all clicking events from interacting beyond this window
+
+        # Setting quit
+        # Dòng chữ "quit"
+        self.quit_label = pygame_gui.elements.UILabel(pygame.Rect((40,
+                                                        int(self.rect.height / 2 - 125)),
+                                                        self.quit_size),
+                                                        "The last game is over, please start a new game!",
+                                                        self.ui_manager,
+                                                        container=self)
+        self.btn_Back = pygame_gui.elements.UIButton(pygame.Rect((int(self.rect.width / 20) + 150,
+                                                        int(self.rect.height / 2 - self.btn_size[1] + 50)),
+                                                        self.btn_size),
+                                                        "Back",
                                                         self.ui_manager,
                                                         container=self,
                                                         object_id="#all_button")

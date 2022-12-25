@@ -1,22 +1,25 @@
 import json, os
 
-setting = json.load(open('data/setting.json'))
-SIZE_X = setting['grid']['size_x']
-SIZE_Y = setting['grid']['size_y']
 
 class SaveManager:
     def __init__(self, filename, path_folder):
+        #print("hello")
+        self.setting = json.load(open('data/setting.json'))
+        self.SIZE_X = self.setting['grid']['size_x']
+        self.SIZE_Y = self.setting['grid']['size_y']
 
-        self.default_board = [[-1 for row in range(SIZE_Y)] for column in range(SIZE_X)]
+        self.default_board = [[-1 for row in range(self.SIZE_Y)] for column in range(self.SIZE_X)]
         # self.default_value = dict.fromkeys(['PlayerName','Board', 'Turn'])
+        game_data = json.load(open('data/game_data.json'))
         self.default_value = {
             "PlayerName" : {
-                "Player1" : "",
-                "Player2" : ""
+                "Player1" : game_data["PlayerName"]["Player1"],
+                "Player2" : game_data["PlayerName"]["Player2"]
             },
             "Board" : self.default_board,
             # phải để 1, đừng để True False
-            "Turn" : 1
+            "Turn" : 1,
+            "GameEnded": False
         }
         self.filename = filename
         self.path_folder = path_folder
@@ -26,6 +29,7 @@ class SaveManager:
         return os.path.isfile(self.path) and os.path.getsize(self.path) > 0
 
     def save(self, data):
+        #print(data)
         with open(self.path, "w") as file:
             json.dump(data, file, indent = 4)
     

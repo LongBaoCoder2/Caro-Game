@@ -8,7 +8,7 @@ class TextSwitcher:
         self.screen   = screen
         self.bg_color = bg_color
         self.font     = pygame.font.SysFont('Consolas', 35)
-        self.player   = [self.font.render(player[0], True, color.WHITE), self.font.render(player[1], True, color.WHITE)]
+        self.player   = [self.font.render(player[1], True, color.WHITE), self.font.render(player[0], True, color.WHITE)]
         self.turn     = 0
         self.v_y      = 0
         self.d_y      = 0

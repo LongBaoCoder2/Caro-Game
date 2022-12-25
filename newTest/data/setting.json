@@ -21,5 +21,6 @@
     "game": {
         "win_cnt": 3
     },
-    "theme": "theme_2"
+    "theme": "theme_2",
+    "gamemode": "PvP"
 }
