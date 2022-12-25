@@ -48,7 +48,7 @@ class Game:
         self.clock = pygame.time.Clock()
 
         # ảnh lưới và cờ
-        self.img_grid  = pygame.transform.scale(pygame.image.load('res/images/' + self.THEME + '/grid.png'), (64, 64))
+        self.img_grid  = pygame.transform.scale(pygame.image.load('res/images/' + self.THEME + '/grid11.png'), (64, 64))
         self.img_piece = [pygame.transform.scale(pygame.image.load('res/images/' + self.THEME + '/piece_' + str(i) + '.png'), (32, 32)) for i in range(2)]
 
         # một số thông tin về lưới
