@@ -27,6 +27,7 @@ class WinLoseWindow(pygame_gui.elements.UIWindow):
         self.btn_back = None
         self.btn_continue = None
 
+        self.is_blocking = True
         self.update_ui()
 
     def update_ui(self):

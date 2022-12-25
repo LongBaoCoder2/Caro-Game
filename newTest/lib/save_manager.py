@@ -3,7 +3,7 @@ import json, os
 
 class SaveManager:
     def __init__(self, filename, path_folder):
-        print("hello")
+        #print("hello")
         self.setting = json.load(open('data/setting.json'))
         self.SIZE_X = self.setting['grid']['size_x']
         self.SIZE_Y = self.setting['grid']['size_y']
@@ -18,7 +18,8 @@ class SaveManager:
             },
             "Board" : self.default_board,
             # phải để 1, đừng để True False
-            "Turn" : 1
+            "Turn" : 1,
+            "GameEnded": False
         }
         self.filename = filename
         self.path_folder = path_folder
