@@ -4,7 +4,10 @@ import game
 
 from lib.paint import Paint
 from name import *
-from subwindow import *
+from lib.options import Options
+from lib.exit_window import *
+from lib.no_game_window import *
+from lib.setting_window import *
 # from winlose import WinLose
 
 class Menu:
@@ -177,18 +180,25 @@ class Menu:
 
         self.title_game_caro.set_active_effect(pygame_gui.TEXT_EFFECT_TYPING_APPEAR)
         
-        self.exit_screen = ExitWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
-                                                        int(self.options.resolution[1] / 2) - 125), 
-                                                        (self.sub_window_width * 3 // 4, self.sub_window_height * 3 // 5)),
-                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
         self.no_game = NoGameWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
                                                     int(self.options.resolution[1] / 2) - 125), 
                                                     (self.sub_window_width * 9 // 10, self.sub_window_height * 3 // 5)),
                                                     self.manager, self.options.resolution[0], self.options.resolution[1])
         
+        self.setting_screen = SettingWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 150),
+                                                        int(self.options.resolution[1] / 2) - 200), 
+                                                        (self.sub_window_width, self.sub_window_height)), 
+                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
+        
+        self.exit_screen = ExitWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
+                                                        int(self.options.resolution[1] / 2) - 125), 
+                                                        (self.sub_window_width * 3 // 4, self.sub_window_height * 3 // 5)),
+                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
+        
         # Ban đầu ẩn màn hình nhỏ đi
-        self.exit_screen.hide()
         self.no_game.hide()
+        self.setting_screen.hide()
+        self.exit_screen.hide()
         
         
         # Kích thước 
@@ -245,10 +255,7 @@ class Menu:
                 
                 
                 elif event.ui_element == self.btn_settings:
-                    self.setting_screen = SettingWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 150),
-                                                        int(self.options.resolution[1] / 2) - 200), 
-                                                        (self.sub_window_width, self.sub_window_height)), 
-                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
+                    self.setting_screen.show()
                 
                     
                 elif event.ui_element == self.btn_continue:
@@ -278,16 +285,33 @@ class Menu:
                     self.no_game.hide()
 
 
-            if (event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED
-                    and event.ui_element == self.setting_screen.resolution_drop_down):
-                self.change_size(event.text)
-                res = event.text.split('x')
-                self.setting["screen"]["width"] = int(res[0])
-                self.setting["screen"]["height"] = int(res[1])
-            if (event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED
-                    and event.ui_element == self.setting_screen.pieces_mode_drop_down):
-                print("Pieces mode changed from %d to %s" % (self.setting["game"]["win_cnt"], event.text))
-                self.setting["game"]["win_cnt"] = int(event.text)
+            if event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
+                if event.ui_element == self.setting_screen.pieces_mode_drop_down:
+                    print("Pieces mode changed from %d to %s" % (self.setting["game"]["win_cnt"], event.text))
+                    print(self.setting_screen.pieces_mode_drop_down.selected_option)
+                    print(type(self.setting_screen.pieces_mode_drop_down.selected_option))
+                    # self.setting_screen.update_pieces_mode_index()
+                    self.setting_screen.update_board_size_drop_down()
+                    res = self.setting_screen.board_size_drop_down.selected_option.split('x')
+                    self.setting["grid"]["size_x"] = int(res[0])
+                    self.setting["grid"]["size_y"] = int(res[1])
+                    self.setting["game"]["win_cnt"] = int(event.text)
+                    print("print in pieces mode drop down update\n", self.setting["grid"])
+                elif event.ui_element == self.setting_screen.board_size_drop_down:
+                    print("Board size changed from %dx%d to %s" 
+                          % (self.setting["grid"]["size_x"], self.setting["grid"]["size_y"], 
+                             event.text))
+                    print(self.setting_screen.board_size_drop_down.selected_option)
+                    print(type(self.setting_screen.board_size_drop_down.selected_option))
+                    res = event.text.split('x')
+                    self.setting["grid"]["size_x"] = int(res[0])
+                    self.setting["grid"]["size_y"] = int(res[1])
+                    print(self.setting["grid"])
+                elif event.ui_element == self.setting_screen.resolution_drop_down:
+                    self.change_size(event.text)
+                    res = event.text.split('x')
+                    self.setting["screen"]["width"] = int(res[0])
+                    self.setting["screen"]["height"] = int(res[1])
                 # https://www.programiz.com/python-programming/json
             json.dump(self.setting, open('data/setting.json', 'w'), indent = 4)
             
@@ -296,7 +320,7 @@ class Menu:
         """Chạy màn hình game
         """
         while self.running:
-            time_delta = self.clock.tick(120)
+            time_delta = self.clock.tick(120) / 1000.0
             #print(time_delta)
             # Vẽ hình nền lên screen
             self.screen.blit(self.background_surface, (0,0))

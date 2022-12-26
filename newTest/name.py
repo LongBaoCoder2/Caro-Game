@@ -2,7 +2,10 @@ import pygame, json, pygame_gui, sys
 from lib import button, color, save_manager
 import game
 
-from subwindow import *
+from lib.options import Options
+from lib.exit_window import *
+from lib.no_game_window import *
+from lib.setting_window import *
 import menu
 from lib.paint import Paint
 # from winlose import WinLose

@@ -1,5 +1,5 @@
 import pygame, json, game
-import menu, winlose
+import menu
 
 # setting
 setting = json.load(open('data/setting.json'))

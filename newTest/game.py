@@ -1,11 +1,12 @@
-import pygame, json, sys, winlose
+import pygame, json, sys, pygame_gui
 #from lib.play_sound import PlaySound
 from lib import color, save_manager, win_checker
 from lib import text_switcher, cursor_trail, bot, pause
-from subwindow import *
+from lib import winlose, options
 import menu
 from lib.music_game import MusicGame
 from lib.win_music import WinMusic
+from lib.exit_window import *
 
 class Game:
 
@@ -31,7 +32,7 @@ class Game:
         # GRID_COLOR = [setting['grid']['color_0'], setting['grid']['color_1']]
         
         # Tạo tùy chọn cho màn hình
-        self.options = Options(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+        self.options = options.Options(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
         
         # Tạo background (sẽ setup sau)
         self.background_surface = None
@@ -58,8 +59,8 @@ class Game:
         # self.grid_height = (SCREEN_HEIGHT - THICKNESS * NUM_OF_LINES) // (NUM_OF_LINES - 1) + THICKNESS
         self.grid_width   = self.img_grid.get_width() // 2
         self.grid_height  = self.img_grid.get_width() // 2
-        self.grid_start_x = (self.SCREEN_HEIGHT - self.grid_height * self.SIZE_Y) // 2
-        self.grid_start_y = (self.SCREEN_HEIGHT - self.grid_height * self.SIZE_Y) // 2
+        self.grid_start_x = (self.SCREEN_HEIGHT - self.grid_height * self.SIZE_Y) * 1 // 4
+        self.grid_start_y = (self.SCREEN_HEIGHT - self.grid_height * self.SIZE_Y) * 3 // 8
         self.grid_end_x   = self.grid_start_x + self.grid_width  * self.SIZE_X
         self.grid_end_y   = self.grid_start_y + self.grid_height * self.SIZE_Y
 
@@ -432,7 +433,7 @@ class Game:
 
             self.loop_on()
 
-            self.text_switcher.draw_on(600, 40)
+            self.text_switcher.draw_on(int(self.options.resolution[0] - 250), 150)
             self.cursor_trail.draw_on(self.screen)
             
             # vẽ pop-up window sau cùng sẽ giúp nó đè lên trên các hình các, tránh bug text_switcher che mất window
