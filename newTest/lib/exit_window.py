@@ -1,10 +1,7 @@
 import pygame, json, pygame_gui, sys
-import lib.options
-import game
+import lib.button, lib.color, lib.save_manager, lib.options
 
-from lib.paint import Paint
-
-class PauseWindow(pygame_gui.elements.UIWindow):
+class ExitWindow(pygame_gui.elements.UIWindow):
     """class ExitWindows là class kế thừa (Inheritance) từ class pygame_gui.elements.UIWindow
 
     Args:
@@ -20,11 +17,11 @@ class PauseWindow(pygame_gui.elements.UIWindow):
             SCREEN_HEIGHT (int): chiều cao (dọc) của cửa sổ
         """
         super().__init__(rect, ui_manager,
-                         window_display_title='PAUSE',
+                         window_display_title='Exit',
                          object_id='#setting_window',
                          resizable=True)
 
-        self.options =  lib.options.Options(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.options = lib.options.Options(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.btn_size = (int(self.rect.width * 0.4), int(self.rect.height * 0.2))
         self.quit_size = (int(self.rect.width * 0.8), int(self.rect.height * 0.2))
 
@@ -32,27 +29,29 @@ class PauseWindow(pygame_gui.elements.UIWindow):
 
         # Setting quit
         # Dòng chữ "quit"
-        self.quit_label = pygame_gui.elements.UILabel(pygame.Rect((int((self.rect.width - self.quit_size[0]) // 2 - 20),
+        self.quit_label = pygame_gui.elements.UILabel(pygame.Rect((int((self.rect.width - self.quit_size[0]) // 2),
                                                         int(self.rect.height / 2 - 125)),
                                                         self.quit_size),
-                                                        "GAME PAUSED",
+                                                        
+                                                        "Are you sure you want to quit the game?",
                                                         self.ui_manager,
                                                         container=self)
-        self.btn_Resume = pygame_gui.elements.UIButton(pygame.Rect((int(self.rect.width / 20),
+        self.btn_Exit = pygame_gui.elements.UIButton(pygame.Rect((int(self.rect.width / 20),
                                                         int(self.rect.height / 2 - self.btn_size[1] + 50)),
                                                         self.btn_size),
-                                                        "RESUME",
+                                                        "Exit",
                                                         self.ui_manager,
                                                         container=self,
                                                         object_id="#all_button")
         
-        self.btn_menu = pygame_gui.elements.UIButton(pygame.Rect((int(self.rect.width / 20 + self.btn_size[0] + 20),
+        self.btn_continue = pygame_gui.elements.UIButton(pygame.Rect((int(self.rect.width / 20 + self.btn_size[0] + 20),
                                                         int(self.rect.height / 2 - self.btn_size[1] + 50)), 
                                                         self.btn_size),
-                                                        "MENU",
+                                                        "Keep Playing",
                                                         self.ui_manager,
                                                         container=self,
                                                         object_id="#all_button")
+        
     def on_close_window_button_pressed(self):
         """
         Override this method to call 'hide()' instead if you want to hide a window when the
