@@ -320,7 +320,7 @@ class Menu:
         """Chạy màn hình game
         """
         while self.running:
-            time_delta = self.clock.tick(120) / 1000.0
+            time_delta = self.clock.tick(120)
             #print(time_delta)
             # Vẽ hình nền lên screen
             self.screen.blit(self.background_surface, (0,0))
