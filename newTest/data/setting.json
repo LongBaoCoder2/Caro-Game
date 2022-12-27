@@ -4,8 +4,8 @@
         "height": 960
     },
     "grid": {
-        "size_x": 10,
-        "size_y": 10,
+        "size_x": 24,
+        "size_y": 24,
         "thickness": 5,
         "color_0": [
             243,
@@ -19,8 +19,8 @@
         ]
     },
     "game": {
-        "win_cnt": 4
+        "win_cnt": 6
     },
     "theme": "theme_2",
-    "gamemode": "Bot"
+    "gamemode": "PvP"
 }

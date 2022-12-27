@@ -4,17 +4,16 @@ from lib import color, save_manager, win_checker
 from lib import text_switcher, cursor_trail, bot, pause
 from lib import winlose, options
 import menu
-from lib.music_game import MusicGame
+#from lib.music_game import MusicGame
 from lib.win_music import WinMusic
 from lib.exit_window import *
+
 
 class Game:
 
     # khởi tạo
     def __init__(self, screen):
-        #âm thanh nhạc nền 
-        MusicGame.play('res/musicgame/musicgame1.mp3')
-        
+
         pygame.display.set_caption('GAME')
         
         theme_color = json.load(open('themes/theme.json'))
@@ -246,7 +245,9 @@ class Game:
             save_manager.SaveManager('game_data.json', 'data').save(self.game_data)
             win_player_name = self.player_1 if self.game_data['Turn'] == 1 else self.player_2
             self.win_lose_screen.set_name(win_player_name)
+            
             self.win_lose_screen.show()
+            # WinMusic.play('./res/winmusic/win.mp3')
             self.btn_play_again.show()
             self.btn_menu.show()
             # self.win_lose_screen.run()       
