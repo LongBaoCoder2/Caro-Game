@@ -4,8 +4,8 @@
         "height": 960
     },
     "grid": {
-        "size_x": 24,
-        "size_y": 24,
+        "size_x": 16,
+        "size_y": 16,
         "thickness": 5,
         "color_0": [
             243,
@@ -19,7 +19,7 @@
         ]
     },
     "game": {
-        "win_cnt": 6
+        "win_cnt": 5
     },
     "theme": "theme_2",
     "gamemode": "PvP"

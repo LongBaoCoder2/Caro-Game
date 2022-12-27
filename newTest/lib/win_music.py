@@ -1,10 +1,10 @@
 from playsound import playsound
-from _thread import *
+from threading import Thread
 
 class WinMusic:
-    def play(file):
-        start_new_thread(playsound, (file, ))
-        
+   def play(file2):
+        t=Thread(target=playsound, args=(file2,), daemon=True)
+        t.start()
 
     
     
