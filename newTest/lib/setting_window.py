@@ -58,7 +58,8 @@ class SettingWindow(pygame_gui.elements.UIWindow):
             ['16x16', '20x20'],
             ['20x20', '24x24']
         ]
-        self.resolution = ['640x480', '800x600', '1024x768', '1280x960']
+        # self.resolution = ['640x480', '800x600', '1024x768', '1280x960']
+        self.resolution = ['1280x960']
 
         self.options = lib.options.Options(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.btn_size = ( int(self.rect.width *0.6), 30 )

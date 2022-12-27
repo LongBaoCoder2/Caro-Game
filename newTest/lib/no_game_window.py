@@ -32,7 +32,7 @@ class NoGameWindow(pygame_gui.elements.UIWindow):
         self.quit_label = pygame_gui.elements.UILabel(pygame.Rect((40,
                                                         int(self.rect.height / 2 - 125)),
                                                         self.quit_size),
-                                                        "The last game is over, please start a new game!",
+                                                        "No data for the last game, please start a new game!",
                                                         self.ui_manager,
                                                         container=self)
         self.btn_Back = pygame_gui.elements.UIButton(pygame.Rect((int(self.rect.width / 20) + 150,
