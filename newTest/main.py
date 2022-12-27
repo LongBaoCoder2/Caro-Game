@@ -1,7 +1,7 @@
 # https://stackoverflow.com/a/44341598
 # this prevent pygame from scretching its window UI
-import ctypes
-ctypes.windll.user32.SetProcessDPIAware()
+# import ctypes
+# ctypes.windll.user32.SetProcessDPIAware()
 
 import pygame, json, game
 import menu
