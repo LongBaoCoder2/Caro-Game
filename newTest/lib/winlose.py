@@ -1,7 +1,7 @@
 import pygame, pygame_gui, sys, menu
 
 from lib.paint import Paint
-from subwindow import *
+import lib.options
 import menu
 
 class WinLoseWindow(pygame_gui.elements.UIWindow):
@@ -12,7 +12,7 @@ class WinLoseWindow(pygame_gui.elements.UIWindow):
                          resizable=False)
 
         self.SCREEN_WIDTH, self.SCREEN_HEIGHT = SCREEN_WIDTH, SCREEN_HEIGHT
-        self.options = Options(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.options = lib.options.Options(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.btn_size = ( int(self.rect.width *0.4), 55 )
         self.win_lose_label = (300, 100)
         self.win_player_name = win_player_name

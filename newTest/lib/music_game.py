@@ -1,6 +1,10 @@
 from playsound import playsound
-import threading
-
+from threading import Thread
 class MusicGame:
+
     def play(file2):
-        threading.Thread(target=playsound, args=(file2,), daemon=True).start()
+        t=Thread(target=playsound, args=(file2,), daemon=True)
+        t.start()
+        
+      
+       
