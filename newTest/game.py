@@ -1,17 +1,27 @@
 import pygame, json, sys, winlose
 #from lib.play_sound import PlaySound
 from lib import color, save_manager, win_checker
-from lib import text_switcher, cursor_trail, bot, pause
+from lib import text_switcher, cursor_trail, bot,pause
 from subwindow import *
 import menu
 #from lib.music_game import MusicGame
-from lib.win_music import WinMusic
+#from lib.win_music import WinMusic
+from lib.music_player import MusicPlayer
+
 
 
 class Game:
 
     # khởi tạo
     def __init__(self, screen):
+        
+        self.bgsound_path='res/musicgame/musicgame1.mp3'
+        self.win_sound_path='res/winmusic/win.mp3'
+        self.click_sound_path='res/clickmusic/click.mp3'
+        self.menu_path='res/musicgame/musicgame2.mp3'
+        self.music_player=MusicPlayer(self.bgsound_path, self.win_sound_path,self.click_sound_path,self.menu_path)
+        self.music_player.bgsound_play()
+        self.music_player.menu_pause()
 
         pygame.display.set_caption('GAME')
         
@@ -85,6 +95,7 @@ class Game:
         # chiều cao (dọc) cửa sổ settings, quit
         sub_window_height = self.options.resolution[1] * 5 // 8 
         self.win_lose_screen = winlose.WinLoseWindow(window_RECT, self.manager, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, "")
+        #self.music_player.bgsound_pause()
         self.pause_screen = pause.PauseWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 50),
                                                         int(self.options.resolution[1] / 2) - 125), 
                                                         (sub_window_width * 3 // 4, sub_window_height * 3 // 5)),
@@ -246,9 +257,12 @@ class Game:
             self.win_lose_screen.set_name(win_player_name)
             
             self.win_lose_screen.show()
-            WinMusic.play('./res/winmusic/win.mp3')
+            #WinMusic.play('./res/winmusic/win.mp3')
             self.btn_play_again.show()
             self.btn_menu.show()
+            self.music_player.bgsound_pause()
+            self.music_player.win_play()
+            
             # self.win_lose_screen.run()       
 
     # vòng lặp
@@ -370,7 +384,7 @@ class Game:
                     self.text_switcher.switch()
                     
                     # âm thanh khi bấm chuột
-                    #PlaySound.play('res\sounds/click2.mp3')
+                    self.music_player.click_play()
 
                     # vẽ cờ lên màn hình
                     self.draw_piece_on(board_x, board_y, cur_piece)

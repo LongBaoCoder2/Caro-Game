@@ -6,6 +6,7 @@ from lib.paint import Paint
 from name import *
 from subwindow import *
 # from winlose import WinLose
+from lib.music_player import MusicPlayer
 
 class Menu:
     # khởi tạo
@@ -13,14 +14,22 @@ class Menu:
         # Import DATA
         self.setting = json.load(open('data/setting.json'))
         self.game_data = json.load(open('data/game_data.json'))
-
-
+        
+     
         # LOAD DATA
+
         self.SCREEN_WIDTH  = self.setting['screen']['width']
         self.SCREEN_HEIGHT = self.setting['screen']['height']
         self.PLAYER_NAME = self.game_data["PlayerName"]
         
         pygame.init()
+        self.bgsound_path='res/musicgame/musicgame1.mp3'
+        self.win_sound_path='res/winmusic/win.mp3'
+        self.click_sound_path='res/clickmusic/click.mp3'
+        self.menu_path='res/musicgame/musicgame2.mp3'
+        self.music_player=MusicPlayer(self.bgsound_path, self.win_sound_path,self.click_sound_path,self.menu_path)
+        self.music_player.menu_play()
+        self.music_player.bgsound_pause()
 
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('MENU')
