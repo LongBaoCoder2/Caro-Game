@@ -266,11 +266,6 @@ class Game:
             self.win_lose_screen.set_name(win_player_name)
             
             self.win_lose_screen.show()
-<<<<<<< HEAD
-            # WinMusic.play('./res/winmusic/win.mp3')
-=======
-            #WinMusic.play('./res/winmusic/win.mp3')
->>>>>>> 716aec42ade2c376d7f607dca9d7ace2ec89df25
             self.btn_play_again.show()
             self.btn_menu.show()
             self.music_player.bgsound_pause()
