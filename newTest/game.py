@@ -4,6 +4,7 @@ from lib import color, save_manager, win_checker
 from lib import text_switcher, cursor_trail, bot, pause
 from lib import winlose, options
 import menu
+from lib.exit_window import *
 from lib.music_player import MusicPlayer
 
 
