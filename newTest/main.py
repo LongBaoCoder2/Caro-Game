@@ -1,7 +1,18 @@
-# https://stackoverflow.com/a/44341598
-# this prevent pygame from scretching its window UI
-import ctypes
-ctypes.windll.user32.SetProcessDPIAware()
+import sys
+import os
+
+if sys.platform.startswith("linux"):  # could be "linux", "linux2", "linux3", ...
+    # linux
+    pass
+elif sys.platform == "darwin":
+    # MAC OS X
+    pass
+elif os.name == "nt":
+    # https://stackoverflow.com/a/44341598
+    # this prevent pygame from scretching its window UI
+    import ctypes
+    ctypes.windll.user32.SetProcessDPIAware()
+    # Windows, Cygwin, etc. (either 32-bit or 64-bit)
 
 import json
 import menu

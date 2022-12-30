@@ -199,7 +199,19 @@ class Game:
             for j in range(self.SIZE_X // 2):
                 self.screen.blit(self.img_grid, (cur_x, cur_y))
                 cur_x += self.grid_height * 2
+            if self.SIZE_X % 2 == 1:
+                cur_x -= self.grid_height
+                self.screen.blit(self.img_grid, (cur_x, cur_y))
             cur_y += self.grid_width * 2
+        if self.SIZE_Y % 2 == 1:
+            cur_y -= self.grid_width
+            cur_x = self.grid_start_x
+            for j in range(self.SIZE_X // 2):
+                self.screen.blit(self.img_grid, (cur_x, cur_y))
+                cur_x += self.grid_height * 2
+            if self.SIZE_X % 2 == 1:
+                cur_x -= self.grid_height
+                self.screen.blit(self.img_grid, (cur_x, cur_y))
 
         delta = 10
         pygame.draw.rect(self.screen, self.LINE_COLOR, (self.grid_start_x - delta, self.grid_start_y - delta, self.grid_end_x - self.grid_start_x + delta * 2, self.grid_end_y - self.grid_start_y + delta * 2), 5, 10)
