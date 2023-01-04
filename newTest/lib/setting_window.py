@@ -128,30 +128,30 @@ class SettingWindow(pygame_gui.elements.UIWindow):
                                                   self.ui_manager,
                                                   container=self)
 
-        # Setting Volume
-        # Dòng chữ "Volume"
-        self.volume_label = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
-                                                            int(self.rect.height / 2 + 50)),
-                                                            self.btn_size),
-                                                            "Volume: ",
-                                                            self.ui_manager,
-                                                            container=self)
-        # Thanh trượt qua lại
-        self.volume_settings = pygame_gui.elements.UIHorizontalSlider(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
-                                                            int(self.rect.height / 2) + 100),
-                                                            self.btn_size),
-                                                            50.0,
-                                                            (0.0, 100.0),
-                                                            self.ui_manager,
-                                                            container=self,
-                                                            click_increment=5)
-            # Âm thanh
-        self.current_volume = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 + self.btn_size[0] /2),
-                                                int(self.rect.height / 2 + 100)),
-                                                (50, 50)),
-                                    str(int(self.volume_settings.get_current_value())),
-                                    self.ui_manager,
-                                    container=self)
+        # # Setting Volume
+        # # Dòng chữ "Volume"
+        # self.volume_label = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
+        #                                                     int(self.rect.height / 2 + 50)),
+        #                                                     self.btn_size),
+        #                                                     "Volume: ",
+        #                                                     self.ui_manager,
+        #                                                     container=self)
+        # # Thanh trượt qua lại
+        # self.volume_settings = pygame_gui.elements.UIHorizontalSlider(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
+        #                                                     int(self.rect.height / 2) + 100),
+        #                                                     self.btn_size),
+        #                                                     50.0,
+        #                                                     (0.0, 100.0),
+        #                                                     self.ui_manager,
+        #                                                     container=self,
+        #                                                     click_increment=5)
+        #     # Âm thanh
+        # self.current_volume = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 + self.btn_size[0] /2),
+        #                                         int(self.rect.height / 2 + 100)),
+        #                                         (50, 50)),
+        #                             str(int(self.volume_settings.get_current_value())),
+        #                             self.ui_manager,
+        #                             container=self)
     
     # def update_pieces_mode_index(self) -> None:
     #     self.pieces_mode_pos = self.pieces_mode.index(self.pieces_mode_drop_down.selected_option)
@@ -189,8 +189,8 @@ class SettingWindow(pygame_gui.elements.UIWindow):
 
     def update(self, time_delta):
         super().update(time_delta)
-        if self.alive() and self.volume_settings.has_moved_recently:
-            self.current_volume.set_text(str(int(self.volume_settings.get_current_value())))
+        # if self.alive() and self.volume_settings.has_moved_recently:
+        #     self.current_volume.set_text(str(int(self.volume_settings.get_current_value())))
             
 
 

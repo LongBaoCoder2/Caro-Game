@@ -123,6 +123,12 @@ class Game:
                                                         "Menu",
                                                         self.manager,
                                                         object_id="#all_button")
+        self.btn_quit = pygame_gui.elements.UIButton(pygame.Rect((int(self.SCREEN_WIDTH * 0.65),
+                                                        int(self.SCREEN_HEIGHT * 0.6)), 
+                                                        tuple(i * 3 // 4 for i in self.btn_size)),
+                                                        "Quit",
+                                                        self.manager,
+                                                        object_id="#all_button")
         
         self.btn_pause = pygame_gui.elements.UIButton(pygame.Rect((int(self.SCREEN_WIDTH * 0.75),
                                                         int(10)), 
@@ -134,6 +140,7 @@ class Game:
         # Ẩn các button này đi
         self.btn_play_again.hide()
         self.btn_menu.hide()
+        self.btn_quit.hide()
 
         # các thành phần điều khiển của game
         self.save_manager  = save_manager.SaveManager('game_data.json', 'data')
@@ -269,6 +276,7 @@ class Game:
             self.win_lose_screen.show()
             self.btn_play_again.show()
             self.btn_menu.show()
+            self.btn_quit.show()
             self.music_player.bgsound_pause()
             self.music_player.win_play()
             
@@ -317,7 +325,7 @@ class Game:
                 
                 # print("Triggered")
                 
-                if quit_button_pressed:
+                if quit_button_pressed or event.ui_element == self.btn_quit:
                     self.exit_screen.show()
                     
                 elif event.ui_element == self.btn_pause:
