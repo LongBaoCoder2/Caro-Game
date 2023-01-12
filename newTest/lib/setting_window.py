@@ -23,7 +23,7 @@ class SettingWindow(pygame_gui.elements.UIWindow):
     Args:
         pygame_gui (_type_): _description_
     """
-    def __init__(self, rect, ui_manager,SCREEN_WIDTH, SCREEN_HEIGHT):
+    def __init__(self, rect, ui_manager,SCREEN_WIDTH, SCREEN_HEIGHT, background_sound, win_sound, click_sound, menu_sound):
         """Hàm khởi tạo (constructor)
 
         Args:
@@ -32,6 +32,10 @@ class SettingWindow(pygame_gui.elements.UIWindow):
             SCREEN_WIDTH (int): chiều dài (ngang) của cửa sổ
             SCREEN_HEIGHT (int): chiều cao (dọc) của cửa sổ
         """
+        self.background_sound = background_sound
+        self.win_sound = win_sound
+        self.click_sound = click_sound
+        self.menu_sound = menu_sound
         
         super().__init__(rect, ui_manager,
                          window_display_title='Setting',
@@ -128,30 +132,32 @@ class SettingWindow(pygame_gui.elements.UIWindow):
                                                   self.ui_manager,
                                                   container=self)
 
-        # # Setting Volume
-        # # Dòng chữ "Volume"
-        # self.volume_label = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
-        #                                                     int(self.rect.height / 2 + 50)),
-        #                                                     self.btn_size),
-        #                                                     "Volume: ",
-        #                                                     self.ui_manager,
-        #                                                     container=self)
-        # # Thanh trượt qua lại
-        # self.volume_settings = pygame_gui.elements.UIHorizontalSlider(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
-        #                                                     int(self.rect.height / 2) + 100),
-        #                                                     self.btn_size),
-        #                                                     50.0,
-        #                                                     (0.0, 100.0),
-        #                                                     self.ui_manager,
-        #                                                     container=self,
-        #                                                     click_increment=5)
-        #     # Âm thanh
-        # self.current_volume = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 + self.btn_size[0] /2),
-        #                                         int(self.rect.height / 2 + 100)),
-        #                                         (50, 50)),
-        #                             str(int(self.volume_settings.get_current_value())),
-        #                             self.ui_manager,
-        #                             container=self)
+        # Setting Volume
+        # Dòng chữ "Volume"
+        self.volume_label = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
+                                                            int(self.rect.height / 2 + 50)),
+                                                            self.btn_size),
+                                                            "Volume: ",
+                                                            self.ui_manager,
+                                                            container=self)
+        # Thanh trượt qua lại
+        self.volume_settings = pygame_gui.elements.UIHorizontalSlider(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
+                                                            int(self.rect.height / 2) + 100),
+                                                            self.btn_size),
+                                                            100.0,
+                                                            (0.0, 100.0),
+                                                            self.ui_manager,
+                                                            container=self,
+                                                            click_increment=5)
+        #self.volume_settings.left_button.kill()
+        #self.volume_settings.right_button.kill()
+            # Âm thanh
+        self.current_volume = pygame_gui.elements.UILabel(pygame.Rect((int(self.rect.width / 2 + self.btn_size[0] /2),
+                                                int(self.rect.height / 2 + 100)),
+                                                (50, 50)),
+                                    str(int(self.volume_settings.get_current_value())),
+                                    self.ui_manager,
+                                    container=self)
     
     # def update_pieces_mode_index(self) -> None:
     #     self.pieces_mode_pos = self.pieces_mode.index(self.pieces_mode_drop_down.selected_option)
@@ -189,8 +195,13 @@ class SettingWindow(pygame_gui.elements.UIWindow):
 
     def update(self, time_delta):
         super().update(time_delta)
-        # if self.alive() and self.volume_settings.has_moved_recently:
-        #     self.current_volume.set_text(str(int(self.volume_settings.get_current_value())))
+        if self.alive() and self.volume_settings.has_moved_recently:
+            cur_volume = int(self.volume_settings.get_current_value())
+            self.current_volume.set_text(str(cur_volume))
+            self.background_sound.set_volume(cur_volume / 100.0)
+            self.win_sound.set_volume(cur_volume / 100.0)
+            self.click_sound.set_volume(cur_volume / 100.0)
+            self.menu_sound.set_volume(cur_volume / 100.0)
             
 
 

@@ -5,7 +5,7 @@ class MusicPlayer:
         self.background_sound = pygame.mixer.Sound( background_sound )
         self.win_sound = pygame.mixer.Sound( win_sound )
         self.click_sound = pygame.mixer.Sound( click_sound )
-        self.menu_soud = pygame.mixer.Sound( menu_sound )
+        self.menu_sound = pygame.mixer.Sound( menu_sound )
         self.bgsound_channel = pygame.mixer.Channel(0)
         self.win_channel = pygame.mixer.Channel(1)
         self.click_channel = pygame.mixer.Channel(2)
@@ -20,6 +20,6 @@ class MusicPlayer:
     def click_play(self):
         self.click_channel.play(self.click_sound, loops=0)
     def menu_play(self):
-        self.menu_channel.play(self.menu_soud, fade_ms=1000)
+        self.menu_channel.play(self.menu_sound, fade_ms=1000)
     def menu_pause (self):
         self.menu_channel.fadeout(1000)

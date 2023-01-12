@@ -201,7 +201,11 @@ class Menu:
         self.setting_screen = SettingWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 150),
                                                         int(self.options.resolution[1] / 2) - 200), 
                                                         (self.sub_window_width, self.sub_window_height)), 
-                                                        self.manager, self.options.resolution[0], self.options.resolution[1])
+                                                        self.manager, self.options.resolution[0], self.options.resolution[1],
+                                                        self.music_player.background_sound,
+                                                        self.music_player.win_sound,
+                                                        self.music_player.click_sound,
+                                                        self.music_player.menu_sound)
         
         self.setting_warning = lib.setting_warning.SettingWarningWindow(pygame.Rect((int(self.options.resolution[0] / 2 - self.btn_size[0] / 2 - 150),
                                                         int(self.options.resolution[1] / 2) - 125), 
@@ -308,6 +312,7 @@ class Menu:
                     if event.ui_element == self.setting_warning.btn_continue:
                         self.setting_warning.hide()
                         self.setting_screen.show()
+                        self.music_player.background_sound.get_volume()
                     
                     elif event.ui_element == self.setting_warning.btn_back:
                         self.setting_warning.hide()
@@ -352,7 +357,7 @@ class Menu:
         """Chạy màn hình game
         """
         while self.running:
-            time_delta = self.clock.tick(120)
+            time_delta = self.clock.tick(120) / 1000.0
             #print(time_delta)
             # Vẽ hình nền lên screen
             self.screen.blit(self.background_surface, (0,0))
