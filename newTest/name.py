@@ -13,7 +13,7 @@ from lib.paint import Paint
 
 
 class Name:
-    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, screen, gamemode: str):
+    def __init__(self, screen, gamemode: str):
         pygame.display.set_caption('PLAYER NAME')
         
         # Import DATA
@@ -47,7 +47,7 @@ class Name:
         self.play_two = ''
 
 
-        self.SCREEN_WIDTH, self.SCREEN_HEIGHT = SCREEN_WIDTH, SCREEN_HEIGHT
+        # self.SCREEN_WIDTH, self.SCREEN_HEIGHT = SCREEN_WIDTH, SCREEN_HEIGHT
         
         self.clock = pygame.time.Clock()
 
@@ -71,7 +71,8 @@ class Name:
         #                             { 'point_size': 28, 'style': 'bold'}
         #                             ])
 
-        self.running = True
+        # self.running = True
+        self.running_mode = "name"
 
         # Tạo background 
         self.background_surface = None
@@ -197,7 +198,8 @@ class Name:
                 elif not quit_button_pressed and self.exit_screen_created:
                     if event.ui_element == self.exit_screen.btn_Exit:
                         #print("Hello")
-                        self.running = False
+                        # self.running = False
+                        self.running_mode = "end"
                         break
                             
                     if event.ui_element == self.exit_screen.btn_continue:
@@ -205,7 +207,8 @@ class Name:
                         self.exit_screen_created = False
                 
                 elif event.ui_element == self.btn_back:
-                    menu.Menu(self.SCREEN_WIDTH, self.SCREEN_HEIGHT).run()
+                    self.running_mode = "menu"
+                    # menu.Menu(self.SCREEN_WIDTH, self.SCREEN_HEIGHT).run()
                 
                 elif self.play_one != '' and self.play_two != '':
                     game_data = save_manager.SaveManager('game_data.json', 'data').refresh()
@@ -214,14 +217,15 @@ class Name:
                     save_manager.SaveManager('game_data.json', 'data').save(game_data)
                     print("> ", self.play_one)
                     print("> ", self.play_two)
-                    self.game_screen = game.Game(self.screen)
-                    #self.game_screen.new_game()
-                    self.game_screen.run()
+                    self.running_mode = "new_game"
+                    # self.game_screen = game.Game(self.screen)
+                    # #self.game_screen.new_game()
+                    # self.game_screen.run()
                         
                         
     def run(self):
         self.exit_screen_created = False
-        while self.running:
+        while self.running_mode == "name":
             # 120 FPS
             time_delta = self.clock.tick(120)
 
@@ -232,6 +236,7 @@ class Name:
             self.manager.draw_ui(self.screen)
 
             pygame.display.update()
-        pygame.quit()
-        sys.exit()
+        return self.running_mode
+        # pygame.quit()
+        # sys.exit()
     
