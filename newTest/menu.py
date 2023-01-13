@@ -14,7 +14,7 @@ from lib.music_player import MusicPlayer
 
 class Menu:
     # khởi tạo
-    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
+    def __init__(self, screen, music_player):
         # Import DATA
         self.setting = json.load(open('data/setting.json'))
         self.game_data = json.load(open('data/game_data.json'))
@@ -26,28 +26,20 @@ class Menu:
         self.SCREEN_HEIGHT = self.setting['screen']['height']
         self.PLAYER_NAME = self.game_data["PlayerName"]
         
-        pygame.init()
-        self.bgsound_path='res/musicgame/musicgame1.mp3'
-        self.win_sound_path='res/winmusic/win.mp3'
-        self.click_sound_path='res/clickmusic/click.mp3'
-        self.menu_path='res/musicgame/musicgame2.mp3'
-        self.music_player=MusicPlayer(self.bgsound_path, self.win_sound_path,self.click_sound_path,self.menu_path)
-        self.music_player.menu_play()
-        self.music_player.bgsound_pause()
+        
+        
+        self.music_player=music_player
+        # self.music_player.menu_play()
+        # self.music_player.bgsound_pause()
 
         self.clock = pygame.time.Clock()
-        pygame.display.set_caption('MENU')
+        pygame.display.set_caption('MAIN MENU')
 
-        # Khởi tạo option settings (Kích thước và toàn màn hình)
-        self.options = Options(SCREEN_WIDTH, SCREEN_HEIGHT)
-
-        self.screen = pygame.display.set_mode(self.options.resolution)
+        self.screen = screen
+        
 
         # Dùng để vẽ các image và render text
         self.paint = Paint(self.screen)
-
-
-
         
         # Khởi tạo toàn màn hình
         # if self.options.fullscreen:
@@ -55,7 +47,7 @@ class Menu:
         # else:
         #     self.screen = pygame.display.set_mode(self.options.resolution)
         
-
+        self.options = Options(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)   
 
         # Tạo một manager UI (Quản lý Giao diện màn hình)
         # Tham số truyền vào sẽ là kích thước màn hình và package
@@ -82,7 +74,8 @@ class Menu:
         # Màn hình Quit
         self.exit_screen = None
 
-        self.running = True
+        # self.running = True
+        self.running_mode = "menu"
         
         # Tạo background (sẽ setup sau)
         self.background_surface = None
@@ -202,7 +195,7 @@ class Menu:
                                                         int(self.options.resolution[1] / 2) - 200), 
                                                         (self.sub_window_width, self.sub_window_height)), 
                                                         self.manager, self.options.resolution[0], self.options.resolution[1],
-                                                        self.music_player.background_sound,
+                                                        self.music_player.ingame_sound,
                                                         self.music_player.win_sound,
                                                         self.music_player.click_sound,
                                                         self.music_player.menu_sound)
@@ -274,8 +267,10 @@ class Menu:
                     
                 elif event.ui_element == self.btn_PvPplay:
                     # Truyền hàm khởi tạo trò chơi vào
-                    self.name_screen = Name(self.options.resolution[0], self.options.resolution[1], self.screen, "PvP")
-                    self.name_screen.run()
+                    self.running_mode = "PvP"
+                    break
+                    # self.name_screen = Name(self.options.resolution[0], self.options.resolution[1], self.screen, "PvP")
+                    # self.name_screen.run()
                 
                 
                 elif event.ui_element == self.btn_settings:
@@ -291,8 +286,10 @@ class Menu:
                         self.no_game.show()
                     else:
                         save_manager.SaveManager('game_data.json', 'data').save(self.game_data)
-                        self.game_screen = game.Game(self.screen)
-                        self.game_screen.run()
+                        self.running_mode = "continue_game"
+                        break
+                        # self.game_screen = game.Game(self.screen)
+                        # self.game_screen.run()
                 
                 #self.exit_screen_created = quit_button_pressed or btn_quit_clicked
                 
@@ -301,7 +298,7 @@ class Menu:
                 elif self.exit_screen.visible:
                     if event.ui_element == self.exit_screen.btn_Exit:
                         #print("Hello")
-                        self.running = False
+                        self.running_mode = "end"
                         break
                             
                     elif event.ui_element == self.exit_screen.btn_continue:
@@ -312,7 +309,7 @@ class Menu:
                     if event.ui_element == self.setting_warning.btn_continue:
                         self.setting_warning.hide()
                         self.setting_screen.show()
-                        self.music_player.background_sound.get_volume()
+                        self.music_player.menu_sound.get_volume()
                     
                     elif event.ui_element == self.setting_warning.btn_back:
                         self.setting_warning.hide()
@@ -356,7 +353,7 @@ class Menu:
     def run(self):
         """Chạy màn hình game
         """
-        while self.running:
+        while self.running_mode == "menu":
             time_delta = self.clock.tick(120) / 1000.0
             #print(time_delta)
             # Vẽ hình nền lên screen
@@ -372,5 +369,6 @@ class Menu:
             self.manager.draw_ui(self.screen)
             #pygame.time.delay(25)
             pygame.display.update()
-        pygame.quit()
-        sys.exit()
+        return self.running_mode
+        # pygame.quit() 
+        # sys.exit()

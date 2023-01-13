@@ -11,15 +11,11 @@ from lib.music_player import MusicPlayer
 class Game:
 
     # khởi tạo
-    def __init__(self, screen):
+    def __init__(self, screen, music_player):
         
-        self.bgsound_path='res/musicgame/musicgame1.mp3'
-        self.win_sound_path='res/winmusic/win.mp3'
-        self.click_sound_path='res/clickmusic/click.mp3'
-        self.menu_path='res/musicgame/musicgame2.mp3'
-        self.music_player=MusicPlayer(self.bgsound_path, self.win_sound_path,self.click_sound_path,self.menu_path)
-        self.music_player.bgsound_play()
-        self.music_player.menu_pause()
+        self.music_player=music_player
+        # self.music_player.bgsound_play()
+        # self.music_player.menu_pause()
 
         pygame.display.set_caption('GAME')
         
@@ -161,7 +157,8 @@ class Game:
         self.max_his  = 10
         
         #biến vòng lặp game
-        self.running = True
+        # self.running = True
+        self.running_mode = "game"
         
         # Setup Background
         self.background_surface = pygame.Surface(self.options.resolution)
@@ -277,7 +274,7 @@ class Game:
             self.btn_play_again.show()
             self.btn_menu.show()
             self.btn_quit.show()
-            self.music_player.bgsound_pause()
+            self.music_player.ingame_sound_pause()
             self.music_player.win_play()
             
             # self.win_lose_screen.run()       
@@ -341,7 +338,7 @@ class Game:
                         #print("Hello")
                         #print(self.game_data)
                         self.save_manager.save(self.game_data)
-                        self.running = False
+                        self.running_mode = "end"
                         break
                             
                     if event.ui_element == self.exit_screen.btn_continue:
@@ -367,7 +364,11 @@ class Game:
                     if event.ui_element == self.pause_screen.btn_menu:
                         self.game_data["Turn"] = self.turn
                         self.save_manager.save(self.game_data)
-                    menu.Menu(self.SCREEN_WIDTH, self.SCREEN_HEIGHT).run()
+                    self.running_mode = "menu"
+                    self.music_player.ingame_sound_pause()
+                    self.music_player.menu_play()
+                    break
+                    # menu.Menu(self.SCREEN_WIDTH, self.SCREEN_HEIGHT).run()
                 
                 #self.exit_screen_created = quit_button_pressed or btn_quit_clicked
                 #print(self.exit_screen_created)
@@ -454,9 +455,9 @@ class Game:
         #self.exit_screen_created = False
         #self.winlose_window_created = False
         #self.blocked = False
-        while self.running:
+        while self.running_mode == "game":
             # 120 FPS
-            time_delta = self.clock.tick(120)
+            time_delta = self.clock.tick(120) / 1000.0
             
             self.screen.blit(self.background_surface, (0,0))
             
@@ -473,5 +474,6 @@ class Game:
             
             # cập nhật display
             pygame.display.update()
-        pygame.quit()
-        sys.exit()
+        return self.running_mode
+        # pygame.quit()
+        # sys.exit()

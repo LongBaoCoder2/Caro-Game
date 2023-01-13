@@ -23,7 +23,7 @@ class SettingWindow(pygame_gui.elements.UIWindow):
     Args:
         pygame_gui (_type_): _description_
     """
-    def __init__(self, rect, ui_manager,SCREEN_WIDTH, SCREEN_HEIGHT, background_sound, win_sound, click_sound, menu_sound):
+    def __init__(self, rect, ui_manager,SCREEN_WIDTH, SCREEN_HEIGHT, ingame_sound, win_sound, click_sound, menu_sound):
         """Hàm khởi tạo (constructor)
 
         Args:
@@ -32,7 +32,7 @@ class SettingWindow(pygame_gui.elements.UIWindow):
             SCREEN_WIDTH (int): chiều dài (ngang) của cửa sổ
             SCREEN_HEIGHT (int): chiều cao (dọc) của cửa sổ
         """
-        self.background_sound = background_sound
+        self.ingame_sound = ingame_sound
         self.win_sound = win_sound
         self.click_sound = click_sound
         self.menu_sound = menu_sound
@@ -144,7 +144,7 @@ class SettingWindow(pygame_gui.elements.UIWindow):
         self.volume_settings = pygame_gui.elements.UIHorizontalSlider(pygame.Rect((int(self.rect.width / 2 - self.btn_size[0] / 2),
                                                             int(self.rect.height / 2) + 100),
                                                             self.btn_size),
-                                                            100.0,
+                                                            self.ingame_sound.get_volume() * 100.0,
                                                             (0.0, 100.0),
                                                             self.ui_manager,
                                                             container=self,
@@ -198,7 +198,7 @@ class SettingWindow(pygame_gui.elements.UIWindow):
         if self.alive() and self.volume_settings.has_moved_recently:
             cur_volume = int(self.volume_settings.get_current_value())
             self.current_volume.set_text(str(cur_volume))
-            self.background_sound.set_volume(cur_volume / 100.0)
+            self.ingame_sound.set_volume(cur_volume / 100.0)
             self.win_sound.set_volume(cur_volume / 100.0)
             self.click_sound.set_volume(cur_volume / 100.0)
             self.menu_sound.set_volume(cur_volume / 100.0)
