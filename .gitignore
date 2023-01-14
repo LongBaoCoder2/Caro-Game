@@ -4,3 +4,13 @@ lib/__pycache__/
 newTest/__pycache__/
 newTest/lib/__pycache__/
 .DS_Store
+report/main.aux
+report/main.lof
+report/main.log
+report/main.lot
+report/main.maf
+report/main.mtc
+report/main.mtc0
+report/main.out
+report/main.synctex.gz
+report/main.toc
