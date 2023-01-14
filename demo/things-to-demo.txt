@@ -1,0 +1,20 @@
+Những thông tin cần phải demo trong video:
+1. Màn hình Intro với các chức năng:
+Cửa sổ Setting
+Cửa sổ Quit (khởi tạo thông qua button Quit và nút X trên cửa sổ)
+Chức năng PvP
+Chức năng Continue (Minh họa thông qua một ván game đang chơi chưa xong thì thoát game)
+Chức năng Continue khi không có dữ liệu game ván trước (ví dụ: ván trước đã kết thúc hoặc dữ liệu bị ghi đè)
+
+2. Màn hình Setting (Màn hình đặt tên):
+Đặt tên 2 người chơi Player1 Player2 cho dễ minh họa
+Minh họa tính năng Back
+Minh họa Nút Play
+
+3. Màn hình Game:
+Đánh chậm để minh họa được được âm thanh click chuột và để cho game không bị giật
+Sử dụng tính năng Pause để tạm dừng Game và về Menu (tiện thể dùng luôn Continue ở đây thì tốt)
+Sử dụng tính năng về Menu
+Sử dụng tính năng Play Again
+Sử dụng tính năng Quit Game
+Quay demo tầm 3-5p

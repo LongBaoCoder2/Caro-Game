@@ -215,8 +215,8 @@ class Name:
                     game_data['PlayerName']['Player1'] = self.play_one
                     game_data['PlayerName']['Player2'] = self.play_two
                     save_manager.SaveManager('game_data.json', 'data').save(game_data)
-                    print("> ", self.play_one)
-                    print("> ", self.play_two)
+                    # print("> ", self.play_one)
+                    # print("> ", self.play_two)
                     self.running_mode = "new_game"
                     # self.game_screen = game.Game(self.screen)
                     # #self.game_screen.new_game()
@@ -227,7 +227,7 @@ class Name:
         self.exit_screen_created = False
         while self.running_mode == "name":
             # 120 FPS
-            time_delta = self.clock.tick(120)
+            time_delta = self.clock.tick(120) / 1000.0
 
             self.process_events()
 

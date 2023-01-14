@@ -1,8 +1,8 @@
 \section{Mô tả tính năng của phần mềm}
-Đồ án Game Caro cung cấp một phần mềm mô phỏng môn thể thao cờ Caro, với tính năng 2 người chơi. Phần mềm cung cấp đầy đủ các tính năng cơ bản của một game Caro như cho phép nhập tên người chơi, tính năng thay đổi kích cỡ bảng cờ, tính năng xác định thắng thua, tính năng chọn bao nhiêu quân cờ liên tiếp để xác định thắng thua, tính năng điều chỉnh âm lượng,...
+Đồ án Game Caro cung cấp một phần mềm mô phỏng môn thể thao cờ Caro, với tính năng 2 người chơi. Phần mềm cung cấp đầy đủ các tính năng cơ bản của một game Caro như cho phép nhập tên người chơi, tính năng thay đổi kích cỡ bảng cờ, tính năng xác định thắng thua, tính năng chọn bao nhiêu quân cờ liên tiếp để xác định thắng thua, tính năng điều chỉnh âm lượng trò chơi,...
 
 \subsection{Màn hình khởi động của game}
-Hình sau đây là màn hình khởi động của game, với các nút cho phép người dùng lựa chọn các chức năng của trò chơi, theo thứ tự từ trên xuống dưới: chế độ 2 người chơi(\verb|PvP|), lựa chọn tiếp tục chơi (\verb|Continue|), cài đặt (\verb|Settings|), lựa chọn thoát (\verb|Quit|).
+Hình sau đây là màn hình khởi động của game, với các nút cho phép người dùng lựa chọn các chức năng của trò chơi, theo thứ tự từ trên xuống dưới: chế độ 2 người chơi (\verb|PvP|), lựa chọn tiếp tục chơi (\verb|Continue|), cài đặt (\verb|Settings|), lựa chọn thoát (\verb|Quit|). Khi ta màn hình khởi động hiện ra thì đồng thời nhạc nền Game cũng được bật.
 
 \begin{figure}[H]
 \centering{\includegraphics[scale=0.5]{images/menuscreen.png}}
@@ -27,7 +27,7 @@ Nếu muốn quay lại màn hình khởi động của game, nhấn \verb|Back|
 \caption{Cửa sổ Setting}
 \end{figure}
 
-Ở ô cửa sổ này, người chơi được lựa chọn các tính năng hỗ trợ cho game. Đầu tiền là tính năng chọn số quân liên tiếp để thắng:\\
+Ở ô cửa sổ này, người chơi được lựa chọn các tính năng hỗ trợ cho game. Đầu tiên là tính năng chọn số quân liên tiếp để thắng:\\
 \begin{figure}[H]
 \centering{\includegraphics[scale=0.75]{images/setting2.png}}
 \caption{Chọn số quân liên tiếp để thắng}
@@ -49,7 +49,7 @@ Hình sau là màn hình đặt tên người chơi khi chọn chế độ chơi
 \caption{Màn hình đặt tên người chơi}
 \end{figure}
 \subsection{Màn hình game khi chơi}
-Sau khi nhập tên 2 người chơi thành công và nhấn \verb|Play|, màn hình game khi chơi sẽ hiện ra như hình bên dưới. Ở đây ta lấy màn hình khi chơi một ván caro \(5\) quân với kích cỡ bàn cờ là \(16 \times 16\).
+Sau khi nhập tên 2 người chơi thành công và nhấn \verb|Play|, màn hình game khi chơi sẽ hiện ra như hình bên dưới. Lúc này thì nhạc nền ban đầu của Game khi ở màn hình khởi động sẽ được thay thế bằng một bản nhạc khác. Ở đây ta lấy màn hình khi chơi một ván caro \(5\) quân với kích cỡ bàn cờ là \(16 \times 16\).
 \begin{figure}[H]
 \centering{\includegraphics[scale=0.5]{images/playscreen.png}}
 \caption{Màn hình game khi đang chơi}
@@ -74,8 +74,8 @@ Hình bên dưới đây là cửa sổ tạm dừng \verb|Pause|.
 \subsection{Cửa sổ thông báo chiến thắng}
 Sau khi 1 trong 2 người chơi tạo được một đường chéo, ngang hoặc dọc liên tiếp số con cờ caro (tương ứng với số quân cờ liên tiếp để thắng được chọn ở cửa sổ Setting), ngoài ra, những con cờ này không bị chặn ở 2 đầu thì cửa sổ thông báo tên người chơi chiến thắng sẽ hiện lên như hình bên dưới. Đồng thời, nhạc thông báo chiến thắng cũng được phát.
 \begin{figure}[H]
-  \centering{\includegraphics[scale=0.5]{images/win.png}}
-  \caption{Cửa số Win}
+  \centering{\includegraphics[scale=0.65]{images/win.png}}
+  \caption{Cửa sổ Win}
 \end{figure}
 Người chơi nhấn nút \verb|Back| hoặc nút \verb|X| trên cùng bên phải của ô cửa sổ Win để quay lại màn hình game. Khi đó, màn hình game sẽ hiện thêm 3 chức năng cho người chơi lựa chọn như hình bên dưới.
 \begin{figure}[H]

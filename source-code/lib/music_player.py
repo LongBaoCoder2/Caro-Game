@@ -23,7 +23,8 @@ class MusicPlayer:
         self.win_channel.play(self.win_sound, loops=0, maxtime=3000, fade_ms=500)
     def click_play(self):
         self.click_channel.play(self.click_sound, loops=0)
+        
     def menu_play(self):
-        self.menu_channel.play(self.menu_sound, fade_ms=1000)
+        self.menu_channel.play(self.menu_sound, loops=-1, fade_ms=1000)
     def menu_pause (self):
         self.menu_channel.fadeout(500)
