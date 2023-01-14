@@ -5,6 +5,4 @@ Before playing this game, you have to have `Python 3.6.3` installed and run thes
 pip install pygame
 pip install pygame_gui
 pip install json
-pip install playsound==1.2.2
-pip install threading
 ```
