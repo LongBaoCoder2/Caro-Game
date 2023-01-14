@@ -356,7 +356,8 @@ class Game:
                     self.game_data['PlayerName']['Player1'] = self.player_1
                     self.game_data['PlayerName']['Player2'] = self.player_2
                     save_manager.SaveManager('game_data.json', 'data').save(self.game_data)
-                    self.__init__(self.screen)
+                    self.__init__(self.screen, self.music_player)
+                    # self.__init__(self.screen)
                     self.new_game()
                     self.run()
             
