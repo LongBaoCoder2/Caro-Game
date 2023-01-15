@@ -321,16 +321,16 @@ class Menu:
             if event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
                 self.setting_changed = True
                 if event.ui_element == self.setting_screen.pieces_mode_drop_down:
-                    print("Pieces mode changed from %d to %s" % (self.setting["game"]["win_cnt"], event.text))
-                    print(self.setting_screen.pieces_mode_drop_down.selected_option)
-                    print(type(self.setting_screen.pieces_mode_drop_down.selected_option))
+                    # print("Pieces mode changed from %d to %s" % (self.setting["game"]["win_cnt"], event.text))
+                    # print(self.setting_screen.pieces_mode_drop_down.selected_option)
+                    # print(type(self.setting_screen.pieces_mode_drop_down.selected_option))
                     # self.setting_screen.update_pieces_mode_index()
                     self.setting_screen.update_board_size_drop_down()
                     res = self.setting_screen.board_size_drop_down.selected_option.split('x')
                     self.setting["grid"]["size_x"] = int(res[0])
                     self.setting["grid"]["size_y"] = int(res[1])
                     self.setting["game"]["win_cnt"] = int(event.text)
-                    print("print in pieces mode drop down update\n", self.setting["grid"])
+                    # print("print in pieces mode drop down update\n", self.setting["grid"])
                 elif event.ui_element == self.setting_screen.board_size_drop_down:
                     print("Board size changed from %dx%d to %s" 
                           % (self.setting["grid"]["size_x"], self.setting["grid"]["size_y"], 

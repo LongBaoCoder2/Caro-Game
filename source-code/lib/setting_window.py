@@ -164,9 +164,8 @@ class SettingWindow(pygame_gui.elements.UIWindow):
     
     def update_board_size_drop_down(self) -> None:
         self.pieces_mode_pos = self.pieces_mode.index(self.pieces_mode_drop_down.selected_option)
-        print("bo may co update", self.board_size[self.pieces_mode_pos])
-        
-        # kill thằng cũ để tạo thằng mới
+
+        # kill thanh cũ để tạo thanh mới
         self.board_size_drop_down.kill()
         
         self.board_size_drop_down = pygame_gui.elements.UIDropDownMenu(self.board_size[self.pieces_mode_pos],
@@ -176,7 +175,7 @@ class SettingWindow(pygame_gui.elements.UIWindow):
                                                             self.btn_size),
                                                   self.ui_manager,
                                                   container=self)
-        print(self.board_size_drop_down.selected_option)
+        # print(self.board_size_drop_down.selected_option)
         self.board_size_drop_down.selected_option = self.board_size[self.pieces_mode_pos][0]
     
     def on_close_window_button_pressed(self):

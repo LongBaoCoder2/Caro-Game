@@ -14,6 +14,10 @@ class MusicPlayer:
         self.win_channel = pygame.mixer.Channel(1)
         self.click_channel = pygame.mixer.Channel(2)
         self.menu_channel = pygame.mixer.Channel(3)
+        self.ingame_sound.set_volume(0.5)
+        self.win_sound.set_volume(0.5)
+        self.click_sound.set_volume(0.5)
+        self.menu_sound.set_volume(0.5)
     def ingame_sound_play(self):
         self.ingame_sound_channel.play(self.ingame_sound, loops=-1, fade_ms=1000)
     def ingame_sound_pause(self):
