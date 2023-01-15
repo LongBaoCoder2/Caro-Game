@@ -332,15 +332,15 @@ class Menu:
                     self.setting["game"]["win_cnt"] = int(event.text)
                     # print("print in pieces mode drop down update\n", self.setting["grid"])
                 elif event.ui_element == self.setting_screen.board_size_drop_down:
-                    print("Board size changed from %dx%d to %s" 
-                          % (self.setting["grid"]["size_x"], self.setting["grid"]["size_y"], 
-                             event.text))
-                    print(self.setting_screen.board_size_drop_down.selected_option)
-                    print(type(self.setting_screen.board_size_drop_down.selected_option))
+                    # print("Board size changed from %dx%d to %s" 
+                        #   % (self.setting["grid"]["size_x"], self.setting["grid"]["size_y"], 
+                            #  event.text))
+                    # print(self.setting_screen.board_size_drop_down.selected_option)
+                    # print(type(self.setting_screen.board_size_drop_down.selected_option))
                     res = event.text.split('x')
                     self.setting["grid"]["size_x"] = int(res[0])
                     self.setting["grid"]["size_y"] = int(res[1])
-                    print(self.setting["grid"])
+                    # print(self.setting["grid"])
                 elif event.ui_element == self.setting_screen.resolution_drop_down:
                     self.change_size(event.text)
                     res = event.text.split('x')

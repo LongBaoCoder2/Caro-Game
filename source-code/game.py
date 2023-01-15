@@ -358,6 +358,7 @@ class Game:
                     save_manager.SaveManager('game_data.json', 'data').save(self.game_data)
                     self.__init__(self.screen, self.music_player)
                     # self.__init__(self.screen)
+                    self.music_player.ingame_sound_play()
                     self.new_game()
                     self.run()
             

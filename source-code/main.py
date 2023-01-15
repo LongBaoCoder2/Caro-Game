@@ -68,11 +68,9 @@ class Main():
                 self.GameScreen.new_game()
                 self.mode = self.GameScreen.run()
             elif self.mode == "continue_game":
-                print("do tu khuc naty")
                 self.music_player.menu_pause()
                 self.music_player.ingame_sound_play()
                 self.GameScreen = game.Game(self.screen, self.music_player)
-                print("help")
                 # self.GameScreen.new_game()
                 self.mode = self.GameScreen.run()
 

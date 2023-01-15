@@ -1,5 +1,6 @@
 Những thông tin cần phải demo trong video:
 Trước nhất:
+Vô thư mục nào
 Cần hướng dẫn cách chạy game
 pip install json
 pip install pygame
