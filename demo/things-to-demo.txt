@@ -1,12 +1,14 @@
 Những thông tin cần phải demo trong video:
 Trước nhất:
+Giới thiệu tên của mình, đại diện nhóm nào demo cái gì
 Vô thư mục nào
 Cần hướng dẫn cách chạy game
-pip install json
 pip install pygame
 pip install pygame_gui
 
 1. Màn hình Intro với các chức năng:
+Khi bật game thì sẽ có bài nhạc được bật lên
+Đầu tiên là giới thiệu về cửa sổ Setting
 Cửa sổ Setting
 Cửa sổ Quit (khởi tạo thông qua button Quit và nút X trên cửa sổ)
 Chức năng PvP
