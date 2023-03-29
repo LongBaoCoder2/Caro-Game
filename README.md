@@ -17,4 +17,4 @@ python main.py
 ## Project Details
 For more information, you can read our report [here](https://github.com/tachithanhdanh/Caro-Game/blob/main/report/report.pdf)
 ## About us
-We are [Ta Chi Thanh Danh](https://github.com/tachithanhdanh), [Mai Van Tuan Kiet](https://github.com/allforest01), [Nguyen Long Bao](https://github.com/LongBaoCoder02) and [Le Thuc Uyen](https://github.com/thucuyenyah), students at class CNTN2022, University of Science, VNUHCM.
+We are [Ta Chi Thanh Danh](https://github.com/tachithanhdanh), [Mai Van Tuan Kiet](https://github.com/allforest01), [Nguyen Long Bao](https://github.com/LongBaoCoder2) and [Le Thuc Uyen](https://github.com/thucuyenyah), students at class CNTN2022, University of Science, VNUHCM.
